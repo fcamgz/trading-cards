@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import {
+  Backdrop,
   Box,
   Button,
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Chip,
   Divider,
   Grid,
@@ -33,6 +35,7 @@ export default function TradeOffers() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
   const [buttonClicked, setButtonClicked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -85,6 +88,7 @@ export default function TradeOffers() {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     axios
       .get(`http://localhost:5000/api/trades/`)
       .then((res) => res.data)
@@ -108,7 +112,8 @@ export default function TradeOffers() {
           setIsLoggedIn(true);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
   }, [buttonClicked]);
   return (
     <Box
@@ -119,6 +124,12 @@ export default function TradeOffers() {
         boxSizing: "border-box",
       }}
     >
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         container
@@ -127,7 +138,6 @@ export default function TradeOffers() {
         <img
           src={BackgroundImage}
           style={{
-            opacity: "0.95",
             position: "fixed",
             left: 0,
             top: 0,
@@ -201,6 +211,8 @@ export default function TradeOffers() {
                                 <Button
                                   href={`cards/${offer.wantedCard?._id}`}
                                   variant="contained"
+                                  color="inherit"
+                                  sx={{ fontWeight: "600" }}
                                 >
                                   Go to Card
                                 </Button>
@@ -331,6 +343,8 @@ export default function TradeOffers() {
                                 <Button
                                   href={`cards/${offer.offeredCard?._id}`}
                                   variant="contained"
+                                  color="inherit"
+                                  sx={{ fontWeight: "600" }}
                                 >
                                   Go to Card
                                 </Button>

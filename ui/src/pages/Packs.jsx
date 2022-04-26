@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-import { Box, Button, Typography } from "@mui/material";
+import {
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import Bronzes from "../images/Bronze-Card.png";
 import Silvers from "../images/Silver-Card.png";
 import Golds from "../images/pack-background4.png";
@@ -17,8 +23,10 @@ export default function Packs() {
   const [user, setUser] = useState();
   const [buttonValue, setButtonValue] = useState("");
   const [isClicked, setIsClicked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     // get packs
     axios
       .get("http://localhost:5000/api/packs")
@@ -46,7 +54,8 @@ export default function Packs() {
           setIsAdmin(data.user.isAdmin);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
   }, [isClicked]);
 
   const deletePack = (id) => {
@@ -67,6 +76,12 @@ export default function Packs() {
         overflowX: "hidden",
       }}
     >
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         container
@@ -81,7 +96,6 @@ export default function Packs() {
         <img
           src={BackgroundImage}
           style={{
-            opacity: "0.90",
             position: "fixed",
             left: 0,
             top: 0,
@@ -97,10 +111,10 @@ export default function Packs() {
         />
         <Box mt={6} mb={6} sx={{ position: "relative" }}>
           <Box>
-            <Typography variant="h4" textAlign="center" color="white">
+            <Typography variant="h3" textAlign="center" color="white">
               Buy Packs
             </Typography>
-            <Typography variant="body2" mt={2} textAlign="center" color="white">
+            <Typography variant="body1" mt={2} textAlign="center" color="white">
               Open packs and get 5 random cards per pack!
             </Typography>
           </Box>
@@ -166,6 +180,8 @@ export default function Packs() {
                     value={buttonValue}
                     href={`packs/${pack._id}`}
                     type="submit"
+                    color="inherit"
+                    sx={{ fontWeight: "600" }}
                   >
                     {pack.name}
                   </Button>

@@ -110,7 +110,7 @@ export default function Register() {
               />
             </FormControl>
             <Stack m={4}>
-              <Button type="submit" variant="contained">
+              <Button type="submit" variant="contained" color="inherit">
                 Register
               </Button>
             </Stack>

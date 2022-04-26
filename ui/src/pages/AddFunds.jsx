@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Backdrop,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import Navbar from "../components/Navbar";
@@ -19,6 +26,7 @@ export default function AddFunds() {
   const [buttonValue, setButtonValue] = useState("");
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [userCoins, setUserCoins] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -72,6 +80,7 @@ export default function AddFunds() {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     // get user
     setIsPageLoading(true);
     axios
@@ -93,12 +102,19 @@ export default function AddFunds() {
       })
       .catch((err) => {
         console.log(err);
-      });
+      })
+      .finally(() => setIsLoading(false));
     setIsPageLoading(false);
   }, []);
 
   return (
     <Box sx={{ height: "100vh", width: "100vw", overflowX: "hidden" }}>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         mb={6}
@@ -112,7 +128,6 @@ export default function AddFunds() {
         <img
           src={BackgroundImage}
           style={{
-            opacity: "0.90",
             position: "fixed",
             left: 0,
             top: 0,
@@ -128,10 +143,10 @@ export default function AddFunds() {
         <Typography>{apiMessage}</Typography>
         <Box mt={6} mb={4} sx={{ position: "relative" }}>
           <Box>
-            <Typography variant="h4" textAlign="center" color="white">
+            <Typography variant="h3" textAlign="center" color="white">
               Add Funds
             </Typography>
-            <Typography variant="body2" mt={2} textAlign="center" color="white">
+            <Typography variant="body1" mt={2} textAlign="center" color="white">
               Add Funds to Buy More Packs!
             </Typography>
           </Box>
@@ -203,7 +218,11 @@ export default function AddFunds() {
                   // useful if you're using React-Tap-Event-Plugin
                   triggerEvent="onClick"
                 >
-                  <Button sx={{ width: "100%" }} variant="contained">
+                  <Button
+                    color="inherit"
+                    sx={{ width: "100%", fontWeight: "600" }}
+                    variant="contained"
+                  >
                     $10.00
                   </Button>
                 </StripeCheckout>
@@ -234,7 +253,11 @@ export default function AddFunds() {
                   // useful if you're using React-Tap-Event-Plugin
                   triggerEvent="onClick"
                 >
-                  <Button sx={{ width: "100%" }} variant="contained">
+                  <Button
+                    color="inherit"
+                    sx={{ width: "100%", fontWeight: "600" }}
+                    variant="contained"
+                  >
                     $20.00
                   </Button>
                 </StripeCheckout>
@@ -265,7 +288,11 @@ export default function AddFunds() {
                   // useful if you're using React-Tap-Event-Plugin
                   triggerEvent="onClick"
                 >
-                  <Button sx={{ width: "100%" }} variant="contained">
+                  <Button
+                    color="inherit"
+                    sx={{ width: "100%", fontWeight: "600" }}
+                    variant="contained"
+                  >
                     $30.00
                   </Button>
                 </StripeCheckout>
@@ -296,7 +323,11 @@ export default function AddFunds() {
                   // useful if you're using React-Tap-Event-Plugin
                   triggerEvent="onClick"
                 >
-                  <Button sx={{ width: "100%" }} variant="contained">
+                  <Button
+                    color="inherit"
+                    sx={{ width: "100%", fontWeight: "600" }}
+                    variant="contained"
+                  >
                     $50.00
                   </Button>
                 </StripeCheckout>

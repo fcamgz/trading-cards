@@ -1,4 +1,11 @@
-import { Button, Typography } from "@mui/material";
+import {
+  AppBar,
+  Button,
+  Container,
+  IconButton,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import { styled, alpha } from "@mui/material/styles";
 import Menu from "@mui/material/Menu";
@@ -6,6 +13,8 @@ import MenuItem from "@mui/material/MenuItem";
 import EditIcon from "@mui/icons-material/Edit";
 import Divider from "@mui/material/Divider";
 import ArchiveIcon from "@mui/icons-material/Archive";
+import MenuIcon from "@mui/icons-material/Menu";
+
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -61,9 +70,58 @@ const StyledMenu = styled((props) => (
   },
 }));
 
+const userPages = [
+  {
+    name: "Dashboard",
+    href: "/dashboard",
+  },
+  {
+    name: "All Cards",
+    href: "/cards",
+  },
+  {
+    name: "Buy Coins",
+    href: "/buyCoins",
+  },
+  {
+    name: "Chat",
+    href: "/chat",
+  },
+  {
+    name: "Announcements",
+    href: "/announcements",
+  },
+];
+
+const adminPages = [
+  {
+    name: "Admin Dashboard",
+    href: "/admin",
+  },
+  {
+    name: "Announcements",
+    href: "/announcements",
+  },
+  {
+    name: "All Cards",
+    href: "/cards",
+  },
+];
+
 export default function Navbar(props) {
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -92,79 +150,104 @@ export default function Navbar(props) {
   }
 
   return (
-    <nav
-      style={{ borderBottom: "3px solid #2C3333" }}
-      className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top"
-    >
-      <div className="container">
-        <a className="navbar-brand" href="/">
-          Trading Cards Co.
-        </a>
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+    <AppBar color="transparent" position="sticky">
+      <Container maxWidth="xl">
+        <Toolbar
+          disableGutters
+          sx={{ display: "flex", justifyContent: "space-between" }}
         >
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <div>
-            <ul className="navbar-nav mr-auto">
-              <li className="m-1">
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Typography
+              variant="h6"
+              noWrap
+              color="white"
+              component="div"
+              sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
+            >
+              Trading Cards Co.
+            </Typography>
+            {props.user?.isAdmin && (
+              <Typography
+                variant="body1"
+                sx={{ fontWeight: "600", color: "red" }}
+              >
+                Admin
+              </Typography>
+            )}
+          </Box>
+          {props.isLoggedIn && (
+            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenNavMenu}
+                sx={{ color: "white" }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElNav}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{
+                  display: { xs: "block", md: "none" },
+                }}
+              >
+                {userPages.map((page) => (
+                  <MenuItem key={page.name}>
+                    <Button
+                      sx={{ color: "black", fontWeight: "600" }}
+                      onClick={() => navigate(page.href)}
+                    >
+                      {page.name}
+                    </Button>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          )}
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            color="white"
+            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
+          >
+            Trading Cards Co.
+          </Typography>
+          {props.isLoggedIn && (
+            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+              {userPages.map((page) => (
                 <Button
-                  sx={{ backgroundColor: "#1565C0" }}
-                  href="/dashboard"
-                  variant="contained"
+                  key={page}
+                  onClick={() => navigate(page.href)}
+                  sx={{
+                    my: 2,
+                    color: "white",
+                    display: "block",
+                    fontWeight: "600",
+                  }}
                 >
-                  Dashboard
+                  {page.name}
                 </Button>
-              </li>
-              <li className="m-1">
-                <Button
-                  sx={{ backgroundColor: "#1565C0" }}
-                  href="/cards"
-                  variant="contained"
-                >
-                  Buy Cards
-                </Button>
-              </li>
-              <li className="m-1">
-                <Button
-                  sx={{ backgroundColor: "#1565C0" }}
-                  href="/buyCoins"
-                  variant="contained"
-                >
-                  Buy Coins
-                </Button>
-              </li>
-              <li className="m-1">
-                <Button
-                  sx={{ backgroundColor: "#1565C0" }}
-                  href="/chat"
-                  variant="contained"
-                >
-                  Chat
-                </Button>
-              </li>
-              <li className="m-1">
-                <Button
-                  sx={{ backgroundColor: "#1565C0" }}
-                  href="/announcements"
-                  variant="contained"
-                >
-                  Announcements
-                </Button>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div>
+              ))}
+            </Box>
+          )}
+
           {props.isLoggedIn ? (
-            <div>
+            <Box>
               <Box
                 sx={{
                   display: "flex",
@@ -178,6 +261,8 @@ export default function Navbar(props) {
                   onClick={handleClick}
                   endIcon={<KeyboardArrowDownIcon />}
                   size="small"
+                  color="inherit"
+                  sx={{ fontWeight: "600" }}
                 >
                   {props.user.username}
                 </Button>
@@ -250,21 +335,34 @@ export default function Navbar(props) {
                     </>
                   )}
                 </StyledMenu>
-                <Typography variant="body1" m={1} sx={{ color: "yellow" }}>
+                <Typography
+                  variant="body1"
+                  m={1}
+                  sx={{
+                    color: "yellow",
+                    fontWeight: "600",
+                    fontSize: "17px",
+                  }}
+                >
                   <MonetizationOnIcon />
                   {props.user.coinBalance}
                 </Typography>
               </Box>
-            </div>
+            </Box>
           ) : (
             <Box>
-              <Button size="small" variant="contained" href="/login">
+              <Button
+                color="inherit"
+                size="small"
+                variant="contained"
+                href="/login"
+              >
                 Login
               </Button>
             </Box>
           )}
-        </div>
-      </div>
-    </nav>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 }

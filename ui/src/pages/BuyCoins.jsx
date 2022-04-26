@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Backdrop,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import Navbar from "../components/Navbar";
@@ -91,12 +98,18 @@ export default function BuyCoins() {
       })
       .catch((err) => {
         console.log(err);
-      });
-    setIsPageLoading(false);
+      })
+      .finally(() => setIsPageLoading(false));
   }, []);
 
   return (
     <Box sx={{ height: "100vh", width: "100%", overflowX: "hidden" }}>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isPageLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         mb={6}
@@ -110,7 +123,6 @@ export default function BuyCoins() {
         <img
           src={BackgroundImage}
           style={{
-            opacity: "0.90",
             position: "fixed",
             left: 0,
             top: 0,
@@ -126,10 +138,10 @@ export default function BuyCoins() {
         <Typography>{apiMessage}</Typography>
         <Box mt={6} mb={4} sx={{ position: "relative" }}>
           <Box>
-            <Typography variant="h4" textAlign="center" color="white">
+            <Typography variant="h3" textAlign="center" color="white">
               Buy Coins
             </Typography>
-            <Typography variant="body2" mt={2} textAlign="center" color="white">
+            <Typography variant="body1" mt={2} textAlign="center" color="white">
               Buy More Coins to Open More Packs!
             </Typography>
           </Box>
@@ -146,7 +158,7 @@ export default function BuyCoins() {
                 Balance
               </Typography>
               <Typography color="white" variant="subtitle">
-                Money Amount: ${user?.moneyBalance}
+                Available Funds: ${user?.moneyBalance}
               </Typography>
               <Typography color="white" variant="subtitle">
                 Coin Amount: {user?.coinBalance} TCC
@@ -187,6 +199,8 @@ export default function BuyCoins() {
                   value={buttonValue}
                   onClick={() => setButtonValue("low")}
                   type="submit"
+                  color="inherit"
+                  sx={{ fontWeight: "600" }}
                 >
                   50.000 TCC
                 </Button>
@@ -203,6 +217,8 @@ export default function BuyCoins() {
                   value={buttonValue}
                   onClick={() => setButtonValue("med")}
                   type="submit"
+                  color="inherit"
+                  sx={{ fontWeight: "600" }}
                 >
                   100.000 TCC
                 </Button>
@@ -219,6 +235,8 @@ export default function BuyCoins() {
                   value={buttonValue}
                   onClick={() => setButtonValue("high")}
                   type="submit"
+                  color="inherit"
+                  sx={{ fontWeight: "600" }}
                 >
                   200.000 TCC
                 </Button>
@@ -235,6 +253,8 @@ export default function BuyCoins() {
                   value={buttonValue}
                   onClick={() => setButtonValue("mega")}
                   type="submit"
+                  color="inherit"
+                  sx={{ fontWeight: "600" }}
                 >
                   500.000 TCC
                 </Button>

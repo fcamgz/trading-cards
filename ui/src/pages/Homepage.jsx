@@ -98,7 +98,7 @@ export default function Homepage() {
             </Typography>
             <Box mt={2}>
               {!isLoggedIn ? (
-                <Button href="/register" variant="contained">
+                <Button href="/register" variant="contained" color="inherit">
                   Get Started
                 </Button>
               ) : (

@@ -2,7 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 import Navbar from "../components/Navbar";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import {
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  TextField,
+  Typography,
+} from "@mui/material";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
 import Footer from "../components/Footer";
 
@@ -16,8 +23,10 @@ export default function Chat() {
   const socketRef = useRef(null);
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     // get cards
     axios
       .get("http://localhost:5000/api/cards/")
@@ -26,7 +35,8 @@ export default function Chat() {
         setCardData(res);
         console.log(res);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
     // get user
     axios
       .get("/api/getUsername", {
@@ -81,6 +91,12 @@ export default function Chat() {
         boxSizing: "border-box",
       }}
     >
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         container
@@ -108,7 +124,7 @@ export default function Chat() {
               mb={4}
               textAlign="center"
               color="white"
-              variant="h4"
+              variant="h3"
             >
               Live Chat
             </Typography>
@@ -161,9 +177,16 @@ export default function Chat() {
                       sx={{ backgroundColor: "white" }}
                     />
                   </Box>
-                  <Button variant="contained" type="submit">
-                    Send Message
-                  </Button>
+                  <Box mt={2}>
+                    <Button
+                      color="inherit"
+                      sx={{ fontWeight: "600" }}
+                      variant="contained"
+                      type="submit"
+                    >
+                      Send Message
+                    </Button>
+                  </Box>
                 </form>
               </Box>
             </Box>

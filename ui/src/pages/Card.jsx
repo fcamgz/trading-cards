@@ -17,8 +17,9 @@ import Diamonds from "../images/pack-background2.png";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
 import Footer from "../components/Footer";
 import Carousel from "react-material-ui-carousel";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 
-const useStyles = makeStyles({
+const useStyles = (theme) => ({
   modal: {
     position: "absolute",
     top: "50%",
@@ -30,6 +31,15 @@ const useStyles = makeStyles({
     boxShadow: 24,
     padding: "20px",
     borderRadius: "10px",
+  },
+  mainStructure: {
+    display: "flex",
+    justifyContent: "space-around",
+    padding: "40px",
+    width: "60%",
+    "@media screen and (min-width: 960px)": {
+      flexDirection: "column",
+    },
   },
 });
 
@@ -285,11 +295,13 @@ export default function Card() {
             </Box>
           </Modal>
           <Box
+            className={classes.mainStructure}
             sx={{
               display: "flex",
               justifyContent: "space-around",
               padding: "40px",
               width: "60%",
+              gap: "42px",
             }}
           >
             <Box
@@ -297,11 +309,17 @@ export default function Card() {
                 display: "flex",
                 flexDirection: "column",
                 height: "100%",
-                width: "30%",
+                minWidth: "20vw",
+                maxWidth: "20vw",
               }}
             >
-              <Typography variant="h5" color="white" textAlign="center">
-                {cardData.price} TCC
+              <Typography
+                variant="h4"
+                sx={{ color: "yellow" }}
+                textAlign="center"
+              >
+                <MonetizationOnIcon />
+                {cardData.price}
               </Typography>
               <img
                 className={classes.cardHover}

@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import {
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@mui/material";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
 import ProfilePicture from "../images/pack-background4.png";
 import IconPicture1 from "../images/fifa-background2.png";
@@ -18,6 +25,7 @@ import ProfilePicture1 from "../images/pack-background4.png";
 import ProfilePicture2 from "../images/Bronze-Card.png";
 import ProfilePicture3 from "../images/Silver-Card.png";
 import { makeStyles, useTheme } from "@mui/styles";
+import { useNavigate } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
   mainContainer: {
@@ -52,11 +60,15 @@ export default function Profile() {
   const [cardData, setCardData] = useState([{}]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const classes = useStyles();
   const theme = useTheme();
 
   useEffect(() => {
+    setIsLoading(true);
     // get user
     axios
       .get("/api/getUsername", {
@@ -73,7 +85,8 @@ export default function Profile() {
           setIsLoggedIn(true);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
   }, []);
   return (
     <Box
@@ -83,6 +96,12 @@ export default function Profile() {
         overflowX: "hidden",
       }}
     >
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         sx={{
@@ -119,9 +138,17 @@ export default function Profile() {
                   mt={2}
                   sx={{ display: "flex", justifyContent: "flex-start" }}
                 >
-                  <Button href="/editProfile" size="small" variant="contained">
-                    Edit Profile
-                  </Button>
+                  <Box mb={2}>
+                    <Button
+                      onClick={() => navigate("/editProfile")}
+                      size="small"
+                      variant="contained"
+                      color="inherit"
+                      sx={{ fontWeight: "600" }}
+                    >
+                      Edit Profile
+                    </Button>
+                  </Box>
                 </Box>
                 <img
                   src={

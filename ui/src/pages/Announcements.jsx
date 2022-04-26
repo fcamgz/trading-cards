@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
-import { Box, Button, Card, Typography } from "@mui/material";
+import {
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Card,
+  Typography,
+} from "@mui/material";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
 import Footer from "../components/Footer";
 
@@ -10,8 +17,10 @@ export default function Announcement() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
   const [isClicked, setIsClicked] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     // get announcements
     axios
       .get("http://localhost:5000/api/admin/annoucements")
@@ -35,6 +44,7 @@ export default function Announcement() {
         if (data.isLoggedIn) {
           setUser(data.user);
           setIsLoggedIn(true);
+          setIsLoading(false);
         }
       })
       .catch((err) => console.log(err));
@@ -58,6 +68,12 @@ export default function Announcement() {
         boxSizing: "border-box",
       }}
     >
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         container

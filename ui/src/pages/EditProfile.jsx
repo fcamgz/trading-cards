@@ -194,18 +194,21 @@ export default function EditProfile() {
                           <Button
                             onClick={() => clickImageButton("1")}
                             variant="contained"
+                            color="inherit"
                           >
                             <img width="40px" src={ProfilePicture1} />
                           </Button>
                           <Button
                             onClick={() => clickImageButton("2")}
                             variant="contained"
+                            color="inherit"
                           >
                             <img width="40px" src={ProfilePicture2} />
                           </Button>
                           <Button
                             onClick={() => clickImageButton("3")}
                             variant="contained"
+                            color="inherit"
                           >
                             <img width="40px" src={ProfilePicture3} />
                           </Button>
@@ -248,18 +251,22 @@ export default function EditProfile() {
                             }}
                           >
                             <Box>
-                              <Button type="submit" variant="contained">
-                                Save
+                              <Button
+                                type="submit"
+                                color="error"
+                                variant="contained"
+                                onClick={() => navigate("/profile")}
+                              >
+                                Cancel
                               </Button>
                             </Box>
                             <Box>
                               <Button
                                 type="submit"
-                                color="secondary"
                                 variant="contained"
-                                href="profile"
+                                color="success"
                               >
-                                Cancel
+                                Save
                               </Button>
                             </Box>
                           </Box>

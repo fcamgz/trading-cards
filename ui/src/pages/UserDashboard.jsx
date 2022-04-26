@@ -2,15 +2,34 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import StripeCheckout from "react-stripe-checkout";
 import Navbar from "../components/Navbar";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardMedia,
+  CardContent,
+  Grid,
+  Typography,
+} from "@mui/material";
+import StorefrontIcon from "@mui/icons-material/Storefront";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
-import MyCardsImage from "../images/pack-background2.png";
+import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
 import MyTradesImage from "../images/trade-ıcon.png";
+import HandshakeIcon from "@mui/icons-material/Handshake";
+import CelebrationIcon from "@mui/icons-material/Celebration";
 import BuyCoinsImage from "../images/Coin_Bag.png";
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import OpenPacksImage from "../images/pack-background4.png";
+import LocalAtmIcon from "@mui/icons-material/LocalAtm";
+import PersonIcon from "@mui/icons-material/Person";
 import MyProfileImage from "../images/avatar.png";
 import AddFunds from "../images/add-funds.png";
 import Market from "../images/market.png";
+import ChatIcon from "@mui/icons-material/Chat";
+import CampaignIcon from "@mui/icons-material/Campaign";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router";
@@ -81,7 +100,7 @@ export default function UserDashboard() {
             position: "fixed",
             left: 0,
             top: 0,
-            width: "99.9vw",
+            width: "100vw",
             height: "auto",
             zIndex: 0,
             margin: 0,
@@ -111,90 +130,178 @@ export default function UserDashboard() {
               width: "100%",
               height: "100%",
             }}
+            container
           >
             <Box sx={{ padding: "20px" }}>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Button href="/myCards" variant="contained">
-                  <Typography textAlign="center" variant="h5">
-                    My Cards
-                  </Typography>
-                </Button>
-                <Box mt={2}>
-                  <img src={MyCardsImage} width="200px" />
-                </Box>
-              </Box>
+              <Card sx={{ width: "300px" }}>
+                <CardActionArea onClick={() => navigate("/myCards")}>
+                  <CardContent>
+                    <Typography
+                      textAlign="center"
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                    >
+                      My Cards
+                    </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <ViewCarouselIcon sx={{ fontSize: "140px" }} />
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Button href="/trades" variant="contained">
-                  <Typography textAlign="center" variant="h5">
-                    Trade Market
-                  </Typography>
-                </Button>
-                <Box mt={2}>
-                  <img src={Market} width="200px" />
-                </Box>
-              </Box>
+              <Card sx={{ width: "300px" }}>
+                <CardActionArea onClick={() => navigate("/trades")}>
+                  <CardContent>
+                    <Typography
+                      textAlign="center"
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                    >
+                      Trade Market
+                    </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <StorefrontIcon sx={{ fontSize: "140px" }} />
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Button href="/tradeOffers" variant="contained">
-                  <Typography textAlign="center" variant="h5">
-                    Trade Offers
-                  </Typography>
-                </Button>
-                <Box mt={2}>
-                  <img src={MyTradesImage} width="200px" />
-                </Box>
-              </Box>
+              <Card sx={{ width: "300px" }}>
+                <CardActionArea onClick={() => navigate("/tradeOffers")}>
+                  <CardContent>
+                    <Typography
+                      textAlign="center"
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                    >
+                      Trade Offers
+                    </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <HandshakeIcon sx={{ fontSize: "140px" }} />
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Button href="/packs" variant="contained">
-                  <Typography textAlign="center" variant="h5">
-                    Open Packs
-                  </Typography>
-                </Button>
-                <Box mt={2}>
-                  <img src={OpenPacksImage} width="200px" />
-                </Box>
-              </Box>
+              <Card sx={{ width: "300px" }}>
+                <CardActionArea onClick={() => navigate("/packs")}>
+                  <CardContent>
+                    <Typography
+                      textAlign="center"
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                    >
+                      Open Packs
+                    </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <CelebrationIcon sx={{ fontSize: "140px" }} />
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Button href="/buyCoins" variant="contained">
-                  <Typography textAlign="center" variant="h5">
-                    Buy Coins
-                  </Typography>
-                </Button>
-                <Box mt={2}>
-                  <img src={BuyCoinsImage} width="200px" />
-                </Box>
-              </Box>
+              <Card sx={{ width: "300px" }}>
+                <CardActionArea onClick={() => navigate("/announcements")}>
+                  <CardContent>
+                    <Typography
+                      textAlign="center"
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                    >
+                      Announcements
+                    </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <CampaignIcon sx={{ fontSize: "140px" }} />
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Button href="/addFunds" variant="contained">
-                  <Typography textAlign="center" variant="h5">
-                    Add Funds
-                  </Typography>
-                </Button>
-                <Box mt={2}>
-                  <img src={AddFunds} width="200px" />
-                </Box>
-              </Box>
+              <Card sx={{ width: "300px" }}>
+                <CardActionArea onClick={() => navigate("/chat")}>
+                  <CardContent>
+                    <Typography
+                      textAlign="center"
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                    >
+                      Chat
+                    </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <ChatIcon sx={{ fontSize: "140px" }} />
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <Button href="/profile" variant="contained">
-                  <Typography textAlign="center" variant="h5">
-                    My Profile
-                  </Typography>
-                </Button>
-                <Box mt={2}>
-                  <img src={MyProfileImage} width="200px" />
-                </Box>
-              </Box>
+              <Card sx={{ width: "300px" }}>
+                <CardActionArea onClick={() => navigate("/buyCoins")}>
+                  <CardContent>
+                    <Typography
+                      textAlign="center"
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                    >
+                      Buy Coins
+                    </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <CurrencyExchangeIcon sx={{ fontSize: "140px" }} />
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Box>
+            <Box sx={{ padding: "20px" }}>
+              <Card sx={{ width: "300px" }}>
+                <CardActionArea onClick={() => navigate("/addFunds")}>
+                  <CardContent>
+                    <Typography
+                      textAlign="center"
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                    >
+                      Add Funds
+                    </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <LocalAtmIcon sx={{ fontSize: "140px" }} />
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Box>
+            <Box sx={{ padding: "20px" }}>
+              <Card sx={{ width: "300px" }}>
+                <CardActionArea onClick={() => navigate("/cards")}>
+                  <CardContent>
+                    <Typography
+                      textAlign="center"
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                    >
+                      All Cards
+                    </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <DashboardIcon sx={{ fontSize: "140px" }} />
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
             </Box>
           </Grid>
         </Box>

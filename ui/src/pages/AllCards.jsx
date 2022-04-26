@@ -2,14 +2,27 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import {
+  Backdrop,
   Box,
   Button,
   Card,
   CardContent,
+  CircularProgress,
   CardHeader,
   Chip,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
   Stack,
+  Table,
+  TableCell,
+  tableCellClasses,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -20,12 +33,42 @@ import Silvers from "../images/Silver-Card.png";
 import Golds from "../images/pack-background4.png";
 import Platinum from "../images/Platinium-Card.png";
 import Diamonds from "../images/pack-background2.png";
+import { styled } from "@mui/material/styles";
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
 
 export default function AllCards() {
   const [cardData, setCardData] = useState([{}]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
   const [buttonClicked, setButtonClicked] = useState(false);
+  const [searchKey, setSearchKey] = useState("");
+  const [resetIsClicked, setResetIsClicked] = useState(false);
+  const [orderBy, setOrderBy] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleReset = () => {
+    setSearchKey("");
+    setOrderBy("");
+    setResetIsClicked(!resetIsClicked);
+  };
+
+  const handleSearch = (key) => {
+    setCardData(
+      cardData.filter(
+        (card) =>
+          card.firstname.toLowerCase().includes(key) ||
+          card.lastname.toLowerCase().includes(key)
+      )
+    );
+  };
 
   const handleDelete = (cardId) => {
     axios
@@ -39,6 +82,7 @@ export default function AllCards() {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     // get cards
     axios
       .get("http://localhost:5000/api/cards/")
@@ -64,8 +108,9 @@ export default function AllCards() {
           setIsLoggedIn(true);
         }
       })
-      .catch((err) => console.log(err));
-  }, [buttonClicked]);
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
+  }, [buttonClicked, resetIsClicked]);
   return (
     <Box
       sx={{
@@ -75,6 +120,12 @@ export default function AllCards() {
         boxSizing: "border-box",
       }}
     >
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         container
@@ -99,12 +150,87 @@ export default function AllCards() {
           <Typography variant="h3" mt={4} color="white" textAlign="center">
             Card Collection
           </Typography>
-          <Box sx={{ display: "flex", justifyContent: "center" }} mt={6}>
-            <TextField
-              placeholder="Search Card by Name"
-              sx={{ backgroundColor: "white" }}
-            />
-            <Button variant="contained">Search</Button>
+          <Box
+            sx={{ display: "flex", justifyContent: "center", padding: "60px" }}
+            mt={6}
+          >
+            <TableContainer
+              sx={{ border: "4px solid #AFAFAF" }}
+              color="transparent"
+            >
+              <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell
+                      sx={{
+                        padding: "10px",
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        gap: "12px",
+                        alignItems: "center",
+                      }}
+                    >
+                      <TextField
+                        label="Search Card by Name"
+                        sx={{ backgroundColor: "#FAFAFA" }}
+                        onChange={(e) => setSearchKey(e.target.value)}
+                        value={searchKey}
+                      />
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "4px",
+                        }}
+                      >
+                        <Button
+                          onClick={() => handleSearch(searchKey)}
+                          variant="contained"
+                        >
+                          Search
+                        </Button>
+                        <Button
+                          onClick={handleReset}
+                          sx={{ color: "black" }}
+                          size="small"
+                          variant="contained"
+                          color="inherit"
+                        >
+                          Reset
+                        </Button>
+                      </Box>
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          gap: "12px",
+                        }}
+                      >
+                        <FormControl
+                          sx={{ width: "140px", backgroundColor: "white" }}
+                        >
+                          <InputLabel id="demo-simple-select-label">
+                            Order By
+                          </InputLabel>
+                          <Select
+                            value={orderBy}
+                            label="Order By"
+                            onChange={(e) => setOrderBy(e.target.value)}
+                          >
+                            <MenuItem value="firstName">First Name</MenuItem>
+                            <MenuItem value="lastName">Last Name</MenuItem>
+                            <MenuItem value="price">Price</MenuItem>
+                            <MenuItem value="rating">Rating</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Box>
+                    </StyledTableCell>
+                  </TableRow>
+                </TableHead>
+              </Table>
+            </TableContainer>
           </Box>
           <Grid
             container
@@ -142,7 +268,12 @@ export default function AllCards() {
                     </Box>
                     <CardContent>
                       <Stack>
-                        <Button href={`cards/${card._id}`} variant="contained">
+                        <Button
+                          href={`cards/${card._id}`}
+                          variant="contained"
+                          color="inherit"
+                          sx={{ fontWeight: "600" }}
+                        >
                           Go to Card
                         </Button>
                         {user?.isAdmin ? (

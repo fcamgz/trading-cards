@@ -2,14 +2,26 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import {
+  Backdrop,
   Box,
   Button,
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
   Modal,
+  Select,
   Stack,
+  Table,
+  TableCell,
+  tableCellClasses,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -21,6 +33,16 @@ import Golds from "../images/pack-background4.png";
 import Platinum from "../images/Platinium-Card.png";
 import Diamonds from "../images/pack-background2.png";
 import { makeStyles } from "@mui/styles";
+import { styled } from "@mui/material/styles";
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
 
 export default function MyCards() {
   const [cardData, setCardData] = useState([{}]);
@@ -31,6 +53,10 @@ export default function MyCards() {
   const [listPrice, setListPrice] = useState(0);
   const [selectedCard, setSelectedCard] = useState({});
   const [openSellNow, setOpenSellNow] = useState(false);
+  const [searchKey, setSearchKey] = useState("");
+  const [resetIsClicked, setResetIsClicked] = useState(false);
+  const [orderBy, setOrderBy] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const useStyles = makeStyles({
     modal: {
@@ -48,6 +74,21 @@ export default function MyCards() {
   });
 
   const classes = useStyles();
+
+  const handleReset = () => {
+    setSearchKey("");
+    setResetIsClicked(!resetIsClicked);
+  };
+
+  const handleSearch = (key) => {
+    setCardData(
+      cardData.filter(
+        (card) =>
+          card.firstname.toLowerCase().includes(key) ||
+          card.lastname.toLowerCase().includes(key)
+      )
+    );
+  };
 
   const handleClickTradeIt = (card) => {
     console.log(card);
@@ -117,6 +158,7 @@ export default function MyCards() {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     // get user
     axios
       .get("/api/getUsername", {
@@ -142,9 +184,10 @@ export default function MyCards() {
         setCardData(res);
         console.log(res);
         console.log("fetch card stuff");
+        setIsLoading(false);
       })
       .catch((err) => console.log(err));
-  }, [user?.username, postRequest]);
+  }, [user?.username, postRequest, resetIsClicked]);
   return (
     <Box
       sx={{
@@ -154,6 +197,12 @@ export default function MyCards() {
         boxSizing: "border-box",
       }}
     >
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         container
@@ -175,15 +224,103 @@ export default function MyCards() {
           alt="background"
         />
         <Box sx={{ position: "relative" }} mb={2}>
-          <Typography variant="h3" mt={4} color="white" textAlign="center">
+          <Typography
+            gutterBottom
+            variant="h3"
+            mt={4}
+            color="white"
+            textAlign="center"
+          >
             My Card Collection
           </Typography>
-          <Box sx={{ display: "flex", justifyContent: "center" }} mt={6}>
-            <TextField
-              placeholder="Search Card by Name"
-              sx={{ backgroundColor: "white" }}
-            />
-            <Button variant="contained">Search</Button>
+          <Typography
+            variant="subtitle1"
+            mt={4}
+            color="white"
+            textAlign="center"
+          >
+            See your card collection, view details, and trade them as you wish
+          </Typography>
+          <Box
+            sx={{ display: "flex", justifyContent: "center", padding: "60px" }}
+          >
+            <TableContainer
+              sx={{ border: "4px solid #AFAFAF" }}
+              color="transparent"
+            >
+              <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell
+                      sx={{
+                        padding: "10px",
+                        display: "flex",
+                        justifyContent: "flex-start",
+                        gap: "12px",
+                        alignItems: "center",
+                      }}
+                    >
+                      <TextField
+                        label="Search Card by Name"
+                        sx={{ backgroundColor: "#FAFAFA" }}
+                        onChange={(e) => setSearchKey(e.target.value)}
+                        value={searchKey}
+                      />
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "4px",
+                        }}
+                      >
+                        <Button
+                          onClick={() => handleSearch(searchKey)}
+                          variant="contained"
+                        >
+                          Search
+                        </Button>
+                        <Button
+                          onClick={handleReset}
+                          sx={{ color: "black", fontWeight: "600" }}
+                          size="small"
+                          variant="contained"
+                          color="inherit"
+                        >
+                          Reset
+                        </Button>
+                      </Box>
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          gap: "12px",
+                        }}
+                      >
+                        <FormControl
+                          sx={{ width: "140px", backgroundColor: "white" }}
+                        >
+                          <InputLabel id="demo-simple-select-label">
+                            Order By
+                          </InputLabel>
+                          <Select
+                            value={orderBy}
+                            label="Order By"
+                            onChange={(e) => setOrderBy(e.target.value)}
+                          >
+                            <MenuItem value="firstName">First Name</MenuItem>
+                            <MenuItem value="lastName">Last Name</MenuItem>
+                            <MenuItem value="price">Price</MenuItem>
+                            <MenuItem value="rating">Rating</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Box>
+                    </StyledTableCell>
+                  </TableRow>
+                </TableHead>
+              </Table>
+            </TableContainer>
           </Box>
           <Grid
             container
@@ -284,6 +421,8 @@ export default function MyCards() {
                           <Button
                             href={`cards/${card._id}`}
                             variant="contained"
+                            color="inherit"
+                            sx={{ fontWeight: "600" }}
                           >
                             Go to Card
                           </Button>

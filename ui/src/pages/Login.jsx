@@ -93,7 +93,7 @@ export default function Login() {
               />
             </FormControl>
             <Stack m={4}>
-              <Button type="submit" variant="contained">
+              <Button type="submit" variant="contained" color="inherit">
                 Login
               </Button>
             </Stack>
