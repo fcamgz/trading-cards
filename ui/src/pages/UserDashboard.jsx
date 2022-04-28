@@ -12,6 +12,7 @@ import {
   CardContent,
   Grid,
   Typography,
+  Divider,
 } from "@mui/material";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
@@ -111,9 +112,16 @@ export default function UserDashboard() {
           alt="background"
         />
         <Box sx={{ position: "relative" }} mb={2}>
-          <Typography color="white" variant="h3" textAlign="center" mt={4}>
+          <Typography
+            gutterBottom
+            color="white"
+            variant="h3"
+            textAlign="center"
+            mt={4}
+          >
             Dashboard
           </Typography>
+          <Divider sx={{ color: "white", margin: "40px" }} />
           <Box>
             <Typography mt={2} textAlign="center" variant="h6" color="white">
               Available Funds: ${user?.moneyBalance}

@@ -7,6 +7,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Divider,
   TextField,
   Typography,
 } from "@mui/material";
@@ -125,9 +126,11 @@ export default function Chat() {
               textAlign="center"
               color="white"
               variant="h3"
+              gutterBottom
             >
               Live Chat
             </Typography>
+            <Divider sx={{ color: "white", margin: "40px" }} />
             <Box
               sx={{
                 display: "flex",

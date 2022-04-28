@@ -5,6 +5,7 @@ import {
   CardContent,
   CardHeader,
   Chip,
+  Divider,
   Grid,
   Stack,
   Table,
@@ -164,9 +165,16 @@ export default function Homepage() {
         />
         <Box sx={{ position: "relative" }} mb={2}>
           <Box mt={4}>
-            <Typography textAlign="center" color="white" variant="h3">
-              Admin Actions
+            <Typography
+              gutterBottom
+              textAlign="center"
+              color="white"
+              variant="h3"
+            >
+              Actions
             </Typography>
+            <Divider sx={{ color: "white", margin: "40px" }} />
+
             <Box
               mt={4}
               sx={{ display: "flex", justifyContent: "space-around" }}
@@ -176,7 +184,12 @@ export default function Homepage() {
                   <Typography variant="h5" textAlign="center">
                     Create a Pack
                   </Typography>
-                  <Button href="/addPack" variant="contained">
+                  <Button
+                    color="inherit"
+                    sx={{ fontWeight: "600" }}
+                    onClick={() => navigate("/addPack")}
+                    variant="contained"
+                  >
                     Click here to Navigate
                   </Button>
                 </Box>
@@ -186,7 +199,12 @@ export default function Homepage() {
                   <Typography variant="h5" textAlign="center">
                     Create a Card
                   </Typography>
-                  <Button href="/addCard" variant="contained">
+                  <Button
+                    color="inherit"
+                    sx={{ fontWeight: "600" }}
+                    onClick={() => navigate("/addCard")}
+                    variant="contained"
+                  >
                     Click here to Navigate
                   </Button>
                 </Box>
@@ -196,7 +214,12 @@ export default function Homepage() {
                   <Typography variant="h5" textAlign="center">
                     Add Announcement
                   </Typography>
-                  <Button href="/addAnnouncement" variant="contained">
+                  <Button
+                    color="inherit"
+                    sx={{ fontWeight: "600" }}
+                    onClick={() => navigate("/addAnnouncement")}
+                    variant="contained"
+                  >
                     Click here to Navigate
                   </Button>
                 </Box>
@@ -206,23 +229,35 @@ export default function Homepage() {
                   <Typography variant="h5" textAlign="center">
                     Announcements
                   </Typography>
-                  <Button href="/announcements" variant="contained">
+                  <Button
+                    color="inherit"
+                    sx={{ fontWeight: "600" }}
+                    onClick={() => navigate("/announcements")}
+                    variant="contained"
+                  >
                     Click here to Navigate
                   </Button>
                 </Box>
               </Card>
             </Box>
           </Box>
-          <Typography mt={6} variant="h3" color="white" textAlign="center">
-            Admin Reports
+          <Typography
+            gutterBottom
+            mt={6}
+            variant="h3"
+            color="white"
+            textAlign="center"
+          >
+            Reports
           </Typography>
+          <Divider sx={{ color: "white", margin: "40px" }} />
           <Grid
             container
             spacing={2}
             direction="row"
             justify="flex-start"
             alignItems="flex-start"
-            p={8}
+            p={4}
           >
             <Grid item xs={12} sm={6} md={4} lg={3}>
               <Box>
@@ -407,10 +442,17 @@ export default function Homepage() {
               </Box>
             </Grid>
           </Grid>
-          <Typography variant="h4" textAlign="center" color="white">
+          <Typography
+            gutterBottom
+            variant="h4"
+            textAlign="center"
+            color="white"
+          >
             Miscellaneous Information
           </Typography>
-          <Grid container direction="row" p={8}>
+          <Divider sx={{ color: "white", margin: "40px" }} />
+
+          <Grid container direction="row" p={4}>
             <Grid item xs={12} sm={12} md={12} lg={12}>
               <Box>
                 <Card sx={{ height: "30vh" }}>

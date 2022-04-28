@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Divider,
   Typography,
 } from "@mui/material";
 import Bronzes from "../images/Bronze-Card.png";
@@ -114,9 +115,16 @@ export default function Packs() {
             <Typography variant="h3" textAlign="center" color="white">
               Buy Packs
             </Typography>
-            <Typography variant="body1" mt={2} textAlign="center" color="white">
+            <Typography
+              gutterBottom
+              variant="body1"
+              mt={2}
+              textAlign="center"
+              color="white"
+            >
               Open packs and get 5 random cards per pack!
             </Typography>
+            <Divider sx={{ color: "white", margin: "40px" }} />
           </Box>
           <Box>
             <Box
@@ -128,12 +136,9 @@ export default function Packs() {
               }}
             >
               <Typography color="white" variant="h6">
-                Balance
-              </Typography>
-              <Typography color="white" variant="subtitle">
                 Money Amount: ${user?.moneyBalance}
               </Typography>
-              <Typography color="white" variant="subtitle">
+              <Typography color="white" variant="h6">
                 Coin Amount: {user?.coinBalance} TCC
               </Typography>
             </Box>

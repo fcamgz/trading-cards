@@ -15,6 +15,7 @@ import sampleCard3 from "../images/soccer-player-cards/rare/Lewandowski.png";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
 import Footer from "../components/Footer";
 import Carousel from "react-material-ui-carousel";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 
 const useStyles = makeStyles({
   cardHover: {
@@ -129,7 +130,13 @@ export default function Pack() {
                 width: "30%",
               }}
             >
-              <Typography variant="h5" color="white" textAlign="center">
+              <Typography
+                sx={{ color: "yellow" }}
+                variant="h4"
+                color="white"
+                textAlign="center"
+              >
+                <MonetizationOnIcon />
                 {pack.price} TCC
               </Typography>
               <img
@@ -163,7 +170,7 @@ export default function Pack() {
               <Typography variant="h6" color="white">
                 Pack Name: {pack.name}
               </Typography>
-              <Typography mt={1} variant="h6" color="white">
+              <Typography color="white" mt={1} variant="h6">
                 Price: {pack.price} TCC
               </Typography>
               <Typography mt={1} variant="h6" color="white">
@@ -177,7 +184,13 @@ export default function Pack() {
               <Typography mt={1} mb={4} variant="h6" color="white">
                 Number of Cards: {pack.numberOfCards ? pack.numberOfCards : "5"}
               </Typography>
-              <Button variant="contained" value={buttonValue} type="submit">
+              <Button
+                color="inherit"
+                sx={{ fontWeight: "600" }}
+                variant="contained"
+                value={buttonValue}
+                type="submit"
+              >
                 Open the {pack.name}
               </Button>
             </Box>

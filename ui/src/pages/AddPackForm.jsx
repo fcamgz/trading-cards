@@ -86,11 +86,11 @@ export default function AddPackForm() {
         width: "100vw",
         height: "100vh",
         overflowX: "hidden",
-        backgroundColor: "#FAFAFA",
+        backgroundColor: "#AFAFAF",
       }}
     >
       <Navbar user={user} isLoggedIn={isLoggedIn} />
-      <Typography mt={4} variant="h4" align="center">
+      <Typography mt={4} color="white" variant="h4" align="center">
         Add Pack
       </Typography>
       <Grid mt={4} sx={{ display: "flex", justifyContent: "center" }}>

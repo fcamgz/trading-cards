@@ -47,9 +47,9 @@ export default function Login() {
   }
 
   return (
-    <div>
+    <Box sx={{ backgroundColor: "#AFAFAF", height: "100vh" }}>
       <Navbar />
-      <Typography mt={6} variant="h4" textAlign="center">
+      <Typography color="white" mt={6} variant="h4" textAlign="center">
         Login To Your Account
       </Typography>
       <Box
@@ -101,13 +101,13 @@ export default function Login() {
         </Grid>
       </Box>
       <Box class="text-muted">
-        <Typography textAlign="center">
+        <Typography color="white" textAlign="center">
           Don't have an account? <Link to="/register">Register</Link>
         </Typography>
         <Typography mt={6} textAlign="center">
           Trading Cards Co. &copy;
         </Typography>
       </Box>
-    </div>
+    </Box>
   );
 }

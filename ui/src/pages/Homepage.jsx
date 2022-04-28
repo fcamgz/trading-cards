@@ -102,7 +102,12 @@ export default function Homepage() {
                   Get Started
                 </Button>
               ) : (
-                <Button href="/dashboard" variant="contained">
+                <Button
+                  href="/dashboard"
+                  color="inherit"
+                  variant="contained"
+                  sx={{ fontWeight: "600" }}
+                >
                   Go to Dashboard
                 </Button>
               )}

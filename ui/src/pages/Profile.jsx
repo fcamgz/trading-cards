@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Divider,
   Grid,
   Typography,
 } from "@mui/material";
@@ -128,9 +129,16 @@ export default function Profile() {
           alt="background"
         />
         <Box sx={{ position: "relative" }} mb={2}>
-          <Typography mt={6} variant="h4" color="white" textAlign="center">
+          <Typography
+            gutterBottom
+            mt={6}
+            variant="h3"
+            color="white"
+            textAlign="center"
+          >
             Profile
           </Typography>
+          <Divider sx={{ color: "white", margin: "40px" }} />
           <Box mt={4} className={classes.mainContainer}>
             <Box className={classes.pictureBlock}>
               <Box>

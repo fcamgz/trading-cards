@@ -19,7 +19,7 @@ import Footer from "../components/Footer";
 import Carousel from "react-material-ui-carousel";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 
-const useStyles = (theme) => ({
+const useStyles = makeStyles({
   modal: {
     position: "absolute",
     top: "50%",
@@ -37,7 +37,7 @@ const useStyles = (theme) => ({
     justifyContent: "space-around",
     padding: "40px",
     width: "60%",
-    "@media screen and (min-width: 960px)": {
+    "@media screen and (max-width: 960px)": {
       flexDirection: "column",
     },
   },
@@ -348,7 +348,7 @@ export default function Card() {
               }}
             >
               <Typography variant="h4" mb={4} color="white" textAlign="center">
-                {cardData.name} {cardData.lastname}
+                {cardData.firstname} {cardData.lastname}
               </Typography>
               <Typography mt={1} variant="h6" color="white">
                 Rating: {cardData.rating}
@@ -389,7 +389,11 @@ export default function Card() {
               {user._id === cardData.owner ? (
                 <Box>
                   <Box mb={2}>
-                    <Button onClick={handleOpen} variant="contained">
+                    <Button
+                      color="success"
+                      onClick={handleOpen}
+                      variant="contained"
+                    >
                       Sell now for {cardData.price} TCC
                     </Button>
                   </Box>
@@ -409,7 +413,7 @@ export default function Card() {
               {user.isAdmin ? (
                 <Box mt={2}>
                   <Button
-                    color="secondary"
+                    color="error"
                     onClick={() => handleDelete(cardData._id)}
                     variant="contained"
                   >

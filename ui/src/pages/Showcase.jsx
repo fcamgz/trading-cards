@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import {
+  Backdrop,
   Box,
   Button,
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Grid,
   Stack,
   Typography,
@@ -25,11 +27,13 @@ export default function Showcase() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
   const [revealCards, setRevealCards] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
+    setIsLoading(true);
     console.log(location.pathname.split("/")[[2]]);
     // get cards
     axios.get("/");
@@ -57,7 +61,7 @@ export default function Showcase() {
                 location.pathname.split("/")[[2]]
               }/open/${5}`,
               {
-                username: user.username,
+                username: user?.username,
               }
             )
             .then((res) => res.data)
@@ -65,6 +69,7 @@ export default function Showcase() {
               setCardData(res);
               console.log(res);
               setRevealCards(false);
+              setIsLoading(false);
             })
             .catch((err) => console.log(err));
         } else {
@@ -97,6 +102,16 @@ export default function Showcase() {
         boxSizing: "border-box",
       }}
     >
+      <Backdrop
+        sx={{
+          color: "black",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          backgroundColor: "black",
+        }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         container
@@ -126,7 +141,6 @@ export default function Showcase() {
             container
             spacing={2}
             direction="row"
-            p={3}
             sx={{ display: "flex", justifyContent: "center" }}
           >
             {cardData.map((card, index) => (
@@ -167,8 +181,13 @@ export default function Showcase() {
               </Grid>
             ))}
           </Grid>
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Button onClick={() => handleAddCollection()} variant="contained">
+          <Box mt={4} sx={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              color="inherit"
+              sx={{ fontWeight: "600" }}
+              onClick={() => handleAddCollection()}
+              variant="contained"
+            >
               Add Cards to My Collection
             </Button>
           </Box>

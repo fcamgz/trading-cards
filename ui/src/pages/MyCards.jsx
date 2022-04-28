@@ -9,6 +9,7 @@ import {
   CardContent,
   CardHeader,
   CircularProgress,
+  Divider,
   FormControl,
   Grid,
   InputLabel,
@@ -235,14 +236,20 @@ export default function MyCards() {
           </Typography>
           <Typography
             variant="subtitle1"
-            mt={4}
             color="white"
             textAlign="center"
+            gutterBottom
           >
             See your card collection, view details, and trade them as you wish
           </Typography>
+          <Divider sx={{ color: "white", margin: "40px" }} />
+
           <Box
-            sx={{ display: "flex", justifyContent: "center", padding: "60px" }}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              padding: "0 60px",
+            }}
           >
             <TableContainer
               sx={{ border: "4px solid #AFAFAF" }}

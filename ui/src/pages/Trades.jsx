@@ -15,6 +15,7 @@ import {
   Stack,
   TextField,
   Typography,
+  Divider,
 } from "@mui/material";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
 import Footer from "../components/Footer";
@@ -129,9 +130,17 @@ export default function Trades() {
           alt="background"
         />
         <Box sx={{ position: "relative" }} mb={2}>
-          <Typography variant="h3" mt={4} color="white" textAlign="center">
+          <Typography
+            gutterBottom
+            variant="h3"
+            mt={4}
+            color="white"
+            textAlign="center"
+          >
             Trade Market
           </Typography>
+          <Divider sx={{ color: "white", margin: "40px" }} />
+
           <Grid
             container
             spacing={2}

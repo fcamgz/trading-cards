@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Card,
   Typography,
+  Divider,
 } from "@mui/material";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
 import Footer from "../components/Footer";
@@ -95,9 +96,16 @@ export default function Announcement() {
           alt="background"
         />
         <Box sx={{ position: "relative" }} mb={2}>
-          <Typography mt={4} color="white" textAlign="center" variant="h3">
+          <Typography
+            gutterBottom
+            mt={4}
+            color="white"
+            textAlign="center"
+            variant="h3"
+          >
             Announcements
           </Typography>
+          <Divider sx={{ color: "white", margin: "40px" }} />
           <Box
             mt={4}
             sx={{

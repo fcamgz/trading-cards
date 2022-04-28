@@ -6,6 +6,7 @@ import {
   CircularProgress,
   Grid,
   Typography,
+  Divider,
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router";
@@ -126,7 +127,7 @@ export default function BuyCoins() {
             position: "fixed",
             left: 0,
             top: 0,
-            width: "100vw",
+            width: "100%",
             height: "auto",
             zIndex: 0,
             margin: 0,
@@ -141,9 +142,17 @@ export default function BuyCoins() {
             <Typography variant="h3" textAlign="center" color="white">
               Buy Coins
             </Typography>
-            <Typography variant="body1" mt={2} textAlign="center" color="white">
+            <Typography
+              gutterBottom
+              variant="body1"
+              mt={2}
+              textAlign="center"
+              color="white"
+            >
               Buy More Coins to Open More Packs!
             </Typography>
+
+            <Divider sx={{ color: "white", margin: "40px" }} />
           </Box>
           <Box>
             <Box
@@ -155,12 +164,9 @@ export default function BuyCoins() {
               }}
             >
               <Typography color="white" variant="h6">
-                Balance
-              </Typography>
-              <Typography color="white" variant="subtitle">
                 Available Funds: ${user?.moneyBalance}
               </Typography>
-              <Typography color="white" variant="subtitle">
+              <Typography color="white" variant="h6">
                 Coin Amount: {user?.coinBalance} TCC
               </Typography>
             </Box>

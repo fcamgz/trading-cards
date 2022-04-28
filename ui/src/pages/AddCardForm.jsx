@@ -14,8 +14,15 @@ import {
   ListItemText,
   MenuItem,
   OutlinedInput,
+  Paper,
   Select,
   Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -32,6 +39,7 @@ export default function AddCardForm() {
   const [packs, setPacks] = useState([]);
   const [imageFileName, setImageFileName] = useState("");
   const [error, setError] = useState(false);
+  const [cardData, setCardData] = useState([]);
 
   const onChangeImageFile = (e) => {
     setImageFileName(e.target.files[0]);
@@ -75,14 +83,23 @@ export default function AddCardForm() {
         console.log(data);
         console.log(data.isLoggedIn);
         if (data.isLoggedIn) {
-          if(!data.user.isAdmin) {
-            navigate('/dashboard')
+          if (!data.user.isAdmin) {
+            navigate("/dashboard");
           }
           setUser(data.user);
           setIsLoggedIn(true);
         } else {
           navigate("/");
         }
+      })
+      .catch((err) => console.log(err));
+
+    axios
+      .get("http://localhost:5000/api/cards/")
+      .then((res) => res.data)
+      .then((res) => {
+        console.log(res);
+        setCardData(res);
       })
       .catch((err) => console.log(err));
 
@@ -95,19 +112,32 @@ export default function AddCardForm() {
         setPacks(data);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [cardData._id]);
 
   const handleSubmit = () => {
     axios
-      .post("http://localhost:5000/api/cards/add", formInformation)
+      .get("http://localhost:5000/api/cards/", {
+        lastName: formInformation.lastname,
+      })
       .then((res) => res.data)
       .then((res) => {
         console.log(res);
+        if (res === "Card already exist") {
+          setError("Card already exist");
+        } else {
+          axios
+            .post("http://localhost:5000/api/cards/add", formInformation)
+            .then((res) => res.data)
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.log(err);
+              setError(true);
+            });
+        }
       })
-      .catch((err) => {
-        console.log(err);
-        setError(true);
-      });
+      .catch((err) => console.log(err));
   };
   const categories = [
     "Fifa",
@@ -126,11 +156,12 @@ export default function AddCardForm() {
         width: "100vw",
         height: "100vh",
         overflowX: "hidden",
-        backgroundColor: "#FAFAFA",
+        backgroundColor: "#AFAFAF",
       }}
+      pb={6}
     >
       <Navbar user={user} isLoggedIn={isLoggedIn} />
-      <Typography mt={4} variant="h4" align="center">
+      <Typography color="white" mt={4} variant="h4" align="center">
         Add Card
       </Typography>
       <Grid mt={4} sx={{ display: "flex", justifyContent: "center" }}>
@@ -445,7 +476,7 @@ export default function AddCardForm() {
                 </FormControl>
                 <Stack alignItems="center" m={4}>
                   <Button
-                    color="primary"
+                    color="inherit"
                     variant="contained"
                     endIcon={<StorageIcon />}
                     type="submit"
@@ -455,6 +486,70 @@ export default function AddCardForm() {
                 </Stack>
               </form>
             </Box>
+          </Grid>
+          <Grid
+            mt={2}
+            item
+            xs={10}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Typography gutterBottom color="white" variant="h4">
+              Cards in the Database
+            </Typography>
+            <TableContainer pageSize={5} component={Paper}>
+              <Table sx={{ minWidth: 650 }}>
+                <TableHead
+                  sx={{
+                    backgroundColor: "#FAFAFA",
+                    borderBottom: "2px solid #AFAFAF",
+                  }}
+                >
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: "600" }}>Card</TableCell>
+                    <TableCell sx={{ fontWeight: "600" }} align="right">
+                      Team
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "600" }} align="right">
+                      Nationality
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "600" }} align="right">
+                      Tier
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "600" }} align="right">
+                      Rating
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "600" }} align="right">
+                      Price
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {cardData &&
+                    cardData.map((card) => (
+                      <TableRow
+                        key={card.lastname}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row">
+                          {card.firstname} {card.lastname}
+                        </TableCell>
+                        <TableCell align="right">{card.team}</TableCell>
+                        <TableCell align="right">{card.nationality}</TableCell>
+                        <TableCell align="right">{card.tier}</TableCell>
+                        <TableCell align="right">{card.rating}</TableCell>
+                        <TableCell align="right">{card.price}</TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Grid>
         </Grid>
       </Grid>

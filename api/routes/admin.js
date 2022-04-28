@@ -4,6 +4,7 @@ const Card = require("../models/Card").Card;
 const PackOpened = require("../models/PackOpened");
 const Pack = require("../models/Pack");
 const AdminAnnouncement = require("../models/AdminAnnouncement");
+const { db } = require("../models/User");
 
 // all packs opened
 router.post("/packs/opened", async (req, res) => {

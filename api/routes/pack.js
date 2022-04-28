@@ -82,7 +82,9 @@ router.post("/:packid/open/:cardnum", async (req, res) => {
     const pack = await Pack.findById(req.params.packid);
     const numCards = req.params.cardnum;
     // get cards that are in pack
-    const allCards = await Card.find({ pack: pack.name });
+    const allCards = await Card.find({
+      pack: pack.name,
+    });
     const cardsToSend = [];
     const cardLength = allCards.length;
 
@@ -92,10 +94,11 @@ router.post("/:packid/open/:cardnum", async (req, res) => {
     });
     // get a random card from all the cards in pack, send those cards, are duplicates
     if (cardLength >= numCards) {
-      for (let i = 0; i < numCards; i++) {
-        var random = Math.floor(Math.random() * cardLength);
-        cardsToSend.push(await Card.findOne().skip(random));
-      }
+      // const baseCards = Card.find({ owner: { $eq: "TCC" } });
+      const cardsToSend = await Card.aggregate([
+        { $match: { owner: { $eq: "TCC" }, pack: { $eq: pack.name } } },
+        { $sample: { size: 5 } },
+      ]);
       // create packopened and save to db
       const packOpened = new PackOpened({
         packname: pack.name,
@@ -103,7 +106,6 @@ router.post("/:packid/open/:cardnum", async (req, res) => {
         username: req.body.username,
       });
       await packOpened.save();
-
       res.send(cardsToSend);
     } else {
       res

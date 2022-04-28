@@ -155,9 +155,16 @@ export default function TradeOffers() {
           }}
           mb={2}
         >
-          <Typography variant="h3" mt={4} color="white" textAlign="center">
+          <Typography
+            gutterBottom
+            variant="h3"
+            mt={4}
+            color="white"
+            textAlign="center"
+          >
             Trade Offers
           </Typography>
+          <Divider sx={{ color: "white", margin: "40px" }} />
           <Grid
             container
             direction="row"

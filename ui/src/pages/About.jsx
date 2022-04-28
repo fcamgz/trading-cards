@@ -85,13 +85,12 @@ export default function About() {
             <Typography mt={6} variant="h4" color="white">
               Trading Cards Co.
             </Typography>
-            <Typography m={4} variant="h6" color="white">
-              Made By George Brown College T127 Program Students as their
-              Capstone Project
-            </Typography>
-            <Typography color="white">Fatih Camgoz - 101266304</Typography>
-            <Typography color="white">Jack Robinson - 101266304</Typography>
-            <Typography color="white">Jong-In Yoon - 101266304</Typography>
+            <Box mt={2}>
+              <Typography color="white" gutterBottom>
+                Founded By
+              </Typography>
+            </Box>
+            <Typography color="white">Fatih Camgoz</Typography>
           </Box>
         </Box>
         <Footer />

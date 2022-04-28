@@ -74,80 +74,55 @@ export default function NewAnnouncement() {
         width: "100%",
         margin: 0,
         boxSizing: "border-box",
+        backgroundColor: "#AFAFAF",
       }}
     >
       <Navbar user={user} isLoggedIn={isLoggedIn} />
-      <Box
-        container
-        sx={{ position: "relative", margin: 0, height: "100%", width: "100%" }}
-      >
-        <img
-          src={BackgroundImage}
-          style={{
-            opacity: "0.95",
-            position: "fixed",
-            left: 0,
-            top: 0,
-            width: "100%",
-            height: "auto",
-            zIndex: 0,
-            minHeight: "100%",
-            minWidth: "1024px",
-          }}
-          alt="background"
-        />
-        <Box sx={{ position: "relative" }} mb={2}>
-          <Typography mt={4} color="white" variant="h3" textAlign="center">
-            Create Announcement
-          </Typography>
-          <Box mt={4} sx={{ display: "flex", justifyContent: "center" }}>
+      <Box sx={{ position: "relative" }} mb={2}>
+        <Typography mt={4} color="white" variant="h3" textAlign="center">
+          Create Announcement
+        </Typography>
+        <Box mt={4} sx={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            sx={{
+              width: "50vw",
+              display: "flex",
+              justifyContent: "center",
+              padding: "40px",
+            }}
+          >
             <Box
-              sx={{
-                width: "50vw",
-                display: "flex",
-                justifyContent: "center",
-                padding: "40px",
-              }}
+              component="form"
+              onSubmit={handleSubmit}
+              sx={{ display: "flex", flexDirection: "column" }}
             >
-              <Box
-                component="form"
-                onSubmit={handleSubmit}
-                sx={{ display: "flex", flexDirection: "column" }}
-              >
-                <Box mb={2}>
-                  <TextField
-                    sx={{ backgroundColor: "white" }}
-                    mt={2}
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    label="Title"
-                  />
-                </Box>
-                <TextareaAutosize
-                  aria-label="minimum height"
-                  minRows={5}
-                  placeholder="Write you announcement here"
-                  style={{ width: 500 }}
-                  value={announcement}
-                  onChange={(e) => setAnnouncement(e.target.value)}
-                />
-                <Box
+              <Box mb={2}>
+                <TextField
+                  sx={{ backgroundColor: "white" }}
                   mt={2}
-                  sx={{ display: "flex", justifyContent: "space-between" }}
-                >
-                  <Button href="/admin" color="error" variant="contained">
-                    Cancel
-                  </Button>
-                  <Button type="submit" variant="contained">
-                    Post
-                  </Button>
-                </Box>
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  label="Title"
+                />
+              </Box>
+              <TextareaAutosize
+                aria-label="minimum height"
+                minRows={5}
+                placeholder="Write you announcement here"
+                style={{ width: 500 }}
+                value={announcement}
+                onChange={(e) => setAnnouncement(e.target.value)}
+              />
+              <Box mt={2} sx={{ display: "flex", justifyContent: "center" }}>
+                <Button color="inherit" type="submit" variant="contained">
+                  Post
+                </Button>
               </Box>
             </Box>
           </Box>
         </Box>
-        <Footer />
       </Box>
+      <Footer />
     </Box>
   );
 }

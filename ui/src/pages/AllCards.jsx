@@ -25,6 +25,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  Divider,
 } from "@mui/material";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
 import Footer from "../components/Footer";
@@ -121,7 +122,11 @@ export default function AllCards() {
       }}
     >
       <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{
+          color: "black",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          backgroundColor: "black",
+        }}
         open={isLoading}
       >
         <CircularProgress color="inherit" />
@@ -150,9 +155,22 @@ export default function AllCards() {
           <Typography variant="h3" mt={4} color="white" textAlign="center">
             Card Collection
           </Typography>
+          <Typography
+            variant="subtitle1"
+            mt={4}
+            color="white"
+            textAlign="center"
+            gutterBottom
+          >
+            See all the cards in the database
+          </Typography>
+          <Divider sx={{ color: "white", margin: "40px" }} />
           <Box
-            sx={{ display: "flex", justifyContent: "center", padding: "60px" }}
-            mt={6}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              padding: "0 60px",
+            }}
           >
             <TableContainer
               sx={{ border: "4px solid #AFAFAF" }}
@@ -238,7 +256,7 @@ export default function AllCards() {
             direction="row"
             justify="flex-start"
             alignItems="flex-start"
-            p={8}
+            p={4}
           >
             {cardData.map((card) => (
               <Grid key={card._id} item xs={12} sm={6} md={4} lg={3}>
@@ -279,7 +297,7 @@ export default function AllCards() {
                         {user?.isAdmin ? (
                           <Box mt={2}>
                             <Button
-                              color="secondary"
+                              color="error"
                               onClick={() => handleDelete(card._id)}
                               variant="contained"
                             >
