@@ -2,6 +2,7 @@
 Website that you can buy and trade cards with other users.
 Users can buy cards or open packs to acquire cards.
 Users can trade the cards that they own with other users.
+![sample image](https://github.com/fcamgz/tradingcards-public/blob/main/images/welcome-page.PNG?raw=true)
 
 # Features:
 # As an Admin
