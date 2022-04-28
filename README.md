@@ -1,5 +1,5 @@
 # Trading Cards Co.
-Website that you can buy and trade cards with other users.
+Website that you can use to buy and trade cards with other users.
 Users can buy cards or open packs to acquire cards.
 Users can trade the cards that they own with other users.
 
