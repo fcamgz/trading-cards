@@ -80,95 +80,225 @@ router.post("/:packid/open/:cardnum", async (req, res) => {
     const user = await User.findOne({ username: req.body.username });
     // get pack and card numbers
     const pack = await Pack.findById(req.params.packid);
-    const numCards = req.params.cardnum;
-    // get cards that are in pack
-    const allCards = await Card.find({
-      pack: pack.name,
-    });
-    const cardsToSend = [];
-    const cardLength = allCards.length;
+    // const numCards = req.params.cardnum;
+    // // get cards that are in pack
+    // const allCards = await Card.find({
+    //   pack: pack.name,
+    // });
 
+    // const cardLength = allCards.length;
+    // get a random card from all the cards in pack, send those cards, are duplicates
+
+    // const baseCards = Card.find({ owner: { $eq: "TCC" } });
+    let cardsToSend;
+    if (pack.packRarity === 1) {
+      cardsToSend = await Card.aggregate([
+        {
+          $match: {
+            owner: { $eq: "TCC" },
+            pack: { $eq: pack.name },
+            tier: { $in: ["Silver", "Bronze", "Gold"] },
+          },
+        },
+        { $sample: { size: 5 } },
+      ]);
+    } else if (pack.packRarity === 2) {
+      cardsToSend = await Card.aggregate([
+        {
+          $match: {
+            owner: { $eq: "TCC" },
+            pack: { $eq: pack.name },
+            tier: { $in: ["Silver", "Platinium", "Gold"] },
+          },
+        },
+        { $sample: { size: 5 } },
+      ]);
+    } else {
+      cardsToSend = await Card.aggregate([
+        {
+          $match: {
+            owner: { $eq: "TCC" },
+            pack: { $eq: pack.name },
+            tier: { $in: ["Diamond", "Platinium", "Gold"] },
+          },
+        },
+        { $sample: { size: 5 } },
+      ]);
+    }
+    // switch (pack.tier) {
+    //   case "LOW":
+    //     cardsToSend = await Card.aggregate([
+    //       {
+    //         $match: {
+    //           owner: { $eq: "TCC" },
+    //           pack: { $eq: pack.name },
+    //           tier: { $eq: "Bronze" },
+    //         },
+    //       },
+    //       {
+    //         $sample: {
+    //           size: numCards == "5" ? 2 : numCards == "10" ? 4 : 8,
+    //         },
+    //       },
+    //       {
+    //         $match: {
+    //           owner: { $eq: "TCC" },
+    //           pack: { $eq: pack.name },
+    //           tier: { $eq: "Silver" },
+    //         },
+    //       },
+    //       {
+    //         $sample: {
+    //           size: numCards == "5" ? 2 : numCards == "10" ? 4 : 8,
+    //         },
+    //       },
+    //       {
+    //         $match: {
+    //           owner: { $eq: "TCC" },
+    //           pack: { $eq: pack.name },
+    //           tier: { $eq: "Gold" },
+    //         },
+    //       },
+    //       {
+    //         $sample: {
+    //           size: numCards == "5" ? 1 : numCards == "10" ? 2 : 4,
+    //         },
+    //       },
+    //     ]);
+    //     break;
+    //   case "MID":
+    //     cardsToSend = await Card.aggregate([
+    //       {
+    //         $match: {
+    //           owner: { $eq: "TCC" },
+    //           pack: { $eq: pack.name },
+    //           tier: { $eq: "Silver" },
+    //         },
+    //       },
+    //       { $sample: { size: 2 } },
+    //       {
+    //         $match: {
+    //           owner: { $eq: "TCC" },
+    //           pack: { $eq: pack.name },
+    //           tier: { $eq: "Gold" },
+    //         },
+    //       },
+    //       { $sample: { size: 2 } },
+    //       {
+    //         $match: {
+    //           owner: { $eq: "TCC" },
+    //           pack: { $eq: pack.name },
+    //           tier: { $eq: "Platinium" },
+    //         },
+    //       },
+    //       { $sample: { size: 1 } },
+    //     ]);
+    //     break;
+    //   case "HIGH":
+    //     cardsToSend = await Card.aggregate([
+    //       {
+    //         $match: {
+    //           owner: { $eq: "TCC" },
+    //           pack: { $eq: pack.name },
+    //           tier: { $eq: "Gold" },
+    //         },
+    //       },
+    //       { $sample: { size: 2 } },
+    //     ]);
+    //     break;
+    //   default:
+    //     cardsToSend = await Card.aggregate([
+    //       {
+    //         $match: {
+    //           owner: { $eq: "TCC" },
+    //           pack: { $eq: pack.name },
+    //           tier: { $eq: "Bronze" },
+    //         },
+    //       },
+    //       { $sample: { size: 2 } },
+    //       {
+    //         $match: {
+    //           owner: { $eq: "TCC" },
+    //           pack: { $eq: pack.name },
+    //           tier: { $eq: "Silver" },
+    //         },
+    //       },
+    //       { $sample: { size: 2 } },
+    //       {
+    //         $match: {
+    //           owner: { $eq: "TCC" },
+    //           pack: { $eq: pack.name },
+    //           tier: { $eq: "Gold" },
+    //         },
+    //       },
+    //       { $sample: { size: 1 } },
+    //     ]);
+    //     break;
+    // }
     const newUserBalance = user.coinBalance - pack.price;
+    console.log("User coin balance: " + user.coinBalance);
+
     await User.findByIdAndUpdate(user._id, {
       $set: { coinBalance: newUserBalance },
     });
-    // get a random card from all the cards in pack, send those cards, are duplicates
-    if (cardLength >= numCards) {
-      // const baseCards = Card.find({ owner: { $eq: "TCC" } });
-      const cardsToSend = await Card.aggregate([
-        { $match: { owner: { $eq: "TCC" }, pack: { $eq: pack.name } } },
-        { $sample: { size: 5 } },
-      ]);
-      // create packopened and save to db
-      const packOpened = new PackOpened({
-        packname: pack.name,
-        dateopened: new Date(),
-        username: req.body.username,
-      });
-      await packOpened.save();
-      res.send(cardsToSend);
-    } else {
-      res
-        .status(500)
-        .send({ err: `Not enough cards in pack to open ${numCards} cards` });
-    }
+    res.send(cardsToSend);
   } catch (err) {
     console.log(err);
     res.status(500).send(err);
   }
 });
 
-router.post("/showcase/:packid", async (req, res) => {
-  const uiPackId = req.params.packid;
-  const userId = req.body.userId;
-  var drawnCards = [];
-  try {
-    // get the package details that user chose
-    const uiPack = await UiPack.findById(uiPackId);
-    const user = await User.findById(userId);
-    // adjust user's coin balance
-    const newUserBalance = user.coinBalance - uiPack.price;
-    await User.findByIdAndUpdate(userId, {
-      $set: { coinBalance: newUserBalance },
-    });
-    // depending of pack rarity draw it from one of the card models
-    //eg. LowTierPack = has 18 non rare 2 rare
-    //eg. MidTierPack = has 15 non rare 5 rare
-    //eg. HighTierPack = has 10 non rare 10 rare
-    switch (uiPack.packRarity) {
-      case 1:
-        drawnCards = drawCards(6, LowTierPack, 20, userId);
-        break;
-      case 2:
-        drawnCards = drawCards(6, MidTierPack, 20, userId);
-        break;
-      case 3:
-        drawnCards = drawCards(6, HighTierPack, 20, userId);
-        break;
-    }
-    res.status(200).send(drawnCards);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-  /*
-  // TODO: Creating 6 brand new random cards, assign them to the user and return them
-  const userId = req.body.userId;
-  try {
-    // * find the pack and user
-    const pack = await Pack.findById(req.params.packid);
-    const user = await User.findById(userId);
-    // * set new user money balance
-    const newUserBalance = user.moneyBalance - pack.price;
-    await User.findByIdAndUpdate(userId, {
-      $set: { coinBalance: newUserBalance },
-    });
-    // * assign unpackedCards and return it to the user
-    const unpackedCards = generateNewCards(req.params.packid);
-    res.status(200).send(unpackedCards);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-  */
-});
+// router.post("/showcase/:packid", async (req, res) => {
+//   const packId = req.params.packid;
+//   const userId = req.body.userId;
+//   var drawnCards = [];
+//   try {
+//     // get the package details that user chose
+//     const pack = await Pack.findById(packId);
+//     const user = await User.findById(userId);
+//     // adjust user's coin balance
+//     const newUserBalance = user.coinBalance - pack.price;
+//     await User.findByIdAndUpdate(userId, {
+//       $set: { coinBalance: newUserBalance },
+//     });
+//     // depending of pack rarity draw it from one of the card models
+//     //eg. LowTierPack = has 18 non rare 2 rare
+//     //eg. MidTierPack = has 15 non rare 5 rare
+//     //eg. HighTierPack = has 10 non rare 10 rare
+//     switch (pack.tier) {
+//       case 1:
+//         drawnCards = drawCards(6, LowTierPack, 20, userId);
+//         break;
+//       case 2:
+//         drawnCards = drawCards(6, MidTierPack, 20, userId);
+//         break;
+//       case 3:
+//         drawnCards = drawCards(6, HighTierPack, 20, userId);
+//         break;
+//     }
+//     res.status(200).send(drawnCards);
+//   } catch (err) {
+//     res.status(500).send(err);
+//   }
+//   /*
+//   // TODO: Creating 6 brand new random cards, assign them to the user and return them
+//   const userId = req.body.userId;
+//   try {
+//     // * find the pack and user
+//     const pack = await Pack.findById(req.params.packid);
+//     const user = await User.findById(userId);
+//     // * set new user money balance
+//     const newUserBalance = user.moneyBalance - pack.price;
+//     await User.findByIdAndUpdate(userId, {
+//       $set: { coinBalance: newUserBalance },
+//     });
+//     // * assign unpackedCards and return it to the user
+//     const unpackedCards = generateNewCards(req.params.packid);
+//     res.status(200).send(unpackedCards);
+//   } catch (err) {
+//     res.status(500).send(err);
+//   }
+//   */
+// });
 
 module.exports = router;

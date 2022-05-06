@@ -25,7 +25,7 @@ import Diamonds from "../images/pack-background2.png";
 export default function Showcase() {
   const [cardData, setCardData] = useState([{}]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState();
+  const [user, setUser] = useState({});
   const [revealCards, setRevealCards] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,7 +61,7 @@ export default function Showcase() {
                 location.pathname.split("/")[[2]]
               }/open/${5}`,
               {
-                username: user?.username,
+                username: user.username,
               }
             )
             .then((res) => res.data)

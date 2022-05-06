@@ -25,6 +25,8 @@ import AdminReports from "./pages/AdminReports";
 import Chat from "./pages/Chat";
 import NewAnnouncement from "./pages/NewAnouncement";
 import Announcement from "./pages/Announcements";
+import ClashOfSquads from "./pages/ClashOfSquads";
+import CreateSquad from "./pages/CreateSquad";
 
 function App() {
   return (
@@ -55,6 +57,8 @@ function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/addAnnouncement" element={<NewAnnouncement />} />
         <Route path="/announcements" element={<Announcement />} />
+        <Route path="/clashOfSquads" element={<ClashOfSquads />} />
+        <Route path="/modifySquad" element={<CreateSquad />} />
       </Routes>
     </BrowserRouter>
   );
