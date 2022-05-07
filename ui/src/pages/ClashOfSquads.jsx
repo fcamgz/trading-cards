@@ -14,8 +14,8 @@ import {
   Typography,
 } from "@mui/material";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
-import HaalandBackground from "../images/haaland-background.png";
-import RonaldoBackground from "../images/ronaldo-background.png";
+import GoldCard from "../images/pack-background4.png";
+import PitchImage from "../images/Soccer_Field_Transparant.svg.png";
 import Footer from "../components/Footer";
 
 export default function ClashOfSquads() {
@@ -127,28 +127,219 @@ export default function ClashOfSquads() {
             Build your squad and challenge to other players!
           </Typography>
           <Divider sx={{ color: "white", margin: "40px" }} />
-
           <Box
             sx={{
-              border: "3px solid yellow",
               display: "flex",
-              justifyContent: "space-between",
-              height: "100vh",
+              justifyContent: "space-around",
+              height: "120vh",
+              padding: "0 20px",
             }}
           >
-            <Box sx={{ border: "3px solid red", flex: "1" }}>
-              <Box mt={2}>
+            <Box sx={{ flex: "1" }}>
+              <Box mt={2} mb={2}>
                 <Typography textAlign="center" variant="h5" color="white">
                   Your Squad
                 </Typography>
               </Box>
+              <img
+                src={PitchImage}
+                style={{
+                  position: "absolute",
+                  minWidth: "40%",
+                  height: "900px",
+                }}
+                alt="background"
+              />
+              <Box sx={{ position: "relative" }}>
+                <Box
+                  mt={8}
+                  sx={{
+                    flex: "1 160px",
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "40px",
+                  }}
+                >
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                </Box>
+                <Box
+                  mt={4}
+                  sx={{
+                    flex: "1 160px",
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "80px",
+                  }}
+                >
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                </Box>
+                <Box
+                  mt={4}
+                  sx={{
+                    flex: "1 160px",
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "120px",
+                  }}
+                >
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                </Box>
+                <Box
+                  mt={4}
+                  sx={{
+                    flex: "1 160px",
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                </Box>
+                <Box
+                  mt={4}
+                  sx={{
+                    flex: "1 160px",
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "120px",
+                  }}
+                >
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                </Box>
+              </Box>
             </Box>
-            <Box sx={{ border: "3px solid red", flex: "0.4" }}>
+            <Box sx={{ flex: "0.44" }}>
               <Box mt={2}>
                 <Typography
                   gutterBottom
                   textAlign="center"
-                  variant="h5"
+                  variant="h6"
                   color="white"
                 >
                   Your Stats
@@ -167,7 +358,7 @@ export default function ClashOfSquads() {
                 <Typography
                   gutterBottom
                   textAlign="center"
-                  variant="h5"
+                  variant="h6"
                   color="white"
                 >
                   Opponent's Stats
@@ -186,7 +377,7 @@ export default function ClashOfSquads() {
                 <Typography
                   gutterBottom
                   textAlign="center"
-                  variant="h5"
+                  variant="h6"
                   color="white"
                 >
                   Your Squad Rating
@@ -205,7 +396,7 @@ export default function ClashOfSquads() {
                 <Typography
                   gutterBottom
                   textAlign="center"
-                  variant="h5"
+                  variant="h6"
                   color="white"
                 >
                   Opponent's Squad Rating
@@ -224,7 +415,7 @@ export default function ClashOfSquads() {
                 <Typography
                   gutterBottom
                   textAlign="center"
-                  variant="h5"
+                  variant="h6"
                   color="white"
                 >
                   Your Best Player
@@ -243,7 +434,7 @@ export default function ClashOfSquads() {
                 <Typography
                   gutterBottom
                   textAlign="center"
-                  variant="h5"
+                  variant="h6"
                   color="white"
                 >
                   Opponent's Best Player
@@ -258,309 +449,228 @@ export default function ClashOfSquads() {
                   Lionel Messi
                 </Typography>
               </Box>
-              <Box mt={6} sx={{ display: "flex", justifyContent: "center" }}>
+              <Box
+                mt={6}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  gap: "12px",
+                }}
+              >
+                <Button
+                  sx={{ fontWeight: "600" }}
+                  variant="contained"
+                  color="inherit"
+                >
+                  Edit Squad
+                </Button>
                 <Button color="success" variant="contained">
                   Challenge the Opponent
                 </Button>
               </Box>
             </Box>
-            <Box sx={{ border: "3px solid blue", flex: "1" }}>
+            <Box
+              sx={{
+                flex: "1",
+              }}
+            >
               <Box mt={2}>
-                <Typography textAlign="center" variant="h5" color="white">
-                  Your Opponent's Squad
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    flexWrap: "wrap",
-                    flexDirection: "column",
-                    alignItems: "space-between",
+                <Box mt={2} mb={2}>
+                  <Typography textAlign="center" variant="h5" color="white">
+                    Your Opponent's Squad
+                  </Typography>
+                </Box>
+                <img
+                  src={PitchImage}
+                  style={{
+                    position: "absolute",
+                    minWidth: "40%",
+                    height: "900px",
                   }}
-                >
-                  <Box sx={{ flex: "1 160px" }}>
-                    <Box
-                      mt={4}
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <FormControl sx={{ m: 1, width: "20%" }}>
-                        <InputLabel>Striker</InputLabel>
-                        <Select
-                          value={opponentData.striker}
-                          onChange={(e) => {
-                            setOpponentData({
-                              ...opponentData,
-                              striker: e.target.value,
-                            });
-                          }}
-                          sx={{ backgroundColor: "white" }}
-                          input={<OutlinedInput label="Striker" />}
-                          fullWidth
-                          defaultValue={data[0]}
-                        >
-                          {data?.map((card) => (
-                            <MenuItem key={card._id} value={card.name}>
-                              <ListItemText primary={card.name} />
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                  alt="background"
+                />
+                <Box sx={{ position: "relative" }}>
+                  <Box
+                    mt={8}
+                    sx={{
+                      flex: "1 160px",
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "40px",
+                    }}
+                  >
+                    <Box sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          ST
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          99
+                        </Typography>
+                        <Typography color="white">Maguire</Typography>
+                      </Box>
+                      <img width="100px" src={GoldCard} />
+                    </Box>
+                    <Box sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          ST
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          99
+                        </Typography>
+                        <Typography color="white">Maguire</Typography>
+                      </Box>
+                      <img width="100px" src={GoldCard} />
                     </Box>
                   </Box>
                   <Box
+                    mt={4}
                     sx={{
                       flex: "1 160px",
                       display: "flex",
                       justifyContent: "center",
+                      gap: "80px",
                     }}
                   >
-                    <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Midfield 1</InputLabel>
-                      <Select
-                        value={opponentData.midfield1}
-                        onChange={(e) => {
-                          setOpponentData({
-                            ...opponentData,
-                            midfield1: e.target.value,
-                          });
-                        }}
-                        sx={{ backgroundColor: "white" }}
-                        input={<OutlinedInput label="Midfield1" />}
-                        fullWidth
-                        defaultValue={data[0]}
-                      >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Midfield 2</InputLabel>
-                      <Select
-                        value={opponentData.midfield2}
-                        onChange={(e) => {
-                          setOpponentData({
-                            ...opponentData,
-                            midfield2: e.target.value,
-                          });
-                        }}
-                        sx={{ backgroundColor: "white" }}
-                        input={<OutlinedInput label="Midfield2" />}
-                        fullWidth
-                        defaultValue={data[0]}
-                      >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Midfield 3</InputLabel>
-                      <Select
-                        value={opponentData.midfield3}
-                        onChange={(e) => {
-                          setOpponentData({
-                            ...opponentData,
-                            midfield3: e.target.value,
-                          });
-                        }}
-                        sx={{ backgroundColor: "white" }}
-                        input={<OutlinedInput label="Midfield3" />}
-                        fullWidth
-                        defaultValue={data[0]}
-                      >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <Box sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          ST
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          99
+                        </Typography>
+                        <Typography color="white">Maguire</Typography>
+                      </Box>
+                      <img width="100px" src={GoldCard} />
+                    </Box>
+                    <Box sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          ST
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          99
+                        </Typography>
+                        <Typography color="white">Maguire</Typography>
+                      </Box>
+                      <img width="100px" src={GoldCard} />
+                    </Box>
+                    <Box sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          ST
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          99
+                        </Typography>
+                        <Typography color="white">Maguire</Typography>
+                      </Box>
+                      <img width="100px" src={GoldCard} />
+                    </Box>
                   </Box>
                   <Box
+                    mt={4}
                     sx={{
                       flex: "1 160px",
                       display: "flex",
                       justifyContent: "center",
+                      gap: "120px",
                     }}
                   >
-                    <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Midfield 4</InputLabel>
-                      <Select
-                        value={opponentData.midfield4}
-                        onChange={(e) => {
-                          setOpponentData({
-                            ...opponentData,
-                            midfield4: e.target.value,
-                          });
-                        }}
-                        sx={{ backgroundColor: "white" }}
-                        input={<OutlinedInput label="Midfield4" />}
-                        fullWidth
-                        defaultValue={data[0]}
-                      >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Midfield 5</InputLabel>
-                      <Select
-                        value={opponentData.midfield5}
-                        onChange={(e) => {
-                          setOpponentData({
-                            ...opponentData,
-                            midfield5: e.target.value,
-                          });
-                        }}
-                        sx={{ backgroundColor: "white" }}
-                        input={<OutlinedInput label="Midfield5" />}
-                        fullWidth
-                        defaultValue={data[0]}
-                      >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <Box sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          ST
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          99
+                        </Typography>
+                        <Typography color="white">Maguire</Typography>
+                      </Box>
+                      <img width="100px" src={GoldCard} />
+                    </Box>
                   </Box>
                   <Box
+                    mt={4}
                     sx={{
                       flex: "1 160px",
                       display: "flex",
                       justifyContent: "center",
                     }}
                   >
-                    <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Centerback 1</InputLabel>
-                      <Select
-                        value={opponentData.centerBack1}
-                        onChange={(e) => {
-                          setOpponentData({
-                            ...opponentData,
-                            centerBack1: e.target.value,
-                          });
-                        }}
-                        sx={{ backgroundColor: "white" }}
-                        input={<OutlinedInput label="Centerback1" />}
-                        fullWidth
-                        defaultValue={data[0]}
-                      >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Centerback 2</InputLabel>
-                      <Select
-                        value={opponentData.centerBack2}
-                        onChange={(e) => {
-                          setOpponentData({
-                            ...opponentData,
-                            centerBack2: e.target.value,
-                          });
-                        }}
-                        sx={{ backgroundColor: "white" }}
-                        input={<OutlinedInput label="Centerback2" />}
-                        fullWidth
-                        defaultValue={data[0]}
-                      >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Centerback 3</InputLabel>
-                      <Select
-                        value={opponentData.centerBack3}
-                        onChange={(e) => {
-                          setOpponentData({
-                            ...opponentData,
-                            centerBack3: e.target.value,
-                          });
-                        }}
-                        sx={{ backgroundColor: "white" }}
-                        input={<OutlinedInput label="Centerback3" />}
-                        fullWidth
-                        defaultValue={data[0]}
-                      >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Centerback 4</InputLabel>
-                      <Select
-                        value={opponentData.centerBack4}
-                        onChange={(e) => {
-                          setOpponentData({
-                            ...opponentData,
-                            centerBack4: e.target.value,
-                          });
-                        }}
-                        sx={{ backgroundColor: "white" }}
-                        input={<OutlinedInput label="Centerback4" />}
-                        fullWidth
-                        defaultValue={data[0]}
-                      >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <Box sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          ST
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          99
+                        </Typography>
+                        <Typography color="white">Maguire</Typography>
+                      </Box>
+                      <img width="100px" src={GoldCard} />
+                    </Box>
+                    <Box sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          ST
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          99
+                        </Typography>
+                        <Typography color="white">Maguire</Typography>
+                      </Box>
+                      <img width="100px" src={GoldCard} />
+                    </Box>
+                    <Box sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          ST
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          99
+                        </Typography>
+                        <Typography color="white">Maguire</Typography>
+                      </Box>
+                      <img width="100px" src={GoldCard} />
+                    </Box>
+                    <Box sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          ST
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          99
+                        </Typography>
+                        <Typography color="white">Maguire</Typography>
+                      </Box>
+                      <img width="100px" src={GoldCard} />
+                    </Box>
                   </Box>
                   <Box
+                    mt={4}
                     sx={{
                       flex: "1 160px",
                       display: "flex",
                       justifyContent: "center",
+                      gap: "120px",
                     }}
                   >
-                    <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Goalkeeper</InputLabel>
-                      <Select
-                        value={opponentData.goalKeeper}
-                        onChange={(e) => {
-                          setOpponentData({
-                            ...opponentData,
-                            goalKeeper: e.target.value,
-                          });
-                        }}
-                        sx={{ backgroundColor: "white" }}
-                        input={<OutlinedInput label="Goalkeeper" />}
-                        fullWidth
-                        defaultValue={data[0]}
-                      >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    <Box sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          ST
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          99
+                        </Typography>
+                        <Typography color="white">Maguire</Typography>
+                      </Box>
+                      <img width="100px" src={GoldCard} />
+                    </Box>
                   </Box>
                 </Box>
               </Box>

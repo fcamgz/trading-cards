@@ -27,6 +27,7 @@ import NewAnnouncement from "./pages/NewAnouncement";
 import Announcement from "./pages/Announcements";
 import ClashOfSquads from "./pages/ClashOfSquads";
 import CreateSquad from "./pages/CreateSquad";
+import Challenges from "./pages/Challenges";
 
 function App() {
   return (
@@ -57,8 +58,9 @@ function App() {
         <Route path="/chat" element={<Chat />} />
         <Route path="/addAnnouncement" element={<NewAnnouncement />} />
         <Route path="/announcements" element={<Announcement />} />
-        <Route path="/clashOfSquads" element={<ClashOfSquads />} />
         <Route path="/modifySquad" element={<CreateSquad />} />
+        <Route path="/challenges" element={<Challenges />} />
+        <Route path="/challenges/:challengeId" element={<ClashOfSquads />} />
       </Routes>
     </BrowserRouter>
   );

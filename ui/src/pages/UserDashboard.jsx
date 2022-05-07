@@ -31,6 +31,8 @@ import Market from "../images/market.png";
 import ChatIcon from "@mui/icons-material/Chat";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
+import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router";
@@ -154,6 +156,44 @@ export default function UserDashboard() {
                     </Typography>
                     <Box sx={{ display: "flex", justifyContent: "center" }}>
                       <ViewCarouselIcon sx={{ fontSize: "140px" }} />
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Box>
+            <Box sx={{ padding: "20px" }}>
+              <Card sx={{ width: "300px" }}>
+                <CardActionArea onClick={() => navigate("/modifySquad")}>
+                  <CardContent>
+                    <Typography
+                      textAlign="center"
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                    >
+                      My Squad
+                    </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <DirectionsRunIcon sx={{ fontSize: "140px" }} />
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Box>
+            <Box sx={{ padding: "20px" }}>
+              <Card sx={{ width: "300px" }}>
+                <CardActionArea onClick={() => navigate("/challenges")}>
+                  <CardContent>
+                    <Typography
+                      textAlign="center"
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                    >
+                      Challenge Players
+                    </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <SportsSoccerIcon sx={{ fontSize: "140px" }} />
                     </Box>
                   </CardContent>
                 </CardActionArea>

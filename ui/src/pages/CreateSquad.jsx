@@ -7,15 +7,17 @@ import {
   Divider,
   FormControl,
   InputLabel,
+  List,
   ListItemText,
   MenuItem,
   OutlinedInput,
+  Paper,
   Select,
   Typography,
 } from "@mui/material";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
-import HaalandBackground from "../images/haaland-background.png";
-import RonaldoBackground from "../images/ronaldo-background.png";
+import GoldCard from "../images/pack-background4.png";
+import PitchImage from "../images/Soccer_Field_Transparant.svg.png";
 import Footer from "../components/Footer";
 
 export default function CreateSquad() {
@@ -23,12 +25,12 @@ export default function CreateSquad() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
   const [squad, setSquad] = useState({
-    striker: "",
+    striker1: "",
+    striker2: "",
     midfield1: "",
     midfield2: "",
     midfield3: "",
     midfield4: "",
-    midfield5: "",
     centerBack1: "",
     centerBack2: "",
     centerBack3: "",
@@ -107,7 +109,7 @@ export default function CreateSquad() {
           }}
           alt="background"
         />
-        <Box sx={{ position: "relative" }} mb={2}>
+        <Box sx={{ position: "relative" }} mb={8}>
           <Typography
             gutterBottom
             variant="h3"
@@ -130,12 +132,12 @@ export default function CreateSquad() {
           <Box
             sx={{
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "space-around",
               height: "100vh",
               padding: "0 60px",
             }}
           >
-            <Box sx={{ flex: "1" }}>
+            <Box sx={{ flex: "0.9" }}>
               <Box>
                 <Box
                   sx={{
@@ -146,7 +148,7 @@ export default function CreateSquad() {
                     alignItems: "space-between",
                   }}
                 >
-                  <Box sx={{ flex: "1 160px" }}>
+                  <Box mt={4} sx={{ flex: "1 160px" }}>
                     <Box
                       mt={4}
                       sx={{
@@ -155,17 +157,39 @@ export default function CreateSquad() {
                       }}
                     >
                       <FormControl sx={{ m: 1, width: "20%" }}>
-                        <InputLabel>Striker</InputLabel>
+                        <InputLabel>Striker 1</InputLabel>
                         <Select
-                          value={squad.striker}
+                          value={squad.striker1}
                           onChange={(e) => {
                             setSquad({
                               ...squad,
-                              striker: e.target.value,
+                              striker1: e.target.value,
                             });
                           }}
                           sx={{ backgroundColor: "white" }}
-                          input={<OutlinedInput label="Striker" />}
+                          input={<OutlinedInput label="Striker1" />}
+                          fullWidth
+                          defaultValue={data[0]}
+                        >
+                          {data?.map((card) => (
+                            <MenuItem key={card._id} value={card.name}>
+                              <ListItemText primary={card.name} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <FormControl sx={{ m: 1, width: "20%" }}>
+                        <InputLabel>Striker 2</InputLabel>
+                        <Select
+                          value={squad.striker2}
+                          onChange={(e) => {
+                            setSquad({
+                              ...squad,
+                              striker2: e.target.value,
+                            });
+                          }}
+                          sx={{ backgroundColor: "white" }}
+                          input={<OutlinedInput label="Striker2" />}
                           fullWidth
                           defaultValue={data[0]}
                         >
@@ -179,6 +203,7 @@ export default function CreateSquad() {
                     </Box>
                   </Box>
                   <Box
+                    mt={6}
                     sx={{
                       flex: "1 160px",
                       display: "flex",
@@ -253,6 +278,7 @@ export default function CreateSquad() {
                     </FormControl>
                   </Box>
                   <Box
+                    mt={2}
                     sx={{
                       flex: "1 160px",
                       display: "flex",
@@ -271,28 +297,6 @@ export default function CreateSquad() {
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield4" />}
-                        fullWidth
-                        defaultValue={data[0]}
-                      >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Midfield 5</InputLabel>
-                      <Select
-                        value={squad.midfield5}
-                        onChange={(e) => {
-                          setSquad({
-                            ...squad,
-                            midfield5: e.target.value,
-                          });
-                        }}
-                        sx={{ backgroundColor: "white" }}
-                        input={<OutlinedInput label="Midfield5" />}
                         fullWidth
                         defaultValue={data[0]}
                       >
@@ -439,6 +443,341 @@ export default function CreateSquad() {
                     <Button size="large" color="inherit" variant="contained">
                       Done
                     </Button>
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+            <Box sx={{ flex: "0.28" }}>
+              <Box>
+                <Typography variant="h6" textAlign="center" color="white">
+                  Squad Rating
+                </Typography>
+                <Divider
+                  sx={{
+                    color: "white",
+                    marginBottom: "12px",
+                    marginTop: "12px",
+                  }}
+                />
+                <Typography variant="h6" textAlign="center" color="white">
+                  99
+                </Typography>
+              </Box>
+              <Box mt={4}>
+                <Typography variant="h6" textAlign="center" color="white">
+                  Best Player
+                </Typography>
+                <Divider
+                  sx={{
+                    color: "white",
+                    marginBottom: "12px",
+                    marginTop: "12px",
+                  }}
+                />
+                <Typography variant="body1" textAlign="center" color="white">
+                  Cristiano Ronaldo
+                </Typography>
+              </Box>
+              <Box mt={6}>
+                <Typography variant="h6" textAlign="center" color="white">
+                  Chemistry
+                </Typography>
+                <Divider
+                  sx={{
+                    color: "white",
+                    marginBottom: "12px",
+                    marginTop: "12px",
+                  }}
+                />
+                <Typography variant="h6" textAlign="center" color="white">
+                  86
+                </Typography>
+              </Box>
+              <Box mt={4}>
+                <Typography variant="h6" textAlign="center" color="white">
+                  Stats
+                </Typography>
+                <Divider
+                  sx={{
+                    color: "white",
+                    marginBottom: "12px",
+                    marginTop: "12px",
+                  }}
+                />
+                <Typography variant="h6" textAlign="center" color="white">
+                  12W - 5L
+                </Typography>
+              </Box>
+              <Box mt={6}>
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  textAlign="center"
+                  color="white"
+                >
+                  Reserves
+                </Typography>
+                <Paper style={{ maxHeight: 240, overflow: "auto" }}>
+                  <List>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px 6px",
+                        borderBottom: "2px solid #AFAFAF",
+                      }}
+                    >
+                      <Typography>Maguire</Typography>
+                      <Typography>D</Typography>
+                      <Typography>70</Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px 6px",
+                        borderBottom: "2px solid #AFAFAF",
+                      }}
+                    >
+                      <Typography>Maguire</Typography>
+                      <Typography>D</Typography>
+                      <Typography>70</Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px 6px",
+                        borderBottom: "2px solid #AFAFAF",
+                      }}
+                    >
+                      <Typography>Maguire</Typography>
+                      <Typography>D</Typography>
+                      <Typography>70</Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px 6px",
+                        borderBottom: "2px solid #AFAFAF",
+                      }}
+                    >
+                      <Typography>Maguire</Typography>
+                      <Typography>D</Typography>
+                      <Typography>70</Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        padding: "12px 6px",
+                        borderBottom: "2px solid #AFAFAF",
+                      }}
+                    >
+                      <Typography>Maguire</Typography>
+                      <Typography>D</Typography>
+                      <Typography>70</Typography>
+                    </Box>
+                  </List>
+                </Paper>
+              </Box>
+            </Box>
+            <Box
+              sx={{
+                flex: "1",
+              }}
+            >
+              <img
+                src={PitchImage}
+                style={{
+                  position: "absolute",
+                  minWidth: "43%",
+                  height: "900px",
+                }}
+                alt="background"
+              />
+              <Box sx={{ position: "relative" }}>
+                <Box
+                  mt={6}
+                  sx={{
+                    flex: "1 160px",
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "40px",
+                  }}
+                >
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                </Box>
+                <Box
+                  mt={4}
+                  sx={{
+                    flex: "1 160px",
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "80px",
+                  }}
+                >
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                </Box>
+                <Box
+                  mt={4}
+                  sx={{
+                    flex: "1 160px",
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "120px",
+                  }}
+                >
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                </Box>
+                <Box
+                  mt={4}
+                  sx={{
+                    flex: "1 160px",
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "10px",
+                  }}
+                >
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
+                  </Box>
+                </Box>
+                <Box
+                  mt={4}
+                  sx={{
+                    flex: "1 160px",
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "120px",
+                  }}
+                >
+                  <Box sx={{ display: "flex" }}>
+                    <Box>
+                      <Typography variant="h6" color="white">
+                        ST
+                      </Typography>
+                      <Typography variant="h6" color="white">
+                        99
+                      </Typography>
+                      <Typography color="white">Maguire</Typography>
+                    </Box>
+                    <img width="100px" src={GoldCard} />
                   </Box>
                 </Box>
               </Box>
