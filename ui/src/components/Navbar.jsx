@@ -134,7 +134,7 @@ export default function Navbar(props) {
   function handleLogout() {
     console.log("logout clicked");
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate("/");
   }
 
   function handleAddFunds() {

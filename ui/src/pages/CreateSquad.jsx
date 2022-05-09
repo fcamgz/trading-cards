@@ -17,6 +17,10 @@ import {
 } from "@mui/material";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
 import GoldCard from "../images/pack-background4.png";
+import Bronzes from "../images/Bronze-Card.png";
+import Silvers from "../images/Silver-Card.png";
+import Platinum from "../images/Platinium-Card.png";
+import Diamonds from "../images/pack-background2.png";
 import PitchImage from "../images/Soccer_Field_Transparant.svg.png";
 import Footer from "../components/Footer";
 
@@ -24,19 +28,8 @@ export default function CreateSquad() {
   const [cardData, setCardData] = useState([{}]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
-  const [squad, setSquad] = useState({
-    striker1: "",
-    striker2: "",
-    midfield1: "",
-    midfield2: "",
-    midfield3: "",
-    midfield4: "",
-    centerBack1: "",
-    centerBack2: "",
-    centerBack3: "",
-    centerBack4: "",
-    goalKeeper: "",
-  });
+  const [squad, setSquad] = useState({});
+  const [fetch, setFetch] = useState(0);
 
   const data = [
     { id: 1 },
@@ -53,15 +46,6 @@ export default function CreateSquad() {
   ];
 
   useEffect(() => {
-    // get cards
-    axios
-      .get("http://localhost:5000/api/cards/")
-      .then((res) => res.data)
-      .then((res) => {
-        setCardData(res);
-        console.log(res);
-      })
-      .catch((err) => console.log(err));
     // get user
     axios
       .get("/api/getUsername", {
@@ -79,7 +63,58 @@ export default function CreateSquad() {
         }
       })
       .catch((err) => console.log(err));
-  }, []);
+
+    // get cards
+    axios
+      .get(`http://localhost:5000/api/cards/userCollection/${user?._id}`)
+      .then((res) => res.data)
+      .then((res) => {
+        setCardData(res);
+        console.log(res);
+        console.log("fetch card stuff");
+      })
+      .catch((err) => console.log(err));
+
+    // get squad values
+    axios.get(`http://localhost:5000/api/cards/userCollection/${user?._id}`);
+  }, [user?._id]);
+
+  useEffect(() => {
+    // get squad
+    axios
+      .get(`http://localhost:5000/api/squad/getSquad/${user?._id}`)
+      .then((res) => res.data)
+      .then((res) => {
+        setSquad(res);
+        console.log(res);
+        setFetch(1);
+      })
+      .catch((err) => console.log(err));
+  }, [user?._id, fetch]);
+
+  const handleSubmit = () => {
+    axios
+      .post(`http://localhost:5000/api/squad/create`, {
+        striker1: squad.striker1,
+        striker2: squad.striker2,
+        midfield1: squad.midfield1,
+        midfield2: squad.midfield2,
+        midfield3: squad.midfield3,
+        midfield4: squad.midfield4,
+        centerBack1: squad.centerBack1,
+        centerBack2: squad.centerBack2,
+        centerBack3: squad.centerBack3,
+        centerBack4: squad.centerBack4,
+        goalkeeper: squad.goalkeeper,
+        owner: user?._id,
+      })
+      .then((res) => res.data)
+      .then((res) => {
+        console.log("Squad created " + res);
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <Box
       sx={{
@@ -169,11 +204,14 @@ export default function CreateSquad() {
                           sx={{ backgroundColor: "white" }}
                           input={<OutlinedInput label="Striker1" />}
                           fullWidth
-                          defaultValue={data[0]}
+                          defaultValue={cardData[0]}
                         >
-                          {data?.map((card) => (
-                            <MenuItem key={card._id} value={card.name}>
-                              <ListItemText primary={card.name} />
+                          {cardData?.map((card) => (
+                            <MenuItem key={card._id} value={card}>
+                              <ListItemText
+                                primary={`${card.lastname} - ${card.position}`}
+                                secondary={card.rating}
+                              />
                             </MenuItem>
                           ))}
                         </Select>
@@ -191,11 +229,14 @@ export default function CreateSquad() {
                           sx={{ backgroundColor: "white" }}
                           input={<OutlinedInput label="Striker2" />}
                           fullWidth
-                          defaultValue={data[0]}
+                          defaultValue={cardData[0]}
                         >
-                          {data?.map((card) => (
-                            <MenuItem key={card._id} value={card.name}>
-                              <ListItemText primary={card.name} />
+                          {cardData?.map((card) => (
+                            <MenuItem key={card._id} value={card}>
+                              <ListItemText
+                                primary={`${card.lastname} - ${card.position}`}
+                                secondary={card.rating}
+                              />
                             </MenuItem>
                           ))}
                         </Select>
@@ -223,11 +264,14 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield1" />}
                         fullWidth
-                        defaultValue={data[0]}
+                        defaultValue={cardData[0]}
                       >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
+                        {cardData?.map((card) => (
+                          <MenuItem key={card._id} value={card}>
+                            <ListItemText
+                              primary={`${card.lastname} - ${card.position}`}
+                              secondary={card.rating}
+                            />
                           </MenuItem>
                         ))}
                       </Select>
@@ -245,11 +289,14 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield2" />}
                         fullWidth
-                        defaultValue={data[0]}
+                        defaultValue={cardData[1]}
                       >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
+                        {cardData?.map((card) => (
+                          <MenuItem key={card._id} value={card}>
+                            <ListItemText
+                              primary={`${card.lastname} - ${card.position}`}
+                              secondary={card.rating}
+                            />
                           </MenuItem>
                         ))}
                       </Select>
@@ -267,11 +314,14 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield3" />}
                         fullWidth
-                        defaultValue={data[0]}
+                        defaultValue={cardData[0]}
                       >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
+                        {cardData?.map((card) => (
+                          <MenuItem key={card._id} value={card}>
+                            <ListItemText
+                              primary={`${card.lastname} - ${card.position}`}
+                              secondary={card.rating}
+                            />
                           </MenuItem>
                         ))}
                       </Select>
@@ -298,11 +348,14 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield4" />}
                         fullWidth
-                        defaultValue={data[0]}
+                        defaultValue={cardData[0]}
                       >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
+                        {cardData?.map((card) => (
+                          <MenuItem key={card._id} value={card}>
+                            <ListItemText
+                              primary={`${card.lastname} - ${card.position}`}
+                              secondary={card.rating}
+                            />
                           </MenuItem>
                         ))}
                       </Select>
@@ -328,11 +381,14 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback1" />}
                         fullWidth
-                        defaultValue={data[0]}
+                        defaultValue={cardData[0]}
                       >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
+                        {cardData?.map((card) => (
+                          <MenuItem key={card._id} value={card}>
+                            <ListItemText
+                              primary={`${card.lastname} - ${card.position}`}
+                              secondary={card.rating}
+                            />
                           </MenuItem>
                         ))}
                       </Select>
@@ -350,11 +406,14 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback2" />}
                         fullWidth
-                        defaultValue={data[0]}
+                        defaultValue={cardData[0]}
                       >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
+                        {cardData?.map((card) => (
+                          <MenuItem key={card._id} value={card}>
+                            <ListItemText
+                              primary={`${card.lastname} - ${card.position}`}
+                              secondary={card.rating}
+                            />
                           </MenuItem>
                         ))}
                       </Select>
@@ -372,11 +431,14 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback3" />}
                         fullWidth
-                        defaultValue={data[0]}
+                        defaultValue={cardData[0]}
                       >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
+                        {cardData?.map((card) => (
+                          <MenuItem key={card._id} value={card}>
+                            <ListItemText
+                              primary={`${card.lastname} - ${card.position}`}
+                              secondary={card.rating}
+                            />
                           </MenuItem>
                         ))}
                       </Select>
@@ -394,11 +456,14 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback4" />}
                         fullWidth
-                        defaultValue={data[0]}
+                        defaultValue={cardData[0]}
                       >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
+                        {cardData?.map((card) => (
+                          <MenuItem key={card._id} value={card}>
+                            <ListItemText
+                              primary={`${card.lastname} - ${card.position}`}
+                              secondary={card.rating}
+                            />
                           </MenuItem>
                         ))}
                       </Select>
@@ -414,21 +479,24 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Goalkeeper</InputLabel>
                       <Select
-                        value={squad.goalKeeper}
+                        value={squad.goalkeeper}
                         onChange={(e) => {
                           setSquad({
                             ...squad,
-                            goalKeeper: e.target.value,
+                            goalkeeper: e.target.value,
                           });
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Goalkeeper" />}
                         fullWidth
-                        defaultValue={data[0]}
+                        defaultValue={cardData[0]}
                       >
-                        {data?.map((card) => (
-                          <MenuItem key={card._id} value={card.name}>
-                            <ListItemText primary={card.name} />
+                        {cardData?.map((card) => (
+                          <MenuItem key={card._id} value={card}>
+                            <ListItemText
+                              primary={`${card.lastname} - ${card.position}`}
+                              secondary={card.rating}
+                            />
                           </MenuItem>
                         ))}
                       </Select>
@@ -440,7 +508,12 @@ export default function CreateSquad() {
                       justifyContent: "center",
                     }}
                   >
-                    <Button size="large" color="inherit" variant="contained">
+                    <Button
+                      onClick={handleSubmit}
+                      size="large"
+                      color="inherit"
+                      variant="contained"
+                    >
                       Done
                     </Button>
                   </Box>
@@ -610,26 +683,62 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        ST
+                        {squad.striker1?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        99
+                        {squad.striker1?.rating}
                       </Typography>
-                      <Typography color="white">Maguire</Typography>
+                      <Typography color="white">
+                        {squad.striker1?.lastname}
+                      </Typography>
                     </Box>
-                    <img width="100px" src={GoldCard} />
+                    <img
+                      width="100px"
+                      src={
+                        squad.striker1?.tier === "Bronze"
+                          ? Bronzes
+                          : squad.striker1?.tier === "Silver"
+                          ? Silvers
+                          : squad.striker1?.tier === "Gold"
+                          ? GoldCard
+                          : squad.striker1?.tier === "Platinium"
+                          ? Platinum
+                          : squad.striker1?.tier === "Diamond"
+                          ? Diamonds
+                          : Platinum
+                      }
+                      alt="striker1"
+                    />
                   </Box>
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        ST
+                        {squad.striker2?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        99
+                        {squad.striker2?.rating}
                       </Typography>
-                      <Typography color="white">Maguire</Typography>
+                      <Typography color="white">
+                        {squad.striker2?.lastname}
+                      </Typography>
                     </Box>
-                    <img width="100px" src={GoldCard} />
+                    <img
+                      width="100px"
+                      src={
+                        squad.striker2?.tier === "Bronze"
+                          ? Bronzes
+                          : squad.striker2?.tier === "Silver"
+                          ? Silvers
+                          : squad.striker2?.tier === "Gold"
+                          ? GoldCard
+                          : squad.striker2?.tier === "Platinium"
+                          ? Platinum
+                          : squad.striker2?.tier === "Diamond"
+                          ? Diamonds
+                          : Platinum
+                      }
+                      alt="striker2"
+                    />
                   </Box>
                 </Box>
                 <Box
@@ -644,38 +753,92 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        ST
+                        {squad.midfield1?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        99
+                        {squad.midfield1?.rating}
                       </Typography>
-                      <Typography color="white">Maguire</Typography>
+                      <Typography color="white">
+                        {squad.midfield1?.lastname}
+                      </Typography>
                     </Box>
-                    <img width="100px" src={GoldCard} />
+                    <img
+                      width="100px"
+                      src={
+                        squad.midfield1?.tier === "Bronze"
+                          ? Bronzes
+                          : squad.midfield1?.tier === "Silver"
+                          ? Silvers
+                          : squad.midfield1?.tier === "Gold"
+                          ? GoldCard
+                          : squad.midfield1?.tier === "Platinium"
+                          ? Platinum
+                          : squad.midfield1?.tier === "Diamond"
+                          ? Diamonds
+                          : Platinum
+                      }
+                      alt="midfield1"
+                    />
                   </Box>
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        ST
+                        {squad.midfield2?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        99
+                        {squad.midfield2?.rating}
                       </Typography>
-                      <Typography color="white">Maguire</Typography>
+                      <Typography color="white">
+                        {squad.midfield2?.lastname}
+                      </Typography>
                     </Box>
-                    <img width="100px" src={GoldCard} />
+                    <img
+                      width="100px"
+                      src={
+                        squad.midfield2?.tier === "Bronze"
+                          ? Bronzes
+                          : squad.midfield2?.tier === "Silver"
+                          ? Silvers
+                          : squad.midfield2?.tier === "Gold"
+                          ? GoldCard
+                          : squad.midfield2?.tier === "Platinium"
+                          ? Platinum
+                          : squad.midfield2?.tier === "Diamond"
+                          ? Diamonds
+                          : Platinum
+                      }
+                      alt="midfield2"
+                    />
                   </Box>
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        ST
+                        {squad.midfield3?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        99
+                        {squad.midfield3?.rating}
                       </Typography>
-                      <Typography color="white">Maguire</Typography>
+                      <Typography color="white">
+                        {squad.midfield3?.lastname}
+                      </Typography>
                     </Box>
-                    <img width="100px" src={GoldCard} />
+                    <img
+                      width="100px"
+                      src={
+                        squad.midfield3?.tier === "Bronze"
+                          ? Bronzes
+                          : squad.midfield3?.tier === "Silver"
+                          ? Silvers
+                          : squad.midfield3?.tier === "Gold"
+                          ? GoldCard
+                          : squad.midfield3?.tier === "Platinium"
+                          ? Platinum
+                          : squad.midfield3?.tier === "Diamond"
+                          ? Diamonds
+                          : Platinum
+                      }
+                      alt="midfield3"
+                    />
                   </Box>
                 </Box>
                 <Box
@@ -690,14 +853,32 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        ST
+                        {squad.midfield4?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        99
+                        {squad.midfield4?.rating}
                       </Typography>
-                      <Typography color="white">Maguire</Typography>
+                      <Typography color="white">
+                        {squad.midfield4?.lastname}
+                      </Typography>
                     </Box>
-                    <img width="100px" src={GoldCard} />
+                    <img
+                      width="100px"
+                      src={
+                        squad.midfield4?.tier === "Bronze"
+                          ? Bronzes
+                          : squad.midfield4?.tier === "Silver"
+                          ? Silvers
+                          : squad.midfield4?.tier === "Gold"
+                          ? GoldCard
+                          : squad.midfield4?.tier === "Platinium"
+                          ? Platinum
+                          : squad.midfield4?.tier === "Diamond"
+                          ? Diamonds
+                          : Platinum
+                      }
+                      alt="midfield4"
+                    />
                   </Box>
                 </Box>
                 <Box
@@ -712,50 +893,122 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        ST
+                        {squad.centerBack1?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        99
+                        {squad.centerBack1?.rating}
                       </Typography>
-                      <Typography color="white">Maguire</Typography>
+                      <Typography color="white">
+                        {squad.centerBack1?.lastname}
+                      </Typography>
                     </Box>
-                    <img width="100px" src={GoldCard} />
+                    <img
+                      width="100px"
+                      src={
+                        squad.centerBack1?.tier === "Bronze"
+                          ? Bronzes
+                          : squad.centerBack1?.tier === "Silver"
+                          ? Silvers
+                          : squad.centerBack1?.tier === "Gold"
+                          ? GoldCard
+                          : squad.centerBack1?.tier === "Platinium"
+                          ? Platinum
+                          : squad.centerBack1?.tier === "Diamond"
+                          ? Diamonds
+                          : Platinum
+                      }
+                      alt="centerBack1"
+                    />
                   </Box>
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        ST
+                        {squad.centerBack2?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        99
+                        {squad.centerBack2?.rating}
                       </Typography>
-                      <Typography color="white">Maguire</Typography>
+                      <Typography color="white">
+                        {squad.centerBack2?.lastname}
+                      </Typography>
                     </Box>
-                    <img width="100px" src={GoldCard} />
+                    <img
+                      width="100px"
+                      src={
+                        squad.centerBack2?.tier === "Bronze"
+                          ? Bronzes
+                          : squad.centerBack2?.tier === "Silver"
+                          ? Silvers
+                          : squad.centerBack2?.tier === "Gold"
+                          ? GoldCard
+                          : squad.centerBack2?.tier === "Platinium"
+                          ? Platinum
+                          : squad.centerBack2?.tier === "Diamond"
+                          ? Diamonds
+                          : Platinum
+                      }
+                      alt="centerBack2"
+                    />
                   </Box>
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        ST
+                        {squad.centerBack3?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        99
+                        {squad.centerBack3?.rating}
                       </Typography>
-                      <Typography color="white">Maguire</Typography>
+                      <Typography color="white">
+                        {squad.centerBack3?.lastname}
+                      </Typography>
                     </Box>
-                    <img width="100px" src={GoldCard} />
+                    <img
+                      width="100px"
+                      src={
+                        squad.centerBack3?.tier === "Bronze"
+                          ? Bronzes
+                          : squad.centerBack3?.tier === "Silver"
+                          ? Silvers
+                          : squad.centerBack3?.tier === "Gold"
+                          ? GoldCard
+                          : squad.centerBack3?.tier === "Platinium"
+                          ? Platinum
+                          : squad.centerBack3?.tier === "Diamond"
+                          ? Diamonds
+                          : Platinum
+                      }
+                      alt="centerBack3"
+                    />
                   </Box>
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        ST
+                        {squad.centerBack4?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        99
+                        {squad.centerBack4?.rating}
                       </Typography>
-                      <Typography color="white">Maguire</Typography>
+                      <Typography color="white">
+                        {squad.centerBack4?.lastname}
+                      </Typography>
                     </Box>
-                    <img width="100px" src={GoldCard} />
+                    <img
+                      width="100px"
+                      src={
+                        squad.centerBack4?.tier === "Bronze"
+                          ? Bronzes
+                          : squad.centerBack4?.tier === "Silver"
+                          ? Silvers
+                          : squad.centerBack4?.tier === "Gold"
+                          ? GoldCard
+                          : squad.centerBack4?.tier === "Platinium"
+                          ? Platinum
+                          : squad.centerBack4?.tier === "Diamond"
+                          ? Diamonds
+                          : Platinum
+                      }
+                      alt="centerBack4"
+                    />
                   </Box>
                 </Box>
                 <Box
@@ -770,14 +1023,32 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        ST
+                        {squad.goalkeeper?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        99
+                        {squad.goalkeeper?.rating}
                       </Typography>
-                      <Typography color="white">Maguire</Typography>
+                      <Typography color="white">
+                        {squad.goalkeeper?.lastname}
+                      </Typography>
                     </Box>
-                    <img width="100px" src={GoldCard} />
+                    <img
+                      width="100px"
+                      src={
+                        squad.goalkeeper?.tier === "Bronze"
+                          ? Bronzes
+                          : squad.goalkeeper?.tier === "Silver"
+                          ? Silvers
+                          : squad.goalkeeper?.tier === "Gold"
+                          ? GoldCard
+                          : squad.goalkeeper?.tier === "Platinium"
+                          ? Platinum
+                          : squad.goalkeeper?.tier === "Diamond"
+                          ? Diamonds
+                          : Platinum
+                      }
+                      alt="goalkeeper"
+                    />
                   </Box>
                 </Box>
               </Box>

@@ -12,6 +12,7 @@ const auth = require("./routes/auth");
 const packRoute = require("./routes/pack");
 const adminRoute = require("./routes/admin");
 const tradesRoute = require("./routes/trades");
+const squadRoute = require("./routes/squad");
 
 // server setup
 const app = express();
@@ -50,7 +51,7 @@ app.use("/", auth);
 app.use("/api/packs", packRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/trades", tradesRoute);
-app.use("/", auth);
+app.use("/api/squad", squadRoute);
 
 // creating server
 /*

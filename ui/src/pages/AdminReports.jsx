@@ -7,6 +7,7 @@ import {
   Chip,
   Divider,
   Grid,
+  List,
   Stack,
   Table,
   TableBody,
@@ -328,35 +329,44 @@ export default function Homepage() {
                     <CardHeader title={`Recently Added Cards`}></CardHeader>
                   </Box>
                   <CardContent>
-                    <Box sx={{ display: "flex", justifyContent: "center" }}>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Card Name</TableCell>
-                            <TableCell>Rating</TableCell>
-                            <TableCell align="right">Price</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {cardData?.map((card) => (
-                            <TableRow key={card._id}>
-                              <TableCell component="th" scope="row">
-                                {card.firstname} {card.lastname}
-                              </TableCell>
-                              <TableCell component="th" scope="row">
-                                {card.rating}
-                              </TableCell>
-                              <TableCell
-                                align="right"
-                                component="th"
-                                scope="row"
-                              >
-                                {card.price}
-                              </TableCell>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        maxHeight: 310,
+                        overflow: "auto",
+                      }}
+                    >
+                      <List>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Card Name</TableCell>
+                              <TableCell>Rating</TableCell>
+                              <TableCell align="right">Price</TableCell>
                             </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
+                          </TableHead>
+                          <TableBody>
+                            {cardData?.map((card) => (
+                              <TableRow key={card._id}>
+                                <TableCell component="th" scope="row">
+                                  {card.firstname} {card.lastname}
+                                </TableCell>
+                                <TableCell component="th" scope="row">
+                                  {card.rating}
+                                </TableCell>
+                                <TableCell
+                                  align="right"
+                                  component="th"
+                                  scope="row"
+                                >
+                                  {card.price}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </List>
                     </Box>
                   </CardContent>
                 </Card>
