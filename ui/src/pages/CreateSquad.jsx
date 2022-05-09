@@ -29,7 +29,7 @@ export default function CreateSquad() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
   const [squad, setSquad] = useState({});
-  const [fetch, setFetch] = useState(0);
+  const [updated, setUpdated] = useState(false);
 
   const data = [
     { id: 1 },
@@ -85,34 +85,44 @@ export default function CreateSquad() {
       .get(`http://localhost:5000/api/squad/getSquad/${user?._id}`)
       .then((res) => res.data)
       .then((res) => {
-        setSquad(res);
+        setSquad(res[0]);
         console.log(res);
-        setFetch(1);
       })
       .catch((err) => console.log(err));
-  }, [user?._id, fetch]);
+  }, [user?._id, updated]);
 
   const handleSubmit = () => {
-    axios
-      .post(`http://localhost:5000/api/squad/create`, {
-        striker1: squad.striker1,
-        striker2: squad.striker2,
-        midfield1: squad.midfield1,
-        midfield2: squad.midfield2,
-        midfield3: squad.midfield3,
-        midfield4: squad.midfield4,
-        centerBack1: squad.centerBack1,
-        centerBack2: squad.centerBack2,
-        centerBack3: squad.centerBack3,
-        centerBack4: squad.centerBack4,
-        goalkeeper: squad.goalkeeper,
-        owner: user?._id,
-      })
-      .then((res) => res.data)
-      .then((res) => {
-        console.log("Squad created " + res);
-      })
-      .catch((err) => console.log(err));
+    if (squad?._id !== "") {
+      axios
+        .post(`http://localhost:5000/api/squad/modify/${squad?._id}`, squad)
+        .then((res) => res.data)
+        .then((res) => {
+          console.log("Squad updated " + res);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      axios
+        .post(`http://localhost:5000/api/squad/create`, {
+          striker1: squad.striker1,
+          striker2: squad.striker2,
+          midfield1: squad.midfield1,
+          midfield2: squad.midfield2,
+          midfield3: squad.midfield3,
+          midfield4: squad.midfield4,
+          centerBack1: squad.centerBack1,
+          centerBack2: squad.centerBack2,
+          centerBack3: squad.centerBack3,
+          centerBack4: squad.centerBack4,
+          goalkeeper: squad.goalkeeper,
+          owner: user?._id,
+        })
+        .then((res) => res.data)
+        .then((res) => {
+          console.log("Squad created " + res);
+        })
+        .catch((err) => console.log(err));
+    }
+    setUpdated(!updated);
   };
 
   return (
@@ -194,7 +204,7 @@ export default function CreateSquad() {
                       <FormControl sx={{ m: 1, width: "20%" }}>
                         <InputLabel>Striker 1</InputLabel>
                         <Select
-                          value={squad.striker1}
+                          value={squad?.striker1 ? squad.striker1 : ""}
                           onChange={(e) => {
                             setSquad({
                               ...squad,
@@ -219,7 +229,7 @@ export default function CreateSquad() {
                       <FormControl sx={{ m: 1, width: "20%" }}>
                         <InputLabel>Striker 2</InputLabel>
                         <Select
-                          value={squad.striker2}
+                          value={squad?.striker2}
                           onChange={(e) => {
                             setSquad({
                               ...squad,
@@ -254,7 +264,7 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Midfield 1</InputLabel>
                       <Select
-                        value={squad.midfield1}
+                        value={squad?.midfield1}
                         onChange={(e) => {
                           setSquad({
                             ...squad,
@@ -279,7 +289,7 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Midfield 2</InputLabel>
                       <Select
-                        value={squad.midfield2}
+                        value={squad?.midfield2}
                         onChange={(e) => {
                           setSquad({
                             ...squad,
@@ -304,7 +314,7 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Midfield 3</InputLabel>
                       <Select
-                        value={squad.midfield3}
+                        value={squad?.midfield3}
                         onChange={(e) => {
                           setSquad({
                             ...squad,
@@ -338,7 +348,7 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Midfield 4</InputLabel>
                       <Select
-                        value={squad.midfield4}
+                        value={squad?.midfield4}
                         onChange={(e) => {
                           setSquad({
                             ...squad,
@@ -371,7 +381,7 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Centerback 1</InputLabel>
                       <Select
-                        value={squad.centerBack1}
+                        value={squad?.centerBack1}
                         onChange={(e) => {
                           setSquad({
                             ...squad,
@@ -396,7 +406,7 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Centerback 2</InputLabel>
                       <Select
-                        value={squad.centerBack2}
+                        value={squad?.centerBack2}
                         onChange={(e) => {
                           setSquad({
                             ...squad,
@@ -421,7 +431,7 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Centerback 3</InputLabel>
                       <Select
-                        value={squad.centerBack3}
+                        value={squad?.centerBack3}
                         onChange={(e) => {
                           setSquad({
                             ...squad,
@@ -446,7 +456,7 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Centerback 4</InputLabel>
                       <Select
-                        value={squad.centerBack4}
+                        value={squad?.centerBack4}
                         onChange={(e) => {
                           setSquad({
                             ...squad,
@@ -479,7 +489,7 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Goalkeeper</InputLabel>
                       <Select
-                        value={squad.goalkeeper}
+                        value={squad?.goalkeeper}
                         onChange={(e) => {
                           setSquad({
                             ...squad,
@@ -683,27 +693,27 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        {squad.striker1?.position}
+                        {squad?.striker1?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        {squad.striker1?.rating}
+                        {squad?.striker1?.rating}
                       </Typography>
                       <Typography color="white">
-                        {squad.striker1?.lastname}
+                        {squad?.striker1?.lastname}
                       </Typography>
                     </Box>
                     <img
                       width="100px"
                       src={
-                        squad.striker1?.tier === "Bronze"
+                        squad?.striker1?.tier === "Bronze"
                           ? Bronzes
-                          : squad.striker1?.tier === "Silver"
+                          : squad?.striker1?.tier === "Silver"
                           ? Silvers
-                          : squad.striker1?.tier === "Gold"
+                          : squad?.striker1?.tier === "Gold"
                           ? GoldCard
-                          : squad.striker1?.tier === "Platinium"
+                          : squad?.striker1?.tier === "Platinium"
                           ? Platinum
-                          : squad.striker1?.tier === "Diamond"
+                          : squad?.striker1?.tier === "Diamond"
                           ? Diamonds
                           : Platinum
                       }
@@ -713,27 +723,27 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        {squad.striker2?.position}
+                        {squad?.striker2?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        {squad.striker2?.rating}
+                        {squad?.striker2?.rating}
                       </Typography>
                       <Typography color="white">
-                        {squad.striker2?.lastname}
+                        {squad?.striker2?.lastname}
                       </Typography>
                     </Box>
                     <img
                       width="100px"
                       src={
-                        squad.striker2?.tier === "Bronze"
+                        squad?.striker2?.tier === "Bronze"
                           ? Bronzes
-                          : squad.striker2?.tier === "Silver"
+                          : squad?.striker2?.tier === "Silver"
                           ? Silvers
-                          : squad.striker2?.tier === "Gold"
+                          : squad?.striker2?.tier === "Gold"
                           ? GoldCard
-                          : squad.striker2?.tier === "Platinium"
+                          : squad?.striker2?.tier === "Platinium"
                           ? Platinum
-                          : squad.striker2?.tier === "Diamond"
+                          : squad?.striker2?.tier === "Diamond"
                           ? Diamonds
                           : Platinum
                       }
@@ -753,27 +763,27 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        {squad.midfield1?.position}
+                        {squad?.midfield1?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        {squad.midfield1?.rating}
+                        {squad?.midfield1?.rating}
                       </Typography>
                       <Typography color="white">
-                        {squad.midfield1?.lastname}
+                        {squad?.midfield1?.lastname}
                       </Typography>
                     </Box>
                     <img
                       width="100px"
                       src={
-                        squad.midfield1?.tier === "Bronze"
+                        squad?.midfield1?.tier === "Bronze"
                           ? Bronzes
-                          : squad.midfield1?.tier === "Silver"
+                          : squad?.midfield1?.tier === "Silver"
                           ? Silvers
-                          : squad.midfield1?.tier === "Gold"
+                          : squad?.midfield1?.tier === "Gold"
                           ? GoldCard
-                          : squad.midfield1?.tier === "Platinium"
+                          : squad?.midfield1?.tier === "Platinium"
                           ? Platinum
-                          : squad.midfield1?.tier === "Diamond"
+                          : squad?.midfield1?.tier === "Diamond"
                           ? Diamonds
                           : Platinum
                       }
@@ -783,27 +793,27 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        {squad.midfield2?.position}
+                        {squad?.midfield2?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        {squad.midfield2?.rating}
+                        {squad?.midfield2?.rating}
                       </Typography>
                       <Typography color="white">
-                        {squad.midfield2?.lastname}
+                        {squad?.midfield2?.lastname}
                       </Typography>
                     </Box>
                     <img
                       width="100px"
                       src={
-                        squad.midfield2?.tier === "Bronze"
+                        squad?.midfield2?.tier === "Bronze"
                           ? Bronzes
-                          : squad.midfield2?.tier === "Silver"
+                          : squad?.midfield2?.tier === "Silver"
                           ? Silvers
-                          : squad.midfield2?.tier === "Gold"
+                          : squad?.midfield2?.tier === "Gold"
                           ? GoldCard
-                          : squad.midfield2?.tier === "Platinium"
+                          : squad?.midfield2?.tier === "Platinium"
                           ? Platinum
-                          : squad.midfield2?.tier === "Diamond"
+                          : squad?.midfield2?.tier === "Diamond"
                           ? Diamonds
                           : Platinum
                       }
@@ -813,27 +823,27 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        {squad.midfield3?.position}
+                        {squad?.midfield3?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        {squad.midfield3?.rating}
+                        {squad?.midfield3?.rating}
                       </Typography>
                       <Typography color="white">
-                        {squad.midfield3?.lastname}
+                        {squad?.midfield3?.lastname}
                       </Typography>
                     </Box>
                     <img
                       width="100px"
                       src={
-                        squad.midfield3?.tier === "Bronze"
+                        squad?.midfield3?.tier === "Bronze"
                           ? Bronzes
-                          : squad.midfield3?.tier === "Silver"
+                          : squad?.midfield3?.tier === "Silver"
                           ? Silvers
-                          : squad.midfield3?.tier === "Gold"
+                          : squad?.midfield3?.tier === "Gold"
                           ? GoldCard
-                          : squad.midfield3?.tier === "Platinium"
+                          : squad?.midfield3?.tier === "Platinium"
                           ? Platinum
-                          : squad.midfield3?.tier === "Diamond"
+                          : squad?.midfield3?.tier === "Diamond"
                           ? Diamonds
                           : Platinum
                       }
@@ -853,27 +863,27 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        {squad.midfield4?.position}
+                        {squad?.midfield4?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        {squad.midfield4?.rating}
+                        {squad?.midfield4?.rating}
                       </Typography>
                       <Typography color="white">
-                        {squad.midfield4?.lastname}
+                        {squad?.midfield4?.lastname}
                       </Typography>
                     </Box>
                     <img
                       width="100px"
                       src={
-                        squad.midfield4?.tier === "Bronze"
+                        squad?.midfield4?.tier === "Bronze"
                           ? Bronzes
-                          : squad.midfield4?.tier === "Silver"
+                          : squad?.midfield4?.tier === "Silver"
                           ? Silvers
-                          : squad.midfield4?.tier === "Gold"
+                          : squad?.midfield4?.tier === "Gold"
                           ? GoldCard
-                          : squad.midfield4?.tier === "Platinium"
+                          : squad?.midfield4?.tier === "Platinium"
                           ? Platinum
-                          : squad.midfield4?.tier === "Diamond"
+                          : squad?.midfield4?.tier === "Diamond"
                           ? Diamonds
                           : Platinum
                       }
@@ -893,27 +903,27 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        {squad.centerBack1?.position}
+                        {squad?.centerBack1?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        {squad.centerBack1?.rating}
+                        {squad?.centerBack1?.rating}
                       </Typography>
                       <Typography color="white">
-                        {squad.centerBack1?.lastname}
+                        {squad?.centerBack1?.lastname}
                       </Typography>
                     </Box>
                     <img
                       width="100px"
                       src={
-                        squad.centerBack1?.tier === "Bronze"
+                        squad?.centerBack1?.tier === "Bronze"
                           ? Bronzes
-                          : squad.centerBack1?.tier === "Silver"
+                          : squad?.centerBack1?.tier === "Silver"
                           ? Silvers
-                          : squad.centerBack1?.tier === "Gold"
+                          : squad?.centerBack1?.tier === "Gold"
                           ? GoldCard
-                          : squad.centerBack1?.tier === "Platinium"
+                          : squad?.centerBack1?.tier === "Platinium"
                           ? Platinum
-                          : squad.centerBack1?.tier === "Diamond"
+                          : squad?.centerBack1?.tier === "Diamond"
                           ? Diamonds
                           : Platinum
                       }
@@ -923,27 +933,27 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        {squad.centerBack2?.position}
+                        {squad?.centerBack2?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        {squad.centerBack2?.rating}
+                        {squad?.centerBack2?.rating}
                       </Typography>
                       <Typography color="white">
-                        {squad.centerBack2?.lastname}
+                        {squad?.centerBack2?.lastname}
                       </Typography>
                     </Box>
                     <img
                       width="100px"
                       src={
-                        squad.centerBack2?.tier === "Bronze"
+                        squad?.centerBack2?.tier === "Bronze"
                           ? Bronzes
-                          : squad.centerBack2?.tier === "Silver"
+                          : squad?.centerBack2?.tier === "Silver"
                           ? Silvers
-                          : squad.centerBack2?.tier === "Gold"
+                          : squad?.centerBack2?.tier === "Gold"
                           ? GoldCard
-                          : squad.centerBack2?.tier === "Platinium"
+                          : squad?.centerBack2?.tier === "Platinium"
                           ? Platinum
-                          : squad.centerBack2?.tier === "Diamond"
+                          : squad?.centerBack2?.tier === "Diamond"
                           ? Diamonds
                           : Platinum
                       }
@@ -953,27 +963,27 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        {squad.centerBack3?.position}
+                        {squad?.centerBack3?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        {squad.centerBack3?.rating}
+                        {squad?.centerBack3?.rating}
                       </Typography>
                       <Typography color="white">
-                        {squad.centerBack3?.lastname}
+                        {squad?.centerBack3?.lastname}
                       </Typography>
                     </Box>
                     <img
                       width="100px"
                       src={
-                        squad.centerBack3?.tier === "Bronze"
+                        squad?.centerBack3?.tier === "Bronze"
                           ? Bronzes
-                          : squad.centerBack3?.tier === "Silver"
+                          : squad?.centerBack3?.tier === "Silver"
                           ? Silvers
-                          : squad.centerBack3?.tier === "Gold"
+                          : squad?.centerBack3?.tier === "Gold"
                           ? GoldCard
-                          : squad.centerBack3?.tier === "Platinium"
+                          : squad?.centerBack3?.tier === "Platinium"
                           ? Platinum
-                          : squad.centerBack3?.tier === "Diamond"
+                          : squad?.centerBack3?.tier === "Diamond"
                           ? Diamonds
                           : Platinum
                       }
@@ -983,27 +993,27 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        {squad.centerBack4?.position}
+                        {squad?.centerBack4?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        {squad.centerBack4?.rating}
+                        {squad?.centerBack4?.rating}
                       </Typography>
                       <Typography color="white">
-                        {squad.centerBack4?.lastname}
+                        {squad?.centerBack4?.lastname}
                       </Typography>
                     </Box>
                     <img
                       width="100px"
                       src={
-                        squad.centerBack4?.tier === "Bronze"
+                        squad?.centerBack4?.tier === "Bronze"
                           ? Bronzes
-                          : squad.centerBack4?.tier === "Silver"
+                          : squad?.centerBack4?.tier === "Silver"
                           ? Silvers
-                          : squad.centerBack4?.tier === "Gold"
+                          : squad?.centerBack4?.tier === "Gold"
                           ? GoldCard
-                          : squad.centerBack4?.tier === "Platinium"
+                          : squad?.centerBack4?.tier === "Platinium"
                           ? Platinum
-                          : squad.centerBack4?.tier === "Diamond"
+                          : squad?.centerBack4?.tier === "Diamond"
                           ? Diamonds
                           : Platinum
                       }
@@ -1023,27 +1033,27 @@ export default function CreateSquad() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        {squad.goalkeeper?.position}
+                        {squad?.goalkeeper?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        {squad.goalkeeper?.rating}
+                        {squad?.goalkeeper?.rating}
                       </Typography>
                       <Typography color="white">
-                        {squad.goalkeeper?.lastname}
+                        {squad?.goalkeeper?.lastname}
                       </Typography>
                     </Box>
                     <img
                       width="100px"
                       src={
-                        squad.goalkeeper?.tier === "Bronze"
+                        squad?.goalkeeper?.tier === "Bronze"
                           ? Bronzes
-                          : squad.goalkeeper?.tier === "Silver"
+                          : squad?.goalkeeper?.tier === "Silver"
                           ? Silvers
-                          : squad.goalkeeper?.tier === "Gold"
+                          : squad?.goalkeeper?.tier === "Gold"
                           ? GoldCard
-                          : squad.goalkeeper?.tier === "Platinium"
+                          : squad?.goalkeeper?.tier === "Platinium"
                           ? Platinum
-                          : squad.goalkeeper?.tier === "Diamond"
+                          : squad?.goalkeeper?.tier === "Diamond"
                           ? Diamonds
                           : Platinum
                       }
