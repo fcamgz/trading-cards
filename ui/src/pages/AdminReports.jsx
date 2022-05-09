@@ -269,51 +269,58 @@ export default function Homepage() {
                     <CardHeader title={`Recent Users`}></CardHeader>
                   </Box>
                   <CardContent>
-                    <Box sx={{ display: "flex", justifyContent: "center" }}>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Username</TableCell>
-                            <TableCell>Created At</TableCell>
-                            <TableCell align="right">Ban User</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {userData?.map((user) => (
-                            <TableRow key={user.username}>
-                              <TableCell component="th" scope="row">
-                                {user.username}
-                              </TableCell>
-                              <TableCell component="th" scope="row">
-                                {`${new Date(user.createdAt).getDate()}/${
-                                  new Date(user.createdAt).getMonth() + 1
-                                }/${new Date(user.createdAt).getFullYear()}`}
-                              </TableCell>
-                              <TableCell align="right">
-                                {user.banned === "true" ? (
-                                  <Button
-                                    size="small"
-                                    onClick={() => unbanUser(user._id)}
-                                    variant="contained"
-                                    color="success"
-                                  >
-                                    UnBan User
-                                  </Button>
-                                ) : (
-                                  <Button
-                                    size="small"
-                                    onClick={() => banUser(user._id)}
-                                    variant="contained"
-                                    color="error"
-                                  >
-                                    Ban User
-                                  </Button>
-                                )}
-                              </TableCell>
+                    <Box
+                      sx={{
+                        maxHeight: 310,
+                        overflow: "auto",
+                      }}
+                    >
+                      <List sx={{ display: "flex", justifyContent: "center" }}>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Username</TableCell>
+                              <TableCell>Created At</TableCell>
+                              <TableCell align="right">Ban User</TableCell>
                             </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
+                          </TableHead>
+                          <TableBody>
+                            {userData?.map((user) => (
+                              <TableRow key={user.username}>
+                                <TableCell component="th" scope="row">
+                                  {user.username}
+                                </TableCell>
+                                <TableCell component="th" scope="row">
+                                  {`${new Date(user.createdAt).getDate()}/${
+                                    new Date(user.createdAt).getMonth() + 1
+                                  }/${new Date(user.createdAt).getFullYear()}`}
+                                </TableCell>
+                                <TableCell align="right">
+                                  {user.banned === "true" ? (
+                                    <Button
+                                      size="small"
+                                      onClick={() => unbanUser(user._id)}
+                                      variant="contained"
+                                      color="success"
+                                    >
+                                      UnBan User
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      size="small"
+                                      onClick={() => banUser(user._id)}
+                                      variant="contained"
+                                      color="error"
+                                    >
+                                      Ban User
+                                    </Button>
+                                  )}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </List>
                     </Box>
                   </CardContent>
                 </Card>
@@ -377,36 +384,46 @@ export default function Homepage() {
               <Box>
                 <Card>
                   <Box
-                    sx={{ display: "flex", justifyContent: "space-between" }}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
                   >
                     <CardHeader title={`Recently Added Packs`}></CardHeader>
                   </Box>
                   <CardContent>
-                    <Box sx={{ display: "flex", justifyContent: "center" }}>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Pack Name</TableCell>
-                            <TableCell align="right">Price</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {packData?.map((pack) => (
-                            <TableRow key={pack._id}>
-                              <TableCell component="th" scope="row">
-                                {pack.name}
-                              </TableCell>
-                              <TableCell
-                                align="right"
-                                component="th"
-                                scope="row"
-                              >
-                                {pack.price}
-                              </TableCell>
+                    <Box
+                      sx={{
+                        maxHeight: 310,
+                        overflow: "auto",
+                      }}
+                    >
+                      <List sx={{ display: "flex", justifyContent: "center" }}>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Pack Name</TableCell>
+                              <TableCell align="right">Price</TableCell>
                             </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
+                          </TableHead>
+                          <TableBody>
+                            {packData?.map((pack) => (
+                              <TableRow key={pack._id}>
+                                <TableCell component="th" scope="row">
+                                  {pack.name}
+                                </TableCell>
+                                <TableCell
+                                  align="right"
+                                  component="th"
+                                  scope="row"
+                                >
+                                  {pack.price}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </List>
                     </Box>
                   </CardContent>
                 </Card>
@@ -423,34 +440,41 @@ export default function Homepage() {
                   <CardContent>
                     <Box
                       sx={{
-                        display: "flex",
-                        justifyContent: "center",
+                        maxHeight: 310,
+                        overflow: "auto",
                       }}
                     >
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Offer From</TableCell>
-                            <TableCell align="right">Offered To</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {tradeData?.map((trade) => (
-                            <TableRow key={trade._id}>
-                              <TableCell component="th" scope="row">
-                                {trade.offerTo}
-                              </TableCell>
-                              <TableCell
-                                align="right"
-                                component="th"
-                                scope="row"
-                              >
-                                {trade.offerFrom}
-                              </TableCell>
+                      <List sx={{ display: "flex" }}>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Offer From</TableCell>
+                              <TableCell align="right">Offered To</TableCell>
                             </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
+                          </TableHead>
+                          <TableBody>
+                            {tradeData?.map((trade) => (
+                              <TableRow key={trade._id}>
+                                <TableCell
+                                  sx={{ fontSize: "11px" }}
+                                  component="th"
+                                  scope="row"
+                                >
+                                  {trade.offerTo}
+                                </TableCell>
+                                <TableCell
+                                  align="right"
+                                  component="th"
+                                  scope="row"
+                                  sx={{ fontSize: "11px" }}
+                                >
+                                  {trade.offerFrom}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </List>
                     </Box>
                   </CardContent>
                 </Card>

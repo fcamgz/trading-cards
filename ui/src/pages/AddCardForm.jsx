@@ -11,6 +11,7 @@ import {
   Grid,
   Input,
   InputLabel,
+  List,
   ListItemText,
   MenuItem,
   OutlinedInput,
@@ -502,53 +503,59 @@ export default function AddCardForm() {
               Cards in the Database
             </Typography>
             <TableContainer pageSize={5} component={Paper}>
-              <Table sx={{ minWidth: 650 }}>
-                <TableHead
-                  sx={{
-                    backgroundColor: "#FAFAFA",
-                    borderBottom: "2px solid #AFAFAF",
-                  }}
-                >
-                  <TableRow>
-                    <TableCell sx={{ fontWeight: "600" }}>Card</TableCell>
-                    <TableCell sx={{ fontWeight: "600" }} align="right">
-                      Team
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "600" }} align="right">
-                      Nationality
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "600" }} align="right">
-                      Tier
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "600" }} align="right">
-                      Rating
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "600" }} align="right">
-                      Price
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {cardData &&
-                    cardData.map((card) => (
-                      <TableRow
-                        key={card.lastname}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {card.firstname} {card.lastname}
+              <Box sx={{ maxHeight: 320, overflow: "auto" }}>
+                <List>
+                  <Table sx={{ minWidth: 740 }}>
+                    <TableHead
+                      sx={{
+                        backgroundColor: "#FAFAFA",
+                        borderBottom: "2px solid #AFAFAF",
+                      }}
+                    >
+                      <TableRow>
+                        <TableCell sx={{ fontWeight: "600" }}>Card</TableCell>
+                        <TableCell sx={{ fontWeight: "600" }} align="right">
+                          Team
                         </TableCell>
-                        <TableCell align="right">{card.team}</TableCell>
-                        <TableCell align="right">{card.nationality}</TableCell>
-                        <TableCell align="right">{card.tier}</TableCell>
-                        <TableCell align="right">{card.rating}</TableCell>
-                        <TableCell align="right">{card.price}</TableCell>
+                        <TableCell sx={{ fontWeight: "600" }} align="right">
+                          Nationality
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: "600" }} align="right">
+                          Tier
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: "600" }} align="right">
+                          Rating
+                        </TableCell>
+                        <TableCell sx={{ fontWeight: "600" }} align="right">
+                          Price
+                        </TableCell>
                       </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
+                    </TableHead>
+                    <TableBody>
+                      {cardData &&
+                        cardData.map((card) => (
+                          <TableRow
+                            key={card.lastname}
+                            sx={{
+                              "&:last-child td, &:last-child th": { border: 0 },
+                            }}
+                          >
+                            <TableCell component="th" scope="row">
+                              {card.firstname} {card.lastname}
+                            </TableCell>
+                            <TableCell align="right">{card.team}</TableCell>
+                            <TableCell align="right">
+                              {card.nationality}
+                            </TableCell>
+                            <TableCell align="right">{card.tier}</TableCell>
+                            <TableCell align="right">{card.rating}</TableCell>
+                            <TableCell align="right">{card.price}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </List>
+              </Box>
             </TableContainer>
           </Grid>
         </Grid>
