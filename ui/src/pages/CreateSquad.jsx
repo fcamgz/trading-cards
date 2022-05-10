@@ -23,13 +23,25 @@ import Platinum from "../images/Platinium-Card.png";
 import Diamonds from "../images/pack-background2.png";
 import PitchImage from "../images/Soccer_Field_Transparant.svg.png";
 import Footer from "../components/Footer";
+import { platform } from "os";
 
 export default function CreateSquad() {
   const [cardData, setCardData] = useState([{}]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
   const [squad, setSquad] = useState({});
+  const [squadArray, setSquadArray] = useState([]);
   const [updated, setUpdated] = useState(false);
+  const [teamRating, setTeamRating] = useState(0);
+
+  const calculateTeamRating = () => {
+    let rating = 0;
+    for (const player of squadArray) {
+      rating += player.rating;
+    }
+    setTeamRating(rating / squad.length);
+    return teamRating;
+  };
 
   const data = [
     { id: 1 },
@@ -77,6 +89,8 @@ export default function CreateSquad() {
 
     // get squad values
     axios.get(`http://localhost:5000/api/cards/userCollection/${user?._id}`);
+
+    calculateTeamRating();
   }, [user?._id]);
 
   useEffect(() => {
@@ -86,7 +100,8 @@ export default function CreateSquad() {
       .then((res) => res.data)
       .then((res) => {
         setSquad(res[0]);
-        console.log(res);
+        setSquadArray(res);
+        console.log("Squad array " + squadArray);
       })
       .catch((err) => console.log(err));
   }, [user?._id, updated]);
@@ -204,7 +219,7 @@ export default function CreateSquad() {
                       <FormControl sx={{ m: 1, width: "20%" }}>
                         <InputLabel>Striker 1</InputLabel>
                         <Select
-                          value={squad?.striker1 ? squad.striker1 : ""}
+                          value={squad?.striker1}
                           onChange={(e) => {
                             setSquad({
                               ...squad,
@@ -214,7 +229,7 @@ export default function CreateSquad() {
                           sx={{ backgroundColor: "white" }}
                           input={<OutlinedInput label="Striker1" />}
                           fullWidth
-                          defaultValue={cardData[0]}
+                          defaultValue={cardData[1]}
                         >
                           {cardData?.map((card) => (
                             <MenuItem key={card._id} value={card}>
@@ -239,7 +254,7 @@ export default function CreateSquad() {
                           sx={{ backgroundColor: "white" }}
                           input={<OutlinedInput label="Striker2" />}
                           fullWidth
-                          defaultValue={cardData[0]}
+                          defaultValue={cardData[1]}
                         >
                           {cardData?.map((card) => (
                             <MenuItem key={card._id} value={card}>
@@ -274,7 +289,7 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield1" />}
                         fullWidth
-                        defaultValue={cardData[0]}
+                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -324,7 +339,7 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield3" />}
                         fullWidth
-                        defaultValue={cardData[0]}
+                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -358,7 +373,7 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield4" />}
                         fullWidth
-                        defaultValue={cardData[0]}
+                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -391,7 +406,7 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback1" />}
                         fullWidth
-                        defaultValue={cardData[0]}
+                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -416,7 +431,7 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback2" />}
                         fullWidth
-                        defaultValue={cardData[0]}
+                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -441,7 +456,7 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback3" />}
                         fullWidth
-                        defaultValue={cardData[0]}
+                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -466,7 +481,7 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback4" />}
                         fullWidth
-                        defaultValue={cardData[0]}
+                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -499,7 +514,7 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Goalkeeper" />}
                         fullWidth
-                        defaultValue={cardData[0]}
+                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -543,7 +558,7 @@ export default function CreateSquad() {
                   }}
                 />
                 <Typography variant="h6" textAlign="center" color="white">
-                  99
+                  {teamRating}
                 </Typography>
               </Box>
               <Box mt={4}>
@@ -598,70 +613,24 @@ export default function CreateSquad() {
                   textAlign="center"
                   color="white"
                 >
-                  Reserves
+                  Cards List
                 </Typography>
                 <Paper style={{ maxHeight: 240, overflow: "auto" }}>
                   <List>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 6px",
-                        borderBottom: "2px solid #AFAFAF",
-                      }}
-                    >
-                      <Typography>Maguire</Typography>
-                      <Typography>D</Typography>
-                      <Typography>70</Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 6px",
-                        borderBottom: "2px solid #AFAFAF",
-                      }}
-                    >
-                      <Typography>Maguire</Typography>
-                      <Typography>D</Typography>
-                      <Typography>70</Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 6px",
-                        borderBottom: "2px solid #AFAFAF",
-                      }}
-                    >
-                      <Typography>Maguire</Typography>
-                      <Typography>D</Typography>
-                      <Typography>70</Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 6px",
-                        borderBottom: "2px solid #AFAFAF",
-                      }}
-                    >
-                      <Typography>Maguire</Typography>
-                      <Typography>D</Typography>
-                      <Typography>70</Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "12px 6px",
-                        borderBottom: "2px solid #AFAFAF",
-                      }}
-                    >
-                      <Typography>Maguire</Typography>
-                      <Typography>D</Typography>
-                      <Typography>70</Typography>
-                    </Box>
+                    {cardData.map((card) => (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          padding: "12px 6px",
+                          borderBottom: "2px solid #AFAFAF",
+                        }}
+                      >
+                        <Typography>{card.lastname}</Typography>
+                        <Typography>{card.position}</Typography>
+                        <Typography>{card.rating}</Typography>
+                      </Box>
+                    ))}
                   </List>
                 </Paper>
               </Box>
