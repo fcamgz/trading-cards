@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import {
+  Backdrop,
   Box,
   Button,
+  CircularProgress,
   Divider,
   FormControl,
   InputLabel,
@@ -29,11 +31,13 @@ export default function CreateSquad() {
   const [cardData, setCardData] = useState([{}]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
-  const [squad, setSquad] = useState({});
+  const [squad, setSquad] = useState([]);
   const [squadArray, setSquadArray] = useState([]);
   const [updated, setUpdated] = useState(false);
   const [teamRating, setTeamRating] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
+  /*
   const calculateTeamRating = () => {
     let rating = 0;
     for (const player of squadArray) {
@@ -42,6 +46,7 @@ export default function CreateSquad() {
     setTeamRating(rating / squad.length);
     return teamRating;
   };
+  */
 
   const data = [
     { id: 1 },
@@ -58,6 +63,63 @@ export default function CreateSquad() {
   ];
 
   useEffect(() => {
+    setIsLoading(true);
+
+    const fetchData = async () => {
+      await axios
+        .get("/api/getUsername", {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        })
+        .then((res) => res.data)
+        .then((data) => {
+          console.log(data);
+          console.log(data.isLoggedIn);
+          if (data.isLoggedIn) {
+            setUser(data.user);
+            setIsLoggedIn(true);
+          }
+        })
+        .catch((err) => console.log(err));
+
+      // get cards
+      await axios
+        .get(`http://localhost:5000/api/cards/userCollection/${user?._id}`)
+        .then((res) => res.data)
+        .then((res) => {
+          setCardData(res);
+          console.log(res);
+          console.log("fetch card stuff");
+        })
+        .catch((err) => console.log(err));
+
+      /*
+        // get squad
+      await axios
+        .get(`http://localhost:5000/api/squad/getSquad/${user?._id}`)
+        .then((res) => res.data)
+        .then((res) => {
+          setSquad(res[0]);
+          setSquadArray(res);
+          console.log("Squad array " + squadArray);
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err));
+    };
+    */
+      // get squad array
+      await axios
+        .get(`http://localhost:5000/api/squad/getSquadArray/${user?._id}`)
+        .then((res) => res.data)
+        .then((res) => {
+          setSquad(res[0]);
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err));
+    };
+
+    /*
     // get user
     axios
       .get("/api/getUsername", {
@@ -74,38 +136,40 @@ export default function CreateSquad() {
           setIsLoggedIn(true);
         }
       })
-      .catch((err) => console.log(err));
-
-    // get cards
-    axios
-      .get(`http://localhost:5000/api/cards/userCollection/${user?._id}`)
-      .then((res) => res.data)
-      .then((res) => {
-        setCardData(res);
-        console.log(res);
-        console.log("fetch card stuff");
+      .then(() => {
+        // get cards
+        axios
+          .get(`http://localhost:5000/api/cards/userCollection/${user?._id}`)
+          .then((res) => res.data)
+          .then((res) => {
+            setCardData(res);
+            console.log(res);
+            console.log("fetch card stuff");
+          })
+          .catch((err) => console.log(err));
       })
-      .catch((err) => console.log(err));
-
-    // get squad values
-    axios.get(`http://localhost:5000/api/cards/userCollection/${user?._id}`);
-
-    calculateTeamRating();
-  }, [user?._id]);
-
-  useEffect(() => {
-    // get squad
-    axios
-      .get(`http://localhost:5000/api/squad/getSquad/${user?._id}`)
-      .then((res) => res.data)
-      .then((res) => {
-        setSquad(res[0]);
-        setSquadArray(res);
-        console.log("Squad array " + squadArray);
+      .then(() => {
+        // get squad
+        axios
+          .get(`http://localhost:5000/api/squad/getSquad/${user?._id}`)
+          .then((res) => res.data)
+          .then((res) => {
+            setSquad(res[0]);
+            setSquadArray(res);
+            console.log("Squad array " + squadArray);
+            setIsLoading(false);
+          })
+          .catch((err) => console.log(err));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
+      */
+    // calculateTeamRating();
+
+    fetchData();
   }, [user?._id, updated]);
 
+  /*
   const handleSubmit = () => {
     if (squad?._id !== "") {
       axios
@@ -139,6 +203,84 @@ export default function CreateSquad() {
     }
     setUpdated(!updated);
   };
+  */
+  const handleSubmit = () => {
+    if (squad?._id !== "") {
+      axios
+        .post(
+          `http://localhost:5000/api/squad/modifySquadArray/${squad?._id}`,
+          {
+            strikers: [squad.striker1, squad.striker2],
+            midfields: [
+              squad.midfield1,
+              squad.midfield2,
+              squad.midfield3,
+              squad.midfield4,
+            ],
+            defenders: [
+              squad.centerBack1,
+              squad.centerBack2,
+              squad.centerBack3,
+              squad.centerBack4,
+            ],
+            goalkeeper: squad.goalkeeper,
+            owner: user?._id,
+          }
+        )
+        .then((res) => res.data)
+        .then((res) => {
+          console.log("Squad updated " + res);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      axios
+        .post(`http://localhost:5000/api/squad/createSquadArray`, {
+          strikers: [squad.striker1, squad.striker2],
+          midfields: [
+            squad.midfield1,
+            squad.midfield2,
+            squad.midfield3,
+            squad.midfield4,
+          ],
+          defenders: [
+            squad.centerBack1,
+            squad.centerBack2,
+            squad.centerBack3,
+            squad.centerBack4,
+          ],
+          goalkeeper: squad.goalkeeper,
+          owner: user?._id,
+        })
+        .then((res) => res.data)
+        .then((res) => {
+          console.log("Squad created " + res);
+        })
+        .catch((err) => console.log(err));
+    }
+    setUpdated(!updated);
+  };
+
+  const handleAllowPlayersToChallengeSquad = () => {
+    axios
+      .get(`http://localhost:5000/api/squad/allowChallange/${squad._id}`)
+      .then((res) => res.data)
+      .then((res) => {
+        console.log(res);
+        setUpdated(!updated);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleDoNotAllowPlayersToChallengeSquad = () => {
+    axios
+      .get(`http://localhost:5000/api/squad/doNotAllowChallange/${squad._id}`)
+      .then((res) => res.data)
+      .then((res) => {
+        console.log(res);
+        setUpdated(!updated);
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <Box
@@ -149,6 +291,12 @@ export default function CreateSquad() {
         boxSizing: "border-box",
       }}
     >
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         container
@@ -198,6 +346,27 @@ export default function CreateSquad() {
             }}
           >
             <Box sx={{ flex: "0.9" }}>
+              {squad?.isChallenge === "true" ? (
+                <Box>
+                  <Button
+                    onClick={handleDoNotAllowPlayersToChallengeSquad}
+                    variant="contained"
+                    color="error"
+                  >
+                    Don't Allow Players to Challenge your Squad
+                  </Button>
+                </Box>
+              ) : (
+                <Box>
+                  <Button
+                    onClick={handleAllowPlayersToChallengeSquad}
+                    variant="contained"
+                    color="success"
+                  >
+                    Allow Players to Challenge your Squad
+                  </Button>
+                </Box>
+              )}
               <Box>
                 <Box
                   sx={{
@@ -546,66 +715,6 @@ export default function CreateSquad() {
               </Box>
             </Box>
             <Box sx={{ flex: "0.28" }}>
-              <Box>
-                <Typography variant="h6" textAlign="center" color="white">
-                  Squad Rating
-                </Typography>
-                <Divider
-                  sx={{
-                    color: "white",
-                    marginBottom: "12px",
-                    marginTop: "12px",
-                  }}
-                />
-                <Typography variant="h6" textAlign="center" color="white">
-                  {teamRating}
-                </Typography>
-              </Box>
-              <Box mt={4}>
-                <Typography variant="h6" textAlign="center" color="white">
-                  Best Player
-                </Typography>
-                <Divider
-                  sx={{
-                    color: "white",
-                    marginBottom: "12px",
-                    marginTop: "12px",
-                  }}
-                />
-                <Typography variant="body1" textAlign="center" color="white">
-                  Cristiano Ronaldo
-                </Typography>
-              </Box>
-              <Box mt={6}>
-                <Typography variant="h6" textAlign="center" color="white">
-                  Chemistry
-                </Typography>
-                <Divider
-                  sx={{
-                    color: "white",
-                    marginBottom: "12px",
-                    marginTop: "12px",
-                  }}
-                />
-                <Typography variant="h6" textAlign="center" color="white">
-                  86
-                </Typography>
-              </Box>
-              <Box mt={4}>
-                <Typography variant="h6" textAlign="center" color="white">
-                  Stats
-                </Typography>
-                <Divider
-                  sx={{
-                    color: "white",
-                    marginBottom: "12px",
-                    marginTop: "12px",
-                  }}
-                />
-                <Typography variant="h6" textAlign="center" color="white">
-                  12W - 5L
-                </Typography>
-              </Box>
               <Box mt={6}>
                 <Typography
                   gutterBottom
@@ -615,14 +724,14 @@ export default function CreateSquad() {
                 >
                   Cards List
                 </Typography>
-                <Paper style={{ maxHeight: 240, overflow: "auto" }}>
+                <Paper style={{ maxHeight: 320, overflow: "auto" }}>
                   <List>
                     {cardData.map((card) => (
                       <Box
                         sx={{
                           display: "flex",
                           justifyContent: "space-between",
-                          padding: "12px 6px",
+                          padding: "18px 6px",
                           borderBottom: "2px solid #AFAFAF",
                         }}
                       >
@@ -659,209 +768,41 @@ export default function CreateSquad() {
                     gap: "40px",
                   }}
                 >
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        {squad?.striker1?.position}
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        {squad?.striker1?.rating}
-                      </Typography>
-                      <Typography color="white">
-                        {squad?.striker1?.lastname}
-                      </Typography>
+                  {squad.strikers?.map((striker) => (
+                    <Box key={striker._id} sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          {striker.position}
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          {striker.rating}
+                        </Typography>
+                        <Typography color="white">
+                          {striker.lastname}
+                        </Typography>
+                      </Box>
+                      <img
+                        width="100px"
+                        src={
+                          striker.tier === "Bronze"
+                            ? Bronzes
+                            : striker.tier === "Silver"
+                            ? Silvers
+                            : striker.tier === "Gold"
+                            ? GoldCard
+                            : striker.tier === "Platinium"
+                            ? Platinum
+                            : striker.tier === "Diamond"
+                            ? Diamonds
+                            : Platinum
+                        }
+                        alt="Striker"
+                      />
                     </Box>
-                    <img
-                      width="100px"
-                      src={
-                        squad?.striker1?.tier === "Bronze"
-                          ? Bronzes
-                          : squad?.striker1?.tier === "Silver"
-                          ? Silvers
-                          : squad?.striker1?.tier === "Gold"
-                          ? GoldCard
-                          : squad?.striker1?.tier === "Platinium"
-                          ? Platinum
-                          : squad?.striker1?.tier === "Diamond"
-                          ? Diamonds
-                          : Platinum
-                      }
-                      alt="striker1"
-                    />
-                  </Box>
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        {squad?.striker2?.position}
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        {squad?.striker2?.rating}
-                      </Typography>
-                      <Typography color="white">
-                        {squad?.striker2?.lastname}
-                      </Typography>
-                    </Box>
-                    <img
-                      width="100px"
-                      src={
-                        squad?.striker2?.tier === "Bronze"
-                          ? Bronzes
-                          : squad?.striker2?.tier === "Silver"
-                          ? Silvers
-                          : squad?.striker2?.tier === "Gold"
-                          ? GoldCard
-                          : squad?.striker2?.tier === "Platinium"
-                          ? Platinum
-                          : squad?.striker2?.tier === "Diamond"
-                          ? Diamonds
-                          : Platinum
-                      }
-                      alt="striker2"
-                    />
-                  </Box>
+                  ))}
                 </Box>
                 <Box
-                  mt={4}
-                  sx={{
-                    flex: "1 160px",
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: "80px",
-                  }}
-                >
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        {squad?.midfield1?.position}
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        {squad?.midfield1?.rating}
-                      </Typography>
-                      <Typography color="white">
-                        {squad?.midfield1?.lastname}
-                      </Typography>
-                    </Box>
-                    <img
-                      width="100px"
-                      src={
-                        squad?.midfield1?.tier === "Bronze"
-                          ? Bronzes
-                          : squad?.midfield1?.tier === "Silver"
-                          ? Silvers
-                          : squad?.midfield1?.tier === "Gold"
-                          ? GoldCard
-                          : squad?.midfield1?.tier === "Platinium"
-                          ? Platinum
-                          : squad?.midfield1?.tier === "Diamond"
-                          ? Diamonds
-                          : Platinum
-                      }
-                      alt="midfield1"
-                    />
-                  </Box>
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        {squad?.midfield2?.position}
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        {squad?.midfield2?.rating}
-                      </Typography>
-                      <Typography color="white">
-                        {squad?.midfield2?.lastname}
-                      </Typography>
-                    </Box>
-                    <img
-                      width="100px"
-                      src={
-                        squad?.midfield2?.tier === "Bronze"
-                          ? Bronzes
-                          : squad?.midfield2?.tier === "Silver"
-                          ? Silvers
-                          : squad?.midfield2?.tier === "Gold"
-                          ? GoldCard
-                          : squad?.midfield2?.tier === "Platinium"
-                          ? Platinum
-                          : squad?.midfield2?.tier === "Diamond"
-                          ? Diamonds
-                          : Platinum
-                      }
-                      alt="midfield2"
-                    />
-                  </Box>
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        {squad?.midfield3?.position}
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        {squad?.midfield3?.rating}
-                      </Typography>
-                      <Typography color="white">
-                        {squad?.midfield3?.lastname}
-                      </Typography>
-                    </Box>
-                    <img
-                      width="100px"
-                      src={
-                        squad?.midfield3?.tier === "Bronze"
-                          ? Bronzes
-                          : squad?.midfield3?.tier === "Silver"
-                          ? Silvers
-                          : squad?.midfield3?.tier === "Gold"
-                          ? GoldCard
-                          : squad?.midfield3?.tier === "Platinium"
-                          ? Platinum
-                          : squad?.midfield3?.tier === "Diamond"
-                          ? Diamonds
-                          : Platinum
-                      }
-                      alt="midfield3"
-                    />
-                  </Box>
-                </Box>
-                <Box
-                  mt={4}
-                  sx={{
-                    flex: "1 160px",
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: "120px",
-                  }}
-                >
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        {squad?.midfield4?.position}
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        {squad?.midfield4?.rating}
-                      </Typography>
-                      <Typography color="white">
-                        {squad?.midfield4?.lastname}
-                      </Typography>
-                    </Box>
-                    <img
-                      width="100px"
-                      src={
-                        squad?.midfield4?.tier === "Bronze"
-                          ? Bronzes
-                          : squad?.midfield4?.tier === "Silver"
-                          ? Silvers
-                          : squad?.midfield4?.tier === "Gold"
-                          ? GoldCard
-                          : squad?.midfield4?.tier === "Platinium"
-                          ? Platinum
-                          : squad?.midfield4?.tier === "Diamond"
-                          ? Diamonds
-                          : Platinum
-                      }
-                      alt="midfield4"
-                    />
-                  </Box>
-                </Box>
-                <Box
-                  mt={4}
+                  mt={10}
                   sx={{
                     flex: "1 160px",
                     display: "flex",
@@ -869,129 +810,83 @@ export default function CreateSquad() {
                     gap: "10px",
                   }}
                 >
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        {squad?.centerBack1?.position}
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        {squad?.centerBack1?.rating}
-                      </Typography>
-                      <Typography color="white">
-                        {squad?.centerBack1?.lastname}
-                      </Typography>
+                  {squad?.midfields?.map((midfield, idx) => (
+                    <Box key={midfield._id} sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          {midfield.position}
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          {midfield.rating}
+                        </Typography>
+                        <Typography color="white">
+                          {midfield.lastname}
+                        </Typography>
+                      </Box>
+                      <img
+                        width="100px"
+                        src={
+                          midfield.tier === "Bronze"
+                            ? Bronzes
+                            : midfield.tier === "Silver"
+                            ? Silvers
+                            : midfield.tier === "Gold"
+                            ? GoldCard
+                            : midfield.tier === "Platinium"
+                            ? Platinum
+                            : midfield.tier === "Diamond"
+                            ? Diamonds
+                            : Platinum
+                        }
+                        alt="midfield"
+                      />
                     </Box>
-                    <img
-                      width="100px"
-                      src={
-                        squad?.centerBack1?.tier === "Bronze"
-                          ? Bronzes
-                          : squad?.centerBack1?.tier === "Silver"
-                          ? Silvers
-                          : squad?.centerBack1?.tier === "Gold"
-                          ? GoldCard
-                          : squad?.centerBack1?.tier === "Platinium"
-                          ? Platinum
-                          : squad?.centerBack1?.tier === "Diamond"
-                          ? Diamonds
-                          : Platinum
-                      }
-                      alt="centerBack1"
-                    />
-                  </Box>
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        {squad?.centerBack2?.position}
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        {squad?.centerBack2?.rating}
-                      </Typography>
-                      <Typography color="white">
-                        {squad?.centerBack2?.lastname}
-                      </Typography>
-                    </Box>
-                    <img
-                      width="100px"
-                      src={
-                        squad?.centerBack2?.tier === "Bronze"
-                          ? Bronzes
-                          : squad?.centerBack2?.tier === "Silver"
-                          ? Silvers
-                          : squad?.centerBack2?.tier === "Gold"
-                          ? GoldCard
-                          : squad?.centerBack2?.tier === "Platinium"
-                          ? Platinum
-                          : squad?.centerBack2?.tier === "Diamond"
-                          ? Diamonds
-                          : Platinum
-                      }
-                      alt="centerBack2"
-                    />
-                  </Box>
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        {squad?.centerBack3?.position}
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        {squad?.centerBack3?.rating}
-                      </Typography>
-                      <Typography color="white">
-                        {squad?.centerBack3?.lastname}
-                      </Typography>
-                    </Box>
-                    <img
-                      width="100px"
-                      src={
-                        squad?.centerBack3?.tier === "Bronze"
-                          ? Bronzes
-                          : squad?.centerBack3?.tier === "Silver"
-                          ? Silvers
-                          : squad?.centerBack3?.tier === "Gold"
-                          ? GoldCard
-                          : squad?.centerBack3?.tier === "Platinium"
-                          ? Platinum
-                          : squad?.centerBack3?.tier === "Diamond"
-                          ? Diamonds
-                          : Platinum
-                      }
-                      alt="centerBack3"
-                    />
-                  </Box>
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        {squad?.centerBack4?.position}
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        {squad?.centerBack4?.rating}
-                      </Typography>
-                      <Typography color="white">
-                        {squad?.centerBack4?.lastname}
-                      </Typography>
-                    </Box>
-                    <img
-                      width="100px"
-                      src={
-                        squad?.centerBack4?.tier === "Bronze"
-                          ? Bronzes
-                          : squad?.centerBack4?.tier === "Silver"
-                          ? Silvers
-                          : squad?.centerBack4?.tier === "Gold"
-                          ? GoldCard
-                          : squad?.centerBack4?.tier === "Platinium"
-                          ? Platinum
-                          : squad?.centerBack4?.tier === "Diamond"
-                          ? Diamonds
-                          : Platinum
-                      }
-                      alt="centerBack4"
-                    />
-                  </Box>
+                  ))}
                 </Box>
                 <Box
-                  mt={4}
+                  mt={12}
+                  sx={{
+                    flex: "1 160px",
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "10px",
+                  }}
+                >
+                  {squad.defenders?.map((defender) => (
+                    <Box key={defender._id} sx={{ display: "flex" }}>
+                      <Box>
+                        <Typography variant="h6" color="white">
+                          {defender.position}
+                        </Typography>
+                        <Typography variant="h6" color="white">
+                          {defender.rating}
+                        </Typography>
+                        <Typography color="white">
+                          {defender.lastname}
+                        </Typography>
+                      </Box>
+                      <img
+                        width="100px"
+                        src={
+                          defender.tier === "Bronze"
+                            ? Bronzes
+                            : defender.tier === "Silver"
+                            ? Silvers
+                            : defender.tier === "Gold"
+                            ? GoldCard
+                            : defender.tier === "Platinium"
+                            ? Platinum
+                            : defender.tier === "Diamond"
+                            ? Diamonds
+                            : Platinum
+                        }
+                        alt="centerBack1"
+                      />
+                    </Box>
+                  ))}
+                </Box>
+                <Box
+                  mt={10}
                   sx={{
                     flex: "1 160px",
                     display: "flex",

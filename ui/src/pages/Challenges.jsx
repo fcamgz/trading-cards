@@ -29,14 +29,7 @@ import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
 import { makeStyles } from "@mui/styles";
 
 export default function Challenges() {
-  const [challengeData, setChallengeData] = useState([
-    {
-      _id: "12323432",
-      owner: "fatih",
-      rating: "98",
-      stats: "W10 - L2",
-    },
-  ]);
+  const [challengeData, setChallengeData] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -62,9 +55,8 @@ export default function Challenges() {
       .catch((err) => console.log(err));
 
     // get challenges
-    /*
     axios
-      .get("http://localhost:5000/api/challenge/")
+      .get("http://localhost:5000/api/squad/getSquadsAllowChallanges")
       .then((res) => res.data)
       .then((res) => {
         setChallengeData(res);
@@ -72,7 +64,6 @@ export default function Challenges() {
         setIsLoading(false);
       })
       .catch((err) => console.log(err));
-      */
   }, []);
   return (
     <Box
@@ -142,13 +133,13 @@ export default function Challenges() {
                   {user?._id === challenge.owner ? (
                     <Card>
                       <CardHeader
-                        title={`Challenge Squad`}
+                        title={`Your Squad`}
                         subheader={`Squad Rating 98 -  Squad Owner: 3412425435`}
                       ></CardHeader>
                       <CardContent>
                         <Stack>
                           {user?.isAdmin ? (
-                            <Box mt={2}>
+                            <Box mb={2}>
                               <Button color="error" variant="contained">
                                 Remove Challenge From Challenges
                               </Button>

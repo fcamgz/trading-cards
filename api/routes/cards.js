@@ -195,7 +195,9 @@ router.post("/removeFromTrade", async (req, res) => {
 
 router.get(`/userCollection/:userId`, async (req, res) => {
   try {
-    const cards = await Card.find({ owner: req.params.userId });
+    const cards = await Card.find({ owner: req.params.userId }).sort({
+      rating: -1,
+    });
     res.status(200).send(cards);
   } catch (err) {
     res.send(err);

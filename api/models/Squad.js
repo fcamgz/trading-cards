@@ -38,6 +38,10 @@ const SquadSchema = mongoose.Schema(
       type: String,
       default: "0",
     },
+    rating: {
+      type: String,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
