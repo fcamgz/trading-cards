@@ -33,9 +33,33 @@ export default function CreateSquad() {
   const [user, setUser] = useState();
   const [squad, setSquad] = useState([]);
   const [squadArray, setSquadArray] = useState([]);
+  const [strikersInput, setStrikersInput] = useState([
+    {
+      striker1: {},
+      striker2: {},
+    },
+  ]);
+  const [midfieldsInput, setMidfieldsInput] = useState([
+    {
+      midfield1: {},
+      midfield2: {},
+      midfield3: {},
+      midfield4: {},
+    },
+  ]);
+  const [defendersInput, setDefendersInput] = useState([
+    {
+      defender1: {},
+      defender2: {},
+      defender3: {},
+      defender4: {},
+    },
+  ]);
+  const [goalkeeperInput, setGoalkeeperInput] = useState({});
   const [updated, setUpdated] = useState(false);
   const [teamRating, setTeamRating] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [goalkeeperRating, setGoalkeeperRating] = useState({});
 
   /*
   const calculateTeamRating = () => {
@@ -114,6 +138,17 @@ export default function CreateSquad() {
         .then((res) => res.data)
         .then((res) => {
           setSquad(res[0]);
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err));
+
+      // get goalkeeper rating
+      await axios
+        .get(`http://localhost:5000/api/squad/getGoalkeeperRating/${user?._id}`)
+        .then((res) => res.data)
+        .then((res) => {
+          setGoalkeeperRating(res);
+          console.log("Goalkeeper rating " + JSON.stringify(res));
           setIsLoading(false);
         })
         .catch((err) => console.log(err));
@@ -388,17 +423,16 @@ export default function CreateSquad() {
                       <FormControl sx={{ m: 1, width: "20%" }}>
                         <InputLabel>Striker 1</InputLabel>
                         <Select
-                          value={squad?.striker1}
+                          value={strikersInput.striker1}
                           onChange={(e) => {
-                            setSquad({
-                              ...squad,
+                            setStrikersInput({
+                              ...strikersInput,
                               striker1: e.target.value,
                             });
                           }}
                           sx={{ backgroundColor: "white" }}
                           input={<OutlinedInput label="Striker1" />}
                           fullWidth
-                          defaultValue={cardData[1]}
                         >
                           {cardData?.map((card) => (
                             <MenuItem key={card._id} value={card}>
@@ -413,17 +447,16 @@ export default function CreateSquad() {
                       <FormControl sx={{ m: 1, width: "20%" }}>
                         <InputLabel>Striker 2</InputLabel>
                         <Select
-                          value={squad?.striker2}
+                          value={strikersInput.striker2}
                           onChange={(e) => {
-                            setSquad({
-                              ...squad,
+                            setStrikersInput({
+                              ...strikersInput,
                               striker2: e.target.value,
                             });
                           }}
                           sx={{ backgroundColor: "white" }}
                           input={<OutlinedInput label="Striker2" />}
                           fullWidth
-                          defaultValue={cardData[1]}
                         >
                           {cardData?.map((card) => (
                             <MenuItem key={card._id} value={card}>
@@ -448,17 +481,16 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Midfield 1</InputLabel>
                       <Select
-                        value={squad?.midfield1}
+                        value={midfieldsInput.midfield1}
                         onChange={(e) => {
-                          setSquad({
-                            ...squad,
+                          setMidfieldsInput({
+                            ...midfieldsInput,
                             midfield1: e.target.value,
                           });
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield1" />}
                         fullWidth
-                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -473,17 +505,16 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Midfield 2</InputLabel>
                       <Select
-                        value={squad?.midfield2}
+                        value={midfieldsInput.midfield2}
                         onChange={(e) => {
-                          setSquad({
-                            ...squad,
+                          setMidfieldsInput({
+                            ...midfieldsInput,
                             midfield2: e.target.value,
                           });
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield2" />}
                         fullWidth
-                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -498,17 +529,16 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Midfield 3</InputLabel>
                       <Select
-                        value={squad?.midfield3}
+                        value={midfieldsInput.midfield3}
                         onChange={(e) => {
-                          setSquad({
-                            ...squad,
+                          setMidfieldsInput({
+                            ...midfieldsInput,
                             midfield3: e.target.value,
                           });
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield3" />}
                         fullWidth
-                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -532,17 +562,16 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Midfield 4</InputLabel>
                       <Select
-                        value={squad?.midfield4}
+                        value={midfieldsInput.midfield4}
                         onChange={(e) => {
-                          setSquad({
-                            ...squad,
+                          setMidfieldsInput({
+                            ...midfieldsInput,
                             midfield4: e.target.value,
                           });
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield4" />}
                         fullWidth
-                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -565,17 +594,16 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Centerback 1</InputLabel>
                       <Select
-                        value={squad?.centerBack1}
+                        value={defendersInput.defender1}
                         onChange={(e) => {
-                          setSquad({
-                            ...squad,
-                            centerBack1: e.target.value,
+                          setDefendersInput({
+                            ...defendersInput,
+                            defender1: e.target.value,
                           });
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback1" />}
                         fullWidth
-                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -590,17 +618,16 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Centerback 2</InputLabel>
                       <Select
-                        value={squad?.centerBack2}
+                        value={defendersInput.defender2}
                         onChange={(e) => {
-                          setSquad({
-                            ...squad,
-                            centerBack2: e.target.value,
+                          setDefendersInput({
+                            ...defendersInput,
+                            defender2: e.target.value,
                           });
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback2" />}
                         fullWidth
-                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -615,17 +642,16 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Centerback 3</InputLabel>
                       <Select
-                        value={squad?.centerBack3}
+                        value={defendersInput.defender3}
                         onChange={(e) => {
-                          setSquad({
-                            ...squad,
-                            centerBack3: e.target.value,
+                          setDefendersInput({
+                            ...defendersInput,
+                            defender3: e.target.value,
                           });
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback3" />}
                         fullWidth
-                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -640,17 +666,16 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Centerback 4</InputLabel>
                       <Select
-                        value={squad?.centerBack4}
+                        value={defendersInput.defender4}
                         onChange={(e) => {
-                          setSquad({
-                            ...squad,
-                            centerBack4: e.target.value,
+                          setDefendersInput({
+                            ...defendersInput,
+                            defender4: e.target.value,
                           });
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback4" />}
                         fullWidth
-                        defaultValue={cardData[1]}
                       >
                         {cardData?.map((card) => (
                           <MenuItem key={card._id} value={card}>
@@ -673,13 +698,8 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Goalkeeper</InputLabel>
                       <Select
-                        value={squad?.goalkeeper}
-                        onChange={(e) => {
-                          setSquad({
-                            ...squad,
-                            goalkeeper: e.target.value,
-                          });
-                        }}
+                        value={goalkeeperInput}
+                        onChange={(e) => setGoalkeeperInput(e.target.value)}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Goalkeeper" />}
                         fullWidth
@@ -715,6 +735,25 @@ export default function CreateSquad() {
               </Box>
             </Box>
             <Box sx={{ flex: "0.28" }}>
+              <Box mt={6}>
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  textAlign="center"
+                  color="white"
+                >
+                  Goalkeeper Rating
+                </Typography>
+                <Divider />
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  textAlign="center"
+                  color="white"
+                >
+                  Goalkeeper Rating
+                </Typography>
+              </Box>
               <Box mt={6}>
                 <Typography
                   gutterBottom
@@ -768,38 +807,39 @@ export default function CreateSquad() {
                     gap: "40px",
                   }}
                 >
-                  {squad.strikers?.map((striker) => (
-                    <Box key={striker._id} sx={{ display: "flex" }}>
-                      <Box>
-                        <Typography variant="h6" color="white">
-                          {striker.position}
-                        </Typography>
-                        <Typography variant="h6" color="white">
-                          {striker.rating}
-                        </Typography>
-                        <Typography color="white">
-                          {striker.lastname}
-                        </Typography>
+                  {squad &&
+                    squad.strikers?.map((striker) => (
+                      <Box key={striker._id} sx={{ display: "flex" }}>
+                        <Box>
+                          <Typography variant="h6" color="white">
+                            {striker.position}
+                          </Typography>
+                          <Typography variant="h6" color="white">
+                            {striker.rating}
+                          </Typography>
+                          <Typography color="white">
+                            {striker.lastname}
+                          </Typography>
+                        </Box>
+                        <img
+                          width="100px"
+                          src={
+                            striker.tier === "Bronze"
+                              ? Bronzes
+                              : striker.tier === "Silver"
+                              ? Silvers
+                              : striker.tier === "Gold"
+                              ? GoldCard
+                              : striker.tier === "Platinium"
+                              ? Platinum
+                              : striker.tier === "Diamond"
+                              ? Diamonds
+                              : Platinum
+                          }
+                          alt="Striker"
+                        />
                       </Box>
-                      <img
-                        width="100px"
-                        src={
-                          striker.tier === "Bronze"
-                            ? Bronzes
-                            : striker.tier === "Silver"
-                            ? Silvers
-                            : striker.tier === "Gold"
-                            ? GoldCard
-                            : striker.tier === "Platinium"
-                            ? Platinum
-                            : striker.tier === "Diamond"
-                            ? Diamonds
-                            : Platinum
-                        }
-                        alt="Striker"
-                      />
-                    </Box>
-                  ))}
+                    ))}
                 </Box>
                 <Box
                   mt={10}
@@ -810,38 +850,39 @@ export default function CreateSquad() {
                     gap: "10px",
                   }}
                 >
-                  {squad?.midfields?.map((midfield, idx) => (
-                    <Box key={midfield._id} sx={{ display: "flex" }}>
-                      <Box>
-                        <Typography variant="h6" color="white">
-                          {midfield.position}
-                        </Typography>
-                        <Typography variant="h6" color="white">
-                          {midfield.rating}
-                        </Typography>
-                        <Typography color="white">
-                          {midfield.lastname}
-                        </Typography>
+                  {squad &&
+                    squad?.midfields?.map((midfield, idx) => (
+                      <Box key={midfield._id} sx={{ display: "flex" }}>
+                        <Box>
+                          <Typography variant="h6" color="white">
+                            {midfield.position}
+                          </Typography>
+                          <Typography variant="h6" color="white">
+                            {midfield.rating}
+                          </Typography>
+                          <Typography color="white">
+                            {midfield.lastname}
+                          </Typography>
+                        </Box>
+                        <img
+                          width="100px"
+                          src={
+                            midfield.tier === "Bronze"
+                              ? Bronzes
+                              : midfield.tier === "Silver"
+                              ? Silvers
+                              : midfield.tier === "Gold"
+                              ? GoldCard
+                              : midfield.tier === "Platinium"
+                              ? Platinum
+                              : midfield.tier === "Diamond"
+                              ? Diamonds
+                              : Platinum
+                          }
+                          alt="midfield"
+                        />
                       </Box>
-                      <img
-                        width="100px"
-                        src={
-                          midfield.tier === "Bronze"
-                            ? Bronzes
-                            : midfield.tier === "Silver"
-                            ? Silvers
-                            : midfield.tier === "Gold"
-                            ? GoldCard
-                            : midfield.tier === "Platinium"
-                            ? Platinum
-                            : midfield.tier === "Diamond"
-                            ? Diamonds
-                            : Platinum
-                        }
-                        alt="midfield"
-                      />
-                    </Box>
-                  ))}
+                    ))}
                 </Box>
                 <Box
                   mt={12}
@@ -852,38 +893,39 @@ export default function CreateSquad() {
                     gap: "10px",
                   }}
                 >
-                  {squad.defenders?.map((defender) => (
-                    <Box key={defender._id} sx={{ display: "flex" }}>
-                      <Box>
-                        <Typography variant="h6" color="white">
-                          {defender.position}
-                        </Typography>
-                        <Typography variant="h6" color="white">
-                          {defender.rating}
-                        </Typography>
-                        <Typography color="white">
-                          {defender.lastname}
-                        </Typography>
+                  {squad &&
+                    squad.defenders?.map((defender) => (
+                      <Box key={defender._id} sx={{ display: "flex" }}>
+                        <Box>
+                          <Typography variant="h6" color="white">
+                            {defender.position}
+                          </Typography>
+                          <Typography variant="h6" color="white">
+                            {defender.rating}
+                          </Typography>
+                          <Typography color="white">
+                            {defender.lastname}
+                          </Typography>
+                        </Box>
+                        <img
+                          width="100px"
+                          src={
+                            defender.tier === "Bronze"
+                              ? Bronzes
+                              : defender.tier === "Silver"
+                              ? Silvers
+                              : defender.tier === "Gold"
+                              ? GoldCard
+                              : defender.tier === "Platinium"
+                              ? Platinum
+                              : defender.tier === "Diamond"
+                              ? Diamonds
+                              : Platinum
+                          }
+                          alt="centerBack1"
+                        />
                       </Box>
-                      <img
-                        width="100px"
-                        src={
-                          defender.tier === "Bronze"
-                            ? Bronzes
-                            : defender.tier === "Silver"
-                            ? Silvers
-                            : defender.tier === "Gold"
-                            ? GoldCard
-                            : defender.tier === "Platinium"
-                            ? Platinum
-                            : defender.tier === "Diamond"
-                            ? Diamonds
-                            : Platinum
-                        }
-                        alt="centerBack1"
-                      />
-                    </Box>
-                  ))}
+                    ))}
                 </Box>
                 <Box
                   mt={10}

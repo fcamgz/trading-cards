@@ -33,9 +33,10 @@ export default function Challenges() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [updated, setUpdated] = useState(false);
 
   useEffect(() => {
-    // setIsLoading(true);
+    setIsLoading(true);
     // get user
     axios
       .get("/api/getUsername", {
@@ -64,7 +65,19 @@ export default function Challenges() {
         setIsLoading(false);
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [updated]);
+
+  const handleDoNotAllowPlayersToChallengeSquad = (squadId) => {
+    axios
+      .get(`http://localhost:5000/api/squad/doNotAllowChallange/${squadId}`)
+      .then((res) => res.data)
+      .then((res) => {
+        console.log(res);
+        setUpdated(!updated);
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <Box
       sx={{
@@ -127,80 +140,91 @@ export default function Challenges() {
             alignItems="flex-start"
             p={8}
           >
-            {challengeData.map((challenge) => (
-              <Grid key={challenge._id} item xs={12} sm={6} md={4} lg={3}>
-                <Box>
-                  {user?._id === challenge.owner ? (
-                    <Card>
-                      <CardHeader
-                        title={`Your Squad`}
-                        subheader={`Squad Rating 98 -  Squad Owner: 3412425435`}
-                      ></CardHeader>
-                      <CardContent>
-                        <Stack>
-                          {user?.isAdmin ? (
-                            <Box mb={2}>
-                              <Button color="error" variant="contained">
-                                Remove Challenge From Challenges
-                              </Button>
-                            </Box>
-                          ) : (
-                            ""
-                          )}
-                        </Stack>
-                        <Box sx={{ display: "flex", justifyContent: "center" }}>
-                          <img
-                            src={PitchImage}
-                            width="226px"
-                            alt="Forwards Pack"
-                          />
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  ) : (
-                    <Card>
-                      <CardHeader
-                        title={`${challenge.owner}'s Squad 
-                        ${challenge.stats}`}
-                        subheader={`Squad owner: ${challenge.owner} - Squad Rating ${challenge.rating}`}
-                      ></CardHeader>
-
-                      <CardContent>
-                        <Stack>
-                          <Button
-                            href={`challenges/1`}
-                            variant="contained"
-                            color="inherit"
-                            sx={{ fontWeight: "600" }}
+            {challengeData &&
+              challengeData?.map((challenge) => (
+                <Grid key={challenge._id} item xs={12} sm={6} md={4} lg={3}>
+                  <Box>
+                    {user?._id === challenge.owner ? (
+                      <Card>
+                        <CardHeader
+                          title={`Your Squad - is challenge ${challenge.isChallange}`}
+                          subheader={`Squad Rating 98 -  Squad Owner: 3412425435`}
+                        ></CardHeader>
+                        <CardContent>
+                          <Stack>
+                            {user?.isAdmin ? (
+                              <Box mb={2}>
+                                <Button
+                                  onClick={() =>
+                                    handleDoNotAllowPlayersToChallengeSquad(
+                                      challenge._id
+                                    )
+                                  }
+                                  color="error"
+                                  variant="contained"
+                                >
+                                  Remove Challenge From Challenges
+                                </Button>
+                              </Box>
+                            ) : (
+                              ""
+                            )}
+                          </Stack>
+                          <Box
+                            sx={{ display: "flex", justifyContent: "center" }}
                           >
-                            Challenge Player
-                          </Button>
-                          {user?.isAdmin || user?._id === challenge.owner ? (
-                            <Box mt={2}>
-                              <Button color="error" variant="contained">
-                                Remove Card From Challenges
-                              </Button>
-                            </Box>
-                          ) : (
-                            ""
-                          )}
-                        </Stack>
-                        <Box
-                          mt={2}
-                          sx={{ display: "flex", justifyContent: "center" }}
-                        >
-                          <img
-                            src={PitchImage}
-                            width="226px"
-                            alt="Forwards Pack"
-                          />
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  )}
-                </Box>
-              </Grid>
-            ))}
+                            <img
+                              src={PitchImage}
+                              width="226px"
+                              alt="Forwards Pack"
+                            />
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    ) : (
+                      <Card>
+                        <CardHeader
+                          title={`${challenge.owner}'s Squad 
+                        ${challenge.stats} - is challenge ${challenge.isChallange}`}
+                          subheader={`Squad owner: ${challenge.owner} - Squad Rating ${challenge.rating} `}
+                        ></CardHeader>
+
+                        <CardContent>
+                          <Stack>
+                            <Button
+                              href={`challenges/1`}
+                              variant="contained"
+                              color="inherit"
+                              sx={{ fontWeight: "600" }}
+                            >
+                              Challenge Player
+                            </Button>
+                            {user?.isAdmin || user?._id === challenge.owner ? (
+                              <Box mt={2}>
+                                <Button color="error" variant="contained">
+                                  Remove Card From Challenges
+                                </Button>
+                              </Box>
+                            ) : (
+                              ""
+                            )}
+                          </Stack>
+                          <Box
+                            mt={2}
+                            sx={{ display: "flex", justifyContent: "center" }}
+                          >
+                            <img
+                              src={PitchImage}
+                              width="226px"
+                              alt="Forwards Pack"
+                            />
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </Box>
+                </Grid>
+              ))}
           </Grid>
         </Box>
         <Footer />
