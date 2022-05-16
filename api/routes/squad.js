@@ -119,23 +119,19 @@ router.get("/getSquadsAllowChallanges", async (req, res) => {
 router.get("/getStrikersRating/:ownerId", async (req, res) => {
   try {
     const squadRating = await SquadArray.aggregate([
+      { $match: { owner: req.params.ownerId } },
       {
-        $match: { owner: { $eq: req.params.ownerId } },
-        $group: {
+        $project: {
           _id: null,
           total: {
-            $sum: {
-              $convert: {
-                input: "$strikers.rating",
-                to: "int",
-              },
-            },
+            $sum: "$strikers.rating",
           },
         },
       },
     ]);
-    res.send(squadRating);
+    res.send(squadRating[0]);
   } catch (err) {
+    console.log(err);
     res.send(err);
   }
 });
@@ -143,23 +139,19 @@ router.get("/getStrikersRating/:ownerId", async (req, res) => {
 router.get("/getMidfieldersRating/:ownerId", async (req, res) => {
   try {
     const squadRating = await SquadArray.aggregate([
+      { $match: { owner: req.params.ownerId } },
       {
-        $match: { owner: { $eq: req.params.ownerId } },
-        $group: {
+        $project: {
           _id: null,
           total: {
-            $sum: {
-              $convert: {
-                input: "$midfielders.rating",
-                to: "int",
-              },
-            },
+            $sum: "$midfields.rating",
           },
         },
       },
     ]);
-    res.send(squadRating);
+    res.send(squadRating[0]);
   } catch (err) {
+    console.log(err);
     res.send(err);
   }
 });
@@ -167,33 +159,32 @@ router.get("/getMidfieldersRating/:ownerId", async (req, res) => {
 router.get("/getDefendersRating/:ownerId", async (req, res) => {
   try {
     const squadRating = await SquadArray.aggregate([
+      { $match: { owner: req.params.ownerId } },
       {
-        $match: { owner: { $eq: req.params.ownerId } },
-        $group: {
+        $project: {
           _id: null,
           total: {
-            $sum: {
-              $convert: {
-                input: "$defenders.rating",
-                to: "int",
-              },
-            },
+            $sum: "$defenders.rating",
           },
         },
       },
     ]);
-    res.send(squadRating);
+    res.send(squadRating[0]);
   } catch (err) {
+    console.log(err);
     res.send(err);
   }
 });
 
 router.get("/getGoalkeeperRating/:ownerId", async (req, res) => {
   try {
-    const squad = await SquadArray.find({ owner: req.params.ownerId });
-    const rating = squad.goalkeeper.rating;
-    res.send(rating);
+    const goalkeeper = await SquadArray.find({
+      owner: req.params.ownerId,
+    }).select("goalkeeper");
+    res.send(goalkeeper);
   } catch (err) {
+    console.log(err);
+
     res.send(err);
   }
 });

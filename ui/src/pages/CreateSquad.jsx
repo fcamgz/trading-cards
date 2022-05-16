@@ -59,7 +59,10 @@ export default function CreateSquad() {
   const [updated, setUpdated] = useState(false);
   const [teamRating, setTeamRating] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [goalkeeperRating, setGoalkeeperRating] = useState({});
+  const [goalkeeperRating, setGoalkeeperRating] = useState("");
+  const [defendersRating, setDefendersRating] = useState(0);
+  const [midfieldersRating, setMidfieldersRating] = useState(0);
+  const [strikersRating, setStrikersRating] = useState(0);
 
   /*
   const calculateTeamRating = () => {
@@ -147,8 +150,40 @@ export default function CreateSquad() {
         .get(`http://localhost:5000/api/squad/getGoalkeeperRating/${user?._id}`)
         .then((res) => res.data)
         .then((res) => {
-          setGoalkeeperRating(res);
-          console.log("Goalkeeper rating " + JSON.stringify(res));
+          setGoalkeeperRating(res[0].goalkeeper?.rating);
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err));
+
+      // get defenders rating
+      await axios
+        .get(`http://localhost:5000/api/squad/getDefendersRating/${user?._id}`)
+        .then((res) => res.data)
+        .then((res) => {
+          setDefendersRating(res.total);
+          console.log(`Defenders rating ${res}`);
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err));
+
+      // get midfielders rating
+      await axios
+        .get(
+          `http://localhost:5000/api/squad/getMidfieldersRating/${user?._id}`
+        )
+        .then((res) => res.data)
+        .then((res) => {
+          setMidfieldersRating(res.total);
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err));
+
+      // get strikers rating
+      await axios
+        .get(`http://localhost:5000/api/squad/getStrikersRating/${user?._id}`)
+        .then((res) => res.data)
+        .then((res) => {
+          setStrikersRating(res.total);
           setIsLoading(false);
         })
         .catch((err) => console.log(err));
@@ -742,16 +777,79 @@ export default function CreateSquad() {
                   textAlign="center"
                   color="white"
                 >
-                  Goalkeeper Rating
+                  Squad Rating
                 </Typography>
-                <Divider />
+                <Divider sx={{ color: "white" }} />
                 <Typography
                   gutterBottom
                   variant="h6"
                   textAlign="center"
                   color="white"
                 >
-                  Goalkeeper Rating
+                  {Math.floor(
+                    (strikersRating / 2 +
+                      midfieldersRating / 4 +
+                      defendersRating / 4 +
+                      goalkeeperRating) /
+                      4
+                  )}
+                </Typography>
+              </Box>
+              <Box mt={6}>
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  textAlign="center"
+                  color="white"
+                >
+                  Strikers Rating
+                </Typography>
+                <Divider sx={{ color: "white" }} />
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  textAlign="center"
+                  color="white"
+                >
+                  {Math.floor(strikersRating / 2)}
+                </Typography>
+              </Box>
+              <Box mt={6}>
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  textAlign="center"
+                  color="white"
+                >
+                  Midfielders Rating
+                </Typography>
+                <Divider sx={{ color: "white" }} />
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  textAlign="center"
+                  color="white"
+                >
+                  {Math.floor(midfieldersRating / 4)}
+                </Typography>
+              </Box>
+              <Box mt={6}>
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  textAlign="center"
+                  color="white"
+                >
+                  Defenders Rating
+                </Typography>
+                <Divider sx={{ color: "white" }} />
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  textAlign="center"
+                  color="white"
+                >
+                  {Math.floor(defendersRating / 4)}
                 </Typography>
               </Box>
               <Box mt={6}>
