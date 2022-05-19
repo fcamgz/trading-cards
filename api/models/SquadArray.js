@@ -10,6 +10,10 @@ const SquadArraySchema = mongoose.Schema({
     type: String,
     default: "false",
   },
+  rating: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model("SquadArray", SquadArraySchema);
