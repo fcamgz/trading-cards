@@ -63,6 +63,7 @@ export default function CreateSquad() {
   const [defendersRating, setDefendersRating] = useState(0);
   const [midfieldersRating, setMidfieldersRating] = useState(0);
   const [strikersRating, setStrikersRating] = useState(0);
+  const [squadExist, setSquadExist] = useState(false);
 
   /*
   const calculateTeamRating = () => {
@@ -141,31 +142,38 @@ export default function CreateSquad() {
         .then((res) => res.data)
         .then((res) => {
           setSquad(res[0]);
-          setIsLoading(false);
+          setSquadExist(true);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
+        .finally(() => setIsLoading(false));
 
-      // get goalkeeper rating
-      await axios
-        .get(`http://localhost:5000/api/squad/getGoalkeeperRating/${user?._id}`)
-        .then((res) => res.data)
-        .then((res) => {
-          setGoalkeeperRating(res[0].goalkeeper?.rating);
-          setIsLoading(false);
-        })
-        .catch((err) => console.log(err));
+      if (squadExist) {
+        // get goalkeeper rating
+        await axios
+          .get(
+            `http://localhost:5000/api/squad/getGoalkeeperRating/${user?._id}`
+          )
+          .then((res) => res.data)
+          .then((res) => {
+            console.log(`goalkeeper ${res[0].goalkeeper}`);
+            setGoalkeeperRating(res[0].goalkeeper?.rating);
+          })
+          .catch((err) => console.log(err))
+          .finally(() => setIsLoading(false));
 
-      // get defenders rating
-      await axios
-        .get(`http://localhost:5000/api/squad/getDefendersRating/${user?._id}`)
-        .then((res) => res.data)
-        .then((res) => {
-          setDefendersRating(res.total);
-          console.log(`Defenders rating ${res}`);
-          setIsLoading(false);
-        })
-        .catch((err) => console.log(err));
-
+        // get defenders rating
+        await axios
+          .get(
+            `http://localhost:5000/api/squad/getDefendersRating/${user?._id}`
+          )
+          .then((res) => res.data)
+          .then((res) => {
+            setDefendersRating(res.total);
+            console.log(`Defenders rating ${res}`);
+          })
+          .catch((err) => console.log(err))
+          .finally(() => setIsLoading(false));
+      }
       // get midfielders rating
       await axios
         .get(
@@ -174,9 +182,9 @@ export default function CreateSquad() {
         .then((res) => res.data)
         .then((res) => {
           setMidfieldersRating(res.total);
-          setIsLoading(false);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
+        .finally(() => setIsLoading(false));
 
       // get strikers rating
       await axios
@@ -184,9 +192,9 @@ export default function CreateSquad() {
         .then((res) => res.data)
         .then((res) => {
           setStrikersRating(res.total);
-          setIsLoading(false);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
+        .finally(() => setIsLoading(false));
     };
 
     /*
@@ -274,26 +282,28 @@ export default function CreateSquad() {
     setUpdated(!updated);
   };
   */
+
   const handleSubmit = () => {
-    if (squad?._id !== "") {
+    if (squad?._id !== undefined) {
+      console.log("modify squad");
       axios
         .post(
           `http://localhost:5000/api/squad/modifySquadArray/${squad?._id}`,
           {
-            strikers: [squad.striker1, squad.striker2],
+            strikers: [strikersInput.striker1, strikersInput.striker2],
             midfields: [
-              squad.midfield1,
-              squad.midfield2,
-              squad.midfield3,
-              squad.midfield4,
+              midfieldsInput.midfield1,
+              midfieldsInput.midfield2,
+              midfieldsInput.midfield3,
+              midfieldsInput.midfield4,
             ],
             defenders: [
-              squad.centerBack1,
-              squad.centerBack2,
-              squad.centerBack3,
-              squad.centerBack4,
+              defendersInput.defender1,
+              defendersInput.defender2,
+              defendersInput.defender3,
+              defendersInput.defender4,
             ],
-            goalkeeper: squad.goalkeeper,
+            goalkeeper: goalkeeperInput,
             owner: user?._id,
           }
         )
@@ -303,22 +313,24 @@ export default function CreateSquad() {
         })
         .catch((err) => console.log(err));
     } else {
+      console.log("create squad");
+      console.log(squad);
       axios
         .post(`http://localhost:5000/api/squad/createSquadArray`, {
-          strikers: [squad.striker1, squad.striker2],
+          strikers: [strikersInput.striker1, strikersInput.striker2],
           midfields: [
-            squad.midfield1,
-            squad.midfield2,
-            squad.midfield3,
-            squad.midfield4,
+            midfieldsInput.midfield1,
+            midfieldsInput.midfield2,
+            midfieldsInput.midfield3,
+            midfieldsInput.midfield4,
           ],
           defenders: [
-            squad.centerBack1,
-            squad.centerBack2,
-            squad.centerBack3,
-            squad.centerBack4,
+            defendersInput.defender1,
+            defendersInput.defender2,
+            defendersInput.defender3,
+            defendersInput.defender4,
           ],
-          goalkeeper: squad.goalkeeper,
+          goalkeeper: goalkeeperInput,
           owner: user?._id,
         })
         .then((res) => res.data)
@@ -458,19 +470,25 @@ export default function CreateSquad() {
                       <FormControl sx={{ m: 1, width: "20%" }}>
                         <InputLabel>Striker 1</InputLabel>
                         <Select
-                          value={strikersInput.striker1}
+                          value={
+                            strikersInput.striker1 ? strikersInput.striker1 : ""
+                          }
                           onChange={(e) => {
                             setStrikersInput({
                               ...strikersInput,
                               striker1: e.target.value,
                             });
+                            setCardData(
+                              cardData.filter((item) => item !== e.target.value)
+                            );
                           }}
                           sx={{ backgroundColor: "white" }}
                           input={<OutlinedInput label="Striker1" />}
                           fullWidth
+                          required
                         >
-                          {cardData?.map((card) => (
-                            <MenuItem key={card._id} value={card}>
+                          {cardData?.map((card, idx) => (
+                            <MenuItem key={idx} value={card}>
                               <ListItemText
                                 primary={`${card.lastname} - ${card.position}`}
                                 secondary={card.rating}
@@ -482,19 +500,25 @@ export default function CreateSquad() {
                       <FormControl sx={{ m: 1, width: "20%" }}>
                         <InputLabel>Striker 2</InputLabel>
                         <Select
-                          value={strikersInput.striker2}
+                          value={
+                            strikersInput.striker2 ? strikersInput.striker2 : ""
+                          }
                           onChange={(e) => {
                             setStrikersInput({
                               ...strikersInput,
                               striker2: e.target.value,
                             });
+                            setCardData(
+                              cardData.filter((item) => item !== e.target.value)
+                            );
                           }}
                           sx={{ backgroundColor: "white" }}
                           input={<OutlinedInput label="Striker2" />}
                           fullWidth
+                          required
                         >
-                          {cardData?.map((card) => (
-                            <MenuItem key={card._id} value={card}>
+                          {cardData?.map((card, idx) => (
+                            <MenuItem key={idx + 10} value={card}>
                               <ListItemText
                                 primary={`${card.lastname} - ${card.position}`}
                                 secondary={card.rating}
@@ -516,19 +540,27 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Midfield 1</InputLabel>
                       <Select
-                        value={midfieldsInput.midfield1}
+                        value={
+                          midfieldsInput.midfield1
+                            ? midfieldsInput.midfield1
+                            : ""
+                        }
                         onChange={(e) => {
                           setMidfieldsInput({
                             ...midfieldsInput,
                             midfield1: e.target.value,
                           });
+                          setCardData(
+                            cardData.filter((item) => item !== e.target.value)
+                          );
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield1" />}
                         fullWidth
+                        required
                       >
-                        {cardData?.map((card) => (
-                          <MenuItem key={card._id} value={card}>
+                        {cardData?.map((card, idx) => (
+                          <MenuItem key={idx + 20} value={card}>
                             <ListItemText
                               primary={`${card.lastname} - ${card.position}`}
                               secondary={card.rating}
@@ -540,19 +572,27 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Midfield 2</InputLabel>
                       <Select
-                        value={midfieldsInput.midfield2}
+                        value={
+                          midfieldsInput.midfield2
+                            ? midfieldsInput.midfield2
+                            : ""
+                        }
                         onChange={(e) => {
                           setMidfieldsInput({
                             ...midfieldsInput,
                             midfield2: e.target.value,
                           });
+                          setCardData(
+                            cardData.filter((item) => item !== e.target.value)
+                          );
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield2" />}
                         fullWidth
+                        required
                       >
-                        {cardData?.map((card) => (
-                          <MenuItem key={card._id} value={card}>
+                        {cardData?.map((card, idx) => (
+                          <MenuItem key={idx + 30} value={card}>
                             <ListItemText
                               primary={`${card.lastname} - ${card.position}`}
                               secondary={card.rating}
@@ -564,19 +604,27 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Midfield 3</InputLabel>
                       <Select
-                        value={midfieldsInput.midfield3}
+                        value={
+                          midfieldsInput.midfield3
+                            ? midfieldsInput.midfield3
+                            : ""
+                        }
                         onChange={(e) => {
                           setMidfieldsInput({
                             ...midfieldsInput,
                             midfield3: e.target.value,
                           });
+                          setCardData(
+                            cardData.filter((item) => item !== e.target.value)
+                          );
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield3" />}
                         fullWidth
+                        required
                       >
-                        {cardData?.map((card) => (
-                          <MenuItem key={card._id} value={card}>
+                        {cardData?.map((card, idx) => (
+                          <MenuItem key={idx + 40} value={card}>
                             <ListItemText
                               primary={`${card.lastname} - ${card.position}`}
                               secondary={card.rating}
@@ -597,19 +645,27 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Midfield 4</InputLabel>
                       <Select
-                        value={midfieldsInput.midfield4}
+                        value={
+                          midfieldsInput.midfield4
+                            ? midfieldsInput.midfield4
+                            : ""
+                        }
                         onChange={(e) => {
                           setMidfieldsInput({
                             ...midfieldsInput,
                             midfield4: e.target.value,
                           });
+                          setCardData(
+                            cardData.filter((item) => item !== e.target.value)
+                          );
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield4" />}
                         fullWidth
+                        required
                       >
-                        {cardData?.map((card) => (
-                          <MenuItem key={card._id} value={card}>
+                        {cardData?.map((card, idx) => (
+                          <MenuItem key={idx + 50} value={card}>
                             <ListItemText
                               primary={`${card.lastname} - ${card.position}`}
                               secondary={card.rating}
@@ -629,19 +685,27 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Centerback 1</InputLabel>
                       <Select
-                        value={defendersInput.defender1}
+                        value={
+                          defendersInput.defender1
+                            ? defendersInput.defender1
+                            : ""
+                        }
                         onChange={(e) => {
                           setDefendersInput({
                             ...defendersInput,
                             defender1: e.target.value,
                           });
+                          setCardData(
+                            cardData.filter((item) => item !== e.target.value)
+                          );
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback1" />}
                         fullWidth
+                        required
                       >
-                        {cardData?.map((card) => (
-                          <MenuItem key={card._id} value={card}>
+                        {cardData?.map((card, idx) => (
+                          <MenuItem key={idx + 60} value={card}>
                             <ListItemText
                               primary={`${card.lastname} - ${card.position}`}
                               secondary={card.rating}
@@ -653,19 +717,27 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Centerback 2</InputLabel>
                       <Select
-                        value={defendersInput.defender2}
+                        value={
+                          defendersInput.defender2
+                            ? defendersInput.defender2
+                            : ""
+                        }
                         onChange={(e) => {
                           setDefendersInput({
                             ...defendersInput,
                             defender2: e.target.value,
                           });
+                          setCardData(
+                            cardData.filter((item) => item !== e.target.value)
+                          );
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback2" />}
                         fullWidth
+                        required
                       >
-                        {cardData?.map((card) => (
-                          <MenuItem key={card._id} value={card}>
+                        {cardData?.map((card, idx) => (
+                          <MenuItem key={idx + 70} value={card}>
                             <ListItemText
                               primary={`${card.lastname} - ${card.position}`}
                               secondary={card.rating}
@@ -677,19 +749,27 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Centerback 3</InputLabel>
                       <Select
-                        value={defendersInput.defender3}
+                        value={
+                          defendersInput.defender3
+                            ? defendersInput.defender3
+                            : ""
+                        }
                         onChange={(e) => {
                           setDefendersInput({
                             ...defendersInput,
                             defender3: e.target.value,
                           });
+                          setCardData(
+                            cardData.filter((item) => item !== e.target.value)
+                          );
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback3" />}
                         fullWidth
+                        required
                       >
-                        {cardData?.map((card) => (
-                          <MenuItem key={card._id} value={card}>
+                        {cardData?.map((card, idx) => (
+                          <MenuItem key={idx + 80} value={card}>
                             <ListItemText
                               primary={`${card.lastname} - ${card.position}`}
                               secondary={card.rating}
@@ -701,19 +781,27 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Centerback 4</InputLabel>
                       <Select
-                        value={defendersInput.defender4}
+                        value={
+                          defendersInput.defender4
+                            ? defendersInput.defender4
+                            : ""
+                        }
                         onChange={(e) => {
                           setDefendersInput({
                             ...defendersInput,
                             defender4: e.target.value,
                           });
+                          setCardData(
+                            cardData.filter((item) => item !== e.target.value)
+                          );
                         }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Centerback4" />}
                         fullWidth
+                        required
                       >
-                        {cardData?.map((card) => (
-                          <MenuItem key={card._id} value={card}>
+                        {cardData?.map((card, idx) => (
+                          <MenuItem key={idx + 90} value={card}>
                             <ListItemText
                               primary={`${card.lastname} - ${card.position}`}
                               secondary={card.rating}
@@ -733,15 +821,21 @@ export default function CreateSquad() {
                     <FormControl sx={{ m: 1, width: "20%" }}>
                       <InputLabel>Goalkeeper</InputLabel>
                       <Select
-                        value={goalkeeperInput}
-                        onChange={(e) => setGoalkeeperInput(e.target.value)}
+                        value={goalkeeperInput ? goalkeeperInput : ""}
+                        onChange={(e) => {
+                          setGoalkeeperInput(e.target.value);
+                          setCardData(
+                            cardData.filter((item) => item !== e.target.value)
+                          );
+                        }}
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Goalkeeper" />}
                         fullWidth
                         defaultValue={cardData[1]}
+                        required
                       >
-                        {cardData?.map((card) => (
-                          <MenuItem key={card._id} value={card}>
+                        {cardData?.map((card, idx) => (
+                          <MenuItem key={idx + 100} value={card}>
                             <ListItemText
                               primary={`${card.lastname} - ${card.position}`}
                               secondary={card.rating}
@@ -863,7 +957,7 @@ export default function CreateSquad() {
                 </Typography>
                 <Paper style={{ maxHeight: 320, overflow: "auto" }}>
                   <List>
-                    {cardData.map((card) => (
+                    {cardData.map((card, idx) => (
                       <Box
                         sx={{
                           display: "flex",
@@ -871,6 +965,7 @@ export default function CreateSquad() {
                           padding: "18px 6px",
                           borderBottom: "2px solid #AFAFAF",
                         }}
+                        key={idx + 110}
                       >
                         <Typography>{card.lastname}</Typography>
                         <Typography>{card.position}</Typography>
@@ -906,8 +1001,8 @@ export default function CreateSquad() {
                   }}
                 >
                   {squad &&
-                    squad.strikers?.map((striker) => (
-                      <Box key={striker._id} sx={{ display: "flex" }}>
+                    squad.strikers?.map((striker, idx) => (
+                      <Box key={idx + 120} sx={{ display: "flex" }}>
                         <Box>
                           <Typography variant="h6" color="white">
                             {striker.position}
@@ -950,7 +1045,7 @@ export default function CreateSquad() {
                 >
                   {squad &&
                     squad?.midfields?.map((midfield, idx) => (
-                      <Box key={midfield._id} sx={{ display: "flex" }}>
+                      <Box key={idx + 130} sx={{ display: "flex" }}>
                         <Box>
                           <Typography variant="h6" color="white">
                             {midfield.position}
@@ -992,8 +1087,8 @@ export default function CreateSquad() {
                   }}
                 >
                   {squad &&
-                    squad.defenders?.map((defender) => (
-                      <Box key={defender._id} sx={{ display: "flex" }}>
+                    squad.defenders?.map((defender, idx) => (
+                      <Box key={idx + 140} sx={{ display: "flex" }}>
                         <Box>
                           <Typography variant="h6" color="white">
                             {defender.position}
