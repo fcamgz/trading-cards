@@ -205,8 +205,8 @@ export default function Navbar(props) {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {userPages.map((page) => (
-                  <MenuItem key={page.name}>
+                {userPages.map((page, idx) => (
+                  <MenuItem key={idx}>
                     <Button
                       sx={{ color: "black", fontWeight: "600" }}
                       onClick={() => navigate(page.href)}
@@ -229,9 +229,9 @@ export default function Navbar(props) {
           </Typography>
           {props.isLoggedIn && (
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              {userPages.map((page) => (
+              {userPages.map((page, idx) => (
                 <Button
-                  key={page}
+                  key={idx}
                   onClick={() => navigate(page.href)}
                   sx={{
                     my: 2,
@@ -273,7 +273,7 @@ export default function Navbar(props) {
                   onClose={handleClose}
                 >
                   {props.user.isAdmin ? (
-                    <>
+                    <Box>
                       <MenuItem onClick={() => navigate("/admin")}>
                         Admin Dashboard
                       </MenuItem>
@@ -298,9 +298,9 @@ export default function Navbar(props) {
                         <LogoutIcon />
                         Logout
                       </MenuItem>
-                    </>
+                    </Box>
                   ) : (
-                    <>
+                    <Box>
                       <MenuItem onClick={handleProfile}>
                         <PersonIcon />
                         Profile
@@ -332,7 +332,7 @@ export default function Navbar(props) {
                         <LogoutIcon />
                         Logout
                       </MenuItem>
-                    </>
+                    </Box>
                   )}
                 </StyledMenu>
                 <Typography
