@@ -6,7 +6,6 @@ Users can trade the cards that they own with other users.
 ![sample image](https://github.com/fcamgz/tradingcards-public/blob/main/images/welcome-page.PNG?raw=true)
 
 # Upcoming Features:
-- Create and Customize a Squad using cards
 - Challenge other users squads
 - Create leagues and tournaments
 
