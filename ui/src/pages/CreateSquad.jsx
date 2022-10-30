@@ -15,6 +15,7 @@ import {
   OutlinedInput,
   Paper,
   Select,
+  TextField,
   Typography,
 } from "@mui/material";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
@@ -143,6 +144,38 @@ export default function CreateSquad() {
         .then((res) => {
           setSquad(res[0]);
           setSquadExist(true);
+          // setStrikersInput({
+          //   striker1: res[0].strikers[0],
+          //   striker2: res[0].strikers[1],
+          // });
+          setIsLoading(false);
+          setStrikersInput({
+            striker1: res[0].strikers[0],
+            striker2: res[0].strikers[1],
+          });
+          setMidfieldsInput({
+            midfield1: res[0].midfields[0],
+            midfield2: res[0].midfields[1],
+            midfield3: res[0].midfields[2],
+            midfield4: res[0].midfields[3],
+          });
+          setDefendersInput({
+            defender1: res[0].defenders[0],
+            defender2: res[0].defenders[1],
+            defender3: res[0].defenders[2],
+            defender4: res[0].defenders[3],
+          });
+          setGoalkeeperInput(res[0].goalkeeper);
+        })
+        .catch((err) => console.log(err));
+
+      // get goalkeeper rating
+      await axios
+        .get(`http://localhost:5000/api/squad/getGoalkeeperRating/${user?._id}`)
+        .then((res) => res.data)
+        .then((res) => {
+          setGoalkeeperRating(res[0].goalkeeper?.rating);
+          setIsLoading(false);
         })
         .catch((err) => console.log(err))
         .finally(() => setIsLoading(false));
@@ -459,7 +492,7 @@ export default function CreateSquad() {
                     alignItems: "space-between",
                   }}
                 >
-                  <Box mt={4} sx={{ flex: "1 160px" }}>
+                  <Box mt={4} sx={{ flex: "1 140px" }}>
                     <Box
                       mt={4}
                       sx={{
@@ -468,8 +501,11 @@ export default function CreateSquad() {
                       }}
                     >
                       <FormControl sx={{ m: 1, width: "20%" }}>
-                        <InputLabel>Striker 1</InputLabel>
-                        <Select
+                        <InputLabel>
+                          {strikersInput.striker1?.lastname}
+                        </InputLabel>
+                        <TextField
+                          select
                           value={
                             strikersInput.striker1 ? strikersInput.striker1 : ""
                           }
@@ -485,7 +521,7 @@ export default function CreateSquad() {
                           sx={{ backgroundColor: "white" }}
                           input={<OutlinedInput label="Striker1" />}
                           fullWidth
-                          required
+                          defaultValue={strikersInput.striker1}
                         >
                           {cardData?.map((card, idx) => (
                             <MenuItem key={idx} value={card}>
@@ -495,11 +531,14 @@ export default function CreateSquad() {
                               />
                             </MenuItem>
                           ))}
-                        </Select>
+                        </TextField>
                       </FormControl>
                       <FormControl sx={{ m: 1, width: "20%" }}>
-                        <InputLabel>Striker 2</InputLabel>
-                        <Select
+                        <InputLabel>
+                          {strikersInput.striker2?.lastname}
+                        </InputLabel>
+                        <TextField
+                          select
                           value={
                             strikersInput.striker2 ? strikersInput.striker2 : ""
                           }
@@ -513,9 +552,9 @@ export default function CreateSquad() {
                             );
                           }}
                           sx={{ backgroundColor: "white" }}
-                          input={<OutlinedInput label="Striker2" />}
+                          input={<OutlinedInput />}
                           fullWidth
-                          required
+                          defaultValue={strikersInput.striker2}
                         >
                           {cardData?.map((card, idx) => (
                             <MenuItem key={idx + 10} value={card}>
@@ -525,7 +564,7 @@ export default function CreateSquad() {
                               />
                             </MenuItem>
                           ))}
-                        </Select>
+                        </TextField>
                       </FormControl>
                     </Box>
                   </Box>
@@ -538,8 +577,11 @@ export default function CreateSquad() {
                     }}
                   >
                     <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Midfield 1</InputLabel>
-                      <Select
+                      <InputLabel>
+                        {midfieldsInput.midfield1?.lastname}
+                      </InputLabel>
+                      <TextField
+                        select
                         value={
                           midfieldsInput.midfield1
                             ? midfieldsInput.midfield1
@@ -557,7 +599,7 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield1" />}
                         fullWidth
-                        required
+                        defaultValue={midfieldsInput.midfield1}
                       >
                         {cardData?.map((card, idx) => (
                           <MenuItem key={idx + 20} value={card}>
@@ -567,11 +609,14 @@ export default function CreateSquad() {
                             />
                           </MenuItem>
                         ))}
-                      </Select>
+                      </TextField>
                     </FormControl>
                     <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Midfield 2</InputLabel>
-                      <Select
+                      <InputLabel>
+                        {midfieldsInput.midfield2?.lastname}
+                      </InputLabel>
+                      <TextField
+                        select
                         value={
                           midfieldsInput.midfield2
                             ? midfieldsInput.midfield2
@@ -589,7 +634,7 @@ export default function CreateSquad() {
                         sx={{ backgroundColor: "white" }}
                         input={<OutlinedInput label="Midfield2" />}
                         fullWidth
-                        required
+                        defaultValue={midfieldsInput.midfield2}
                       >
                         {cardData?.map((card, idx) => (
                           <MenuItem key={idx + 30} value={card}>
@@ -599,11 +644,14 @@ export default function CreateSquad() {
                             />
                           </MenuItem>
                         ))}
-                      </Select>
+                      </TextField>
                     </FormControl>
                     <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Midfield 3</InputLabel>
-                      <Select
+                      <InputLabel>
+                        {midfieldsInput.midfield3?.lastname}
+                      </InputLabel>
+                      <TextField
+                        select
                         value={
                           midfieldsInput.midfield3
                             ? midfieldsInput.midfield3
@@ -622,6 +670,7 @@ export default function CreateSquad() {
                         input={<OutlinedInput label="Midfield3" />}
                         fullWidth
                         required
+                        defaultValue={midfieldsInput.midfield3}
                       >
                         {cardData?.map((card, idx) => (
                           <MenuItem key={idx + 40} value={card}>
@@ -631,20 +680,14 @@ export default function CreateSquad() {
                             />
                           </MenuItem>
                         ))}
-                      </Select>
+                      </TextField>
                     </FormControl>
-                  </Box>
-                  <Box
-                    mt={2}
-                    sx={{
-                      flex: "1 160px",
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
                     <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Midfield 4</InputLabel>
-                      <Select
+                      <InputLabel>
+                        {midfieldsInput.midfield4?.lastname}
+                      </InputLabel>
+                      <TextField
+                        select
                         value={
                           midfieldsInput.midfield4
                             ? midfieldsInput.midfield4
@@ -663,6 +706,7 @@ export default function CreateSquad() {
                         input={<OutlinedInput label="Midfield4" />}
                         fullWidth
                         required
+                        defaultValue={midfieldsInput.midfield4}
                       >
                         {cardData?.map((card, idx) => (
                           <MenuItem key={idx + 50} value={card}>
@@ -672,7 +716,7 @@ export default function CreateSquad() {
                             />
                           </MenuItem>
                         ))}
-                      </Select>
+                      </TextField>
                     </FormControl>
                   </Box>
                   <Box
@@ -683,8 +727,11 @@ export default function CreateSquad() {
                     }}
                   >
                     <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Centerback 1</InputLabel>
-                      <Select
+                      <InputLabel>
+                        {defendersInput.defender1?.lastname}
+                      </InputLabel>
+                      <TextField
+                        select
                         value={
                           defendersInput.defender1
                             ? defendersInput.defender1
@@ -703,6 +750,7 @@ export default function CreateSquad() {
                         input={<OutlinedInput label="Centerback1" />}
                         fullWidth
                         required
+                        defaultValue={defendersInput?.defender1}
                       >
                         {cardData?.map((card, idx) => (
                           <MenuItem key={idx + 60} value={card}>
@@ -712,11 +760,14 @@ export default function CreateSquad() {
                             />
                           </MenuItem>
                         ))}
-                      </Select>
+                      </TextField>
                     </FormControl>
                     <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Centerback 2</InputLabel>
-                      <Select
+                      <InputLabel>
+                        {defendersInput.defender2?.lastname}
+                      </InputLabel>
+                      <TextField
+                        select
                         value={
                           defendersInput.defender2
                             ? defendersInput.defender2
@@ -735,6 +786,7 @@ export default function CreateSquad() {
                         input={<OutlinedInput label="Centerback2" />}
                         fullWidth
                         required
+                        defaultValue={defendersInput?.defender2}
                       >
                         {cardData?.map((card, idx) => (
                           <MenuItem key={idx + 70} value={card}>
@@ -744,11 +796,14 @@ export default function CreateSquad() {
                             />
                           </MenuItem>
                         ))}
-                      </Select>
+                      </TextField>
                     </FormControl>
                     <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Centerback 3</InputLabel>
-                      <Select
+                      <InputLabel>
+                        {defendersInput.defender3?.lastname}
+                      </InputLabel>
+                      <TextField
+                        select
                         value={
                           defendersInput.defender3
                             ? defendersInput.defender3
@@ -767,6 +822,7 @@ export default function CreateSquad() {
                         input={<OutlinedInput label="Centerback3" />}
                         fullWidth
                         required
+                        defaultValue={defendersInput?.defender3}
                       >
                         {cardData?.map((card, idx) => (
                           <MenuItem key={idx + 80} value={card}>
@@ -776,11 +832,13 @@ export default function CreateSquad() {
                             />
                           </MenuItem>
                         ))}
-                      </Select>
+                      </TextField>
                     </FormControl>
                     <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Centerback 4</InputLabel>
-                      <Select
+                      <InputLabel>
+                        {defendersInput.defender4?.lastname}
+                      </InputLabel>
+                      <TextField
                         value={
                           defendersInput.defender4
                             ? defendersInput.defender4
@@ -799,6 +857,8 @@ export default function CreateSquad() {
                         input={<OutlinedInput label="Centerback4" />}
                         fullWidth
                         required
+                        defaultValue={defendersInput?.defender4}
+                        select
                       >
                         {cardData?.map((card, idx) => (
                           <MenuItem key={idx + 90} value={card}>
@@ -808,7 +868,7 @@ export default function CreateSquad() {
                             />
                           </MenuItem>
                         ))}
-                      </Select>
+                      </TextField>
                     </FormControl>
                   </Box>
                   <Box
@@ -819,8 +879,8 @@ export default function CreateSquad() {
                     }}
                   >
                     <FormControl sx={{ m: 1, width: "20%" }}>
-                      <InputLabel>Goalkeeper</InputLabel>
-                      <Select
+                      <InputLabel>{goalkeeperInput?.lastname}</InputLabel>
+                      <TextField
                         value={goalkeeperInput ? goalkeeperInput : ""}
                         onChange={(e) => {
                           setGoalkeeperInput(e.target.value);
@@ -829,7 +889,7 @@ export default function CreateSquad() {
                           );
                         }}
                         sx={{ backgroundColor: "white" }}
-                        input={<OutlinedInput label="Goalkeeper" />}
+                        select
                         fullWidth
                         defaultValue={cardData[1]}
                         required
@@ -842,7 +902,7 @@ export default function CreateSquad() {
                             />
                           </MenuItem>
                         ))}
-                      </Select>
+                      </TextField>
                     </FormControl>
                   </Box>
                   <Box
@@ -985,7 +1045,7 @@ export default function CreateSquad() {
                 src={PitchImage}
                 style={{
                   position: "absolute",
-                  minWidth: "43%",
+                  minWidth: "46%",
                   height: "900px",
                 }}
                 alt="background"
@@ -1040,7 +1100,7 @@ export default function CreateSquad() {
                     flex: "1 160px",
                     display: "flex",
                     justifyContent: "center",
-                    gap: "10px",
+                    gap: "2px",
                   }}
                 >
                   {squad &&
@@ -1083,7 +1143,7 @@ export default function CreateSquad() {
                     flex: "1 160px",
                     display: "flex",
                     justifyContent: "center",
-                    gap: "10px",
+                    gap: "2px",
                   }}
                 >
                   {squad &&
