@@ -58,6 +58,7 @@ export default function CreateSquad() {
   ]);
   const [goalkeeperInput, setGoalkeeperInput] = useState({});
   const [updated, setUpdated] = useState(false);
+  const [modified, setModified] = useState(false);
   const [teamRating, setTeamRating] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [goalkeeperRating, setGoalkeeperRating] = useState("");
@@ -150,22 +151,22 @@ export default function CreateSquad() {
           // });
           setIsLoading(false);
           setStrikersInput({
-            striker1: res[0].strikers[0],
-            striker2: res[0].strikers[1],
+            striker1: res[0]?.strikers[0],
+            striker2: res[0]?.strikers[1],
           });
           setMidfieldsInput({
-            midfield1: res[0].midfields[0],
-            midfield2: res[0].midfields[1],
-            midfield3: res[0].midfields[2],
-            midfield4: res[0].midfields[3],
+            midfield1: res[0]?.midfields[0],
+            midfield2: res[0]?.midfields[1],
+            midfield3: res[0]?.midfields[2],
+            midfield4: res[0]?.midfields[3],
           });
           setDefendersInput({
-            defender1: res[0].defenders[0],
-            defender2: res[0].defenders[1],
-            defender3: res[0].defenders[2],
-            defender4: res[0].defenders[3],
+            defender1: res[0]?.defenders[0],
+            defender2: res[0]?.defenders[1],
+            defender3: res[0]?.defenders[2],
+            defender4: res[0]?.defenders[3],
           });
-          setGoalkeeperInput(res[0].goalkeeper);
+          setGoalkeeperInput(res[0]?.goalkeeper);
         })
         .catch((err) => console.log(err));
 
@@ -174,7 +175,7 @@ export default function CreateSquad() {
         .get(`http://localhost:5000/api/squad/getGoalkeeperRating/${user?._id}`)
         .then((res) => res.data)
         .then((res) => {
-          setGoalkeeperRating(res[0].goalkeeper?.rating);
+          setGoalkeeperRating(res[0]?.goalkeeper?.rating);
           setIsLoading(false);
         })
         .catch((err) => console.log(err))
@@ -229,7 +230,6 @@ export default function CreateSquad() {
         .catch((err) => console.log(err))
         .finally(() => setIsLoading(false));
     };
-
     /*
     // get user
     axios
@@ -278,7 +278,29 @@ export default function CreateSquad() {
     // calculateTeamRating();
 
     fetchData();
+    setModified(true);
+    // if squad exist then set card data to chosen squad excluding
   }, [user?._id, updated]);
+
+  useEffect(() => {
+    setCardData(
+      cardData.filter(
+        (item) =>
+          item._id !== strikersInput?.striker1?._id ||
+          item._id !== strikersInput?.striker2?._id ||
+          item._id !== midfieldsInput?.midfield1?._id ||
+          item._id !== midfieldsInput?.midfield2?._id ||
+          item._id !== midfieldsInput?.midfield3?._id ||
+          item._id !== midfieldsInput?.midfield4?._id ||
+          item._id !== defendersInput?.defender1?._id ||
+          item._id !== defendersInput?.defender2?._id ||
+          item._id !== defendersInput?.defender3?._id ||
+          item._id !== defendersInput?.defender4?._id ||
+          item._id !== goalkeeperInput?._id
+      )
+    );
+    console.log("squadArray " + JSON.stringify(midfieldsInput));
+  }, []);
 
   /*
   const handleSubmit = () => {
@@ -319,6 +341,28 @@ export default function CreateSquad() {
   const handleSubmit = () => {
     if (squad?._id !== undefined) {
       console.log("modify squad");
+      if (
+        strikersInput.striker1.position !== "ST" ||
+        strikersInput.striker2.position !== "ST"
+      ) {
+        console.log("Player can't play here");
+      } else if (
+        midfieldsInput.midfield1.position !== "MD" ||
+        midfieldsInput.midfield2.position !== "MD" ||
+        midfieldsInput.midfield3.position !== "MD" ||
+        midfieldsInput.midfield4.position !== "MD"
+      ) {
+        console.log("Player for midfield can't play here");
+      } else if (
+        defendersInput.defender1.position !== "DEF" ||
+        defendersInput.defender2.position !== "DEF" ||
+        defendersInput.defender3.position !== "DEF" ||
+        defendersInput.defender4.position !== "DEF"
+      ) {
+        console.log("Player for defender can't play here");
+      } else if (goalkeeperInput.position !== "GL") {
+        console.log("Player cannot play here");
+      }
       axios
         .post(
           `http://localhost:5000/api/squad/modifySquadArray/${squad?._id}`,
@@ -365,6 +409,7 @@ export default function CreateSquad() {
           ],
           goalkeeper: goalkeeperInput,
           owner: user?._id,
+          ownerUsername: user?.username,
         })
         .then((res) => res.data)
         .then((res) => {

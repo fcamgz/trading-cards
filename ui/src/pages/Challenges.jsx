@@ -204,7 +204,7 @@ export default function Challenges() {
                               defendersRating / 4 +
                               goalkeeperRating) /
                               4
-                          )} -  Squad Owner: ${user?._id}`}
+                          )} -  Squad Owner: ${user?.username}`}
                         ></CardHeader>
                         <CardContent>
                           <Stack>
@@ -240,9 +240,9 @@ export default function Challenges() {
                     ) : (
                       <Card>
                         <CardHeader
-                          title={`${challenge.owner}'s Squad 
+                          title={`${challenge.ownerUsername}'s Squad 
                         W0-L0 `}
-                          subheader={`Squad owner: ${challenge.owner} - Squad Rating ${challenge.rating} `}
+                          subheader={`Squad owner: ${challenge.ownerUsername} - Squad Rating ${challenge.rating} `}
                         ></CardHeader>
 
                         <CardContent>

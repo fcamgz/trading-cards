@@ -6,6 +6,7 @@ const SquadArraySchema = mongoose.Schema({
   defenders: { type: Array },
   goalkeeper: { type: Object },
   owner: { type: String },
+  ownerUsername: { type: String },
   isChallenge: {
     type: String,
     default: "false",
