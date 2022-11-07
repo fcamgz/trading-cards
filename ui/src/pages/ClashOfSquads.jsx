@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/Navbar";
 import {
+  Backdrop,
   Box,
   Button,
+  CircularProgress,
   Divider,
   FormControl,
   InputLabel,
@@ -17,50 +19,23 @@ import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
 import GoldCard from "../images/pack-background4.png";
 import PitchImage from "../images/Soccer_Field_Transparant.svg.png";
 import Footer from "../components/Footer";
+import Bronzes from "../images/Bronze-Card.png";
+import Silvers from "../images/Silver-Card.png";
+import Platinum from "../images/Platinium-Card.png";
+import Diamonds from "../images/pack-background2.png";
+import { useLocation, useParams } from "react-router";
 
 export default function ClashOfSquads() {
-  const [cardData, setCardData] = useState([{}]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
-  const [yourData, setYourData] = useState([]);
-  const [opponentData, setOpponentData] = useState({
-    striker: "",
-    midfield1: "",
-    midfield2: "",
-    midfield3: "",
-    midfield4: "",
-    midfield5: "",
-    centerBack1: "",
-    centerBack2: "",
-    centerBack3: "",
-    centerBack4: "",
-    goalKeeper: "",
-  });
+  const [userSquad, setUserSquad] = useState([]);
+  const [opponentSquad, setOpponentSquad] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const data = [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 },
-    { id: 4 },
-    { id: 5 },
-    { id: 6 },
-    { id: 7 },
-    { id: 8 },
-    { id: 9 },
-    { id: 10 },
-    { id: 11 },
-  ];
+  const location = useLocation();
 
   useEffect(() => {
-    // get cards
-    axios
-      .get("http://localhost:5000/api/cards/")
-      .then((res) => res.data)
-      .then((res) => {
-        setCardData(res);
-        console.log(res);
-      })
-      .catch((err) => console.log(err));
+    console.log(location.pathname.split("/")[[2]]);
     // get user
     axios
       .get("/api/getUsername", {
@@ -78,16 +53,49 @@ export default function ClashOfSquads() {
         }
       })
       .catch((err) => console.log(err));
-  }, []);
+
+    setIsLoading(true);
+
+    axios
+      .get(
+        `http://localhost:5000/api/squad/getSquadArray/${
+          location.pathname.split("/")[[2]]
+        }`
+      )
+      .then((res) => res.data)
+      .then((res) => {
+        setOpponentSquad(res[0]);
+        console.log("opp" + JSON.stringify(opponentSquad));
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
+
+    axios
+      .get(`http://localhost:5000/api/squad/getSquadArray/${user?._id}`)
+      .then((res) => res.data)
+      .then((res) => {
+        setUserSquad(res[0]);
+        console.log(userSquad);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
+  }, [user?._id]);
+
   return (
     <Box
       sx={{
         height: "100vh",
-        width: "100%",
+        width: "99%",
         margin: 0,
         boxSizing: "border-box",
       }}
     >
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         container
@@ -128,11 +136,12 @@ export default function ClashOfSquads() {
           </Typography>
           <Divider sx={{ color: "white", margin: "40px" }} />
           <Box
+            mt={8}
             sx={{
+              flex: "1 180px",
               display: "flex",
-              justifyContent: "space-around",
-              height: "120vh",
-              padding: "0 20px",
+              justifyContent: "center",
+              gap: "50px",
             }}
           >
             <Box sx={{ flex: "1" }}>
@@ -154,164 +163,134 @@ export default function ClashOfSquads() {
                 <Box
                   mt={8}
                   sx={{
-                    flex: "1 160px",
+                    flex: "1 180px",
                     display: "flex",
                     justifyContent: "center",
-                    gap: "40px",
+                    gap: "50px",
                   }}
                 >
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        ST
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        99
-                      </Typography>
-                      <Typography color="white">Maguire</Typography>
-                    </Box>
-                    <img width="100px" src={GoldCard} />
-                  </Box>
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        ST
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        99
-                      </Typography>
-                      <Typography color="white">Maguire</Typography>
-                    </Box>
-                    <img width="100px" src={GoldCard} />
-                  </Box>
+                  {userSquad &&
+                    userSquad.strikers?.map((striker, idx) => (
+                      <Box key={idx + 120} sx={{ display: "flex" }}>
+                        <Box>
+                          <Typography variant="h6" color="white">
+                            {striker.position}
+                          </Typography>
+                          <Typography variant="h6" color="white">
+                            {striker.rating}
+                          </Typography>
+                          <Typography color="white">
+                            {striker.lastname}
+                          </Typography>
+                        </Box>
+                        <img
+                          width="100px"
+                          src={
+                            striker.tier === "Bronze"
+                              ? Bronzes
+                              : striker.tier === "Silver"
+                              ? Silvers
+                              : striker.tier === "Gold"
+                              ? GoldCard
+                              : striker.tier === "Platinium"
+                              ? Platinum
+                              : striker.tier === "Diamond"
+                              ? Diamonds
+                              : Platinum
+                          }
+                          alt="Striker"
+                        />
+                      </Box>
+                    ))}
                 </Box>
                 <Box
-                  mt={4}
+                  mt={10}
                   sx={{
                     flex: "1 160px",
                     display: "flex",
                     justifyContent: "center",
-                    gap: "80px",
+                    gap: "2px",
                   }}
                 >
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        ST
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        99
-                      </Typography>
-                      <Typography color="white">Maguire</Typography>
-                    </Box>
-                    <img width="100px" src={GoldCard} />
-                  </Box>
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        ST
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        99
-                      </Typography>
-                      <Typography color="white">Maguire</Typography>
-                    </Box>
-                    <img width="100px" src={GoldCard} />
-                  </Box>
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        ST
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        99
-                      </Typography>
-                      <Typography color="white">Maguire</Typography>
-                    </Box>
-                    <img width="100px" src={GoldCard} />
-                  </Box>
+                  {userSquad &&
+                    userSquad?.midfields?.map((midfield, idx) => (
+                      <Box key={idx + 130} sx={{ display: "flex" }}>
+                        <Box>
+                          <Typography variant="h6" color="white">
+                            {midfield.position}
+                          </Typography>
+                          <Typography variant="h6" color="white">
+                            {midfield.rating}
+                          </Typography>
+                          <Typography color="white">
+                            {midfield.lastname}
+                          </Typography>
+                        </Box>
+                        <img
+                          width="100px"
+                          src={
+                            midfield.tier === "Bronze"
+                              ? Bronzes
+                              : midfield.tier === "Silver"
+                              ? Silvers
+                              : midfield.tier === "Gold"
+                              ? GoldCard
+                              : midfield.tier === "Platinium"
+                              ? Platinum
+                              : midfield.tier === "Diamond"
+                              ? Diamonds
+                              : Platinum
+                          }
+                          alt="midfield"
+                        />
+                      </Box>
+                    ))}
                 </Box>
                 <Box
-                  mt={4}
+                  mt={12}
                   sx={{
                     flex: "1 160px",
                     display: "flex",
                     justifyContent: "center",
-                    gap: "120px",
+                    gap: "2px",
                   }}
                 >
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        ST
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        99
-                      </Typography>
-                      <Typography color="white">Maguire</Typography>
-                    </Box>
-                    <img width="100px" src={GoldCard} />
-                  </Box>
+                  {userSquad &&
+                    userSquad.defenders?.map((defender, idx) => (
+                      <Box key={idx + 140} sx={{ display: "flex" }}>
+                        <Box>
+                          <Typography variant="h6" color="white">
+                            {defender.position}
+                          </Typography>
+                          <Typography variant="h6" color="white">
+                            {defender.rating}
+                          </Typography>
+                          <Typography color="white">
+                            {defender.lastname}
+                          </Typography>
+                        </Box>
+                        <img
+                          width="100px"
+                          src={
+                            defender.tier === "Bronze"
+                              ? Bronzes
+                              : defender.tier === "Silver"
+                              ? Silvers
+                              : defender.tier === "Gold"
+                              ? GoldCard
+                              : defender.tier === "Platinium"
+                              ? Platinum
+                              : defender.tier === "Diamond"
+                              ? Diamonds
+                              : Platinum
+                          }
+                          alt="centerBack1"
+                        />
+                      </Box>
+                    ))}
                 </Box>
                 <Box
-                  mt={4}
-                  sx={{
-                    flex: "1 160px",
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        ST
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        99
-                      </Typography>
-                      <Typography color="white">Maguire</Typography>
-                    </Box>
-                    <img width="100px" src={GoldCard} />
-                  </Box>
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        ST
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        99
-                      </Typography>
-                      <Typography color="white">Maguire</Typography>
-                    </Box>
-                    <img width="100px" src={GoldCard} />
-                  </Box>
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        ST
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        99
-                      </Typography>
-                      <Typography color="white">Maguire</Typography>
-                    </Box>
-                    <img width="100px" src={GoldCard} />
-                  </Box>
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        ST
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        99
-                      </Typography>
-                      <Typography color="white">Maguire</Typography>
-                    </Box>
-                    <img width="100px" src={GoldCard} />
-                  </Box>
-                </Box>
-                <Box
-                  mt={4}
+                  mt={10}
                   sx={{
                     flex: "1 160px",
                     display: "flex",
@@ -322,14 +301,32 @@ export default function ClashOfSquads() {
                   <Box sx={{ display: "flex" }}>
                     <Box>
                       <Typography variant="h6" color="white">
-                        ST
+                        {userSquad?.goalkeeper?.position}
                       </Typography>
                       <Typography variant="h6" color="white">
-                        99
+                        {userSquad?.goalkeeper?.rating}
                       </Typography>
-                      <Typography color="white">Maguire</Typography>
+                      <Typography color="white">
+                        {userSquad?.goalkeeper?.lastname}
+                      </Typography>
                     </Box>
-                    <img width="100px" src={GoldCard} />
+                    <img
+                      width="100px"
+                      src={
+                        userSquad?.goalkeeper?.tier === "Bronze"
+                          ? Bronzes
+                          : userSquad?.goalkeeper?.tier === "Silver"
+                          ? Silvers
+                          : userSquad?.goalkeeper?.tier === "Gold"
+                          ? GoldCard
+                          : userSquad?.goalkeeper?.tier === "Platinium"
+                          ? Platinum
+                          : userSquad?.goalkeeper?.tier === "Diamond"
+                          ? Diamonds
+                          : Platinum
+                      }
+                      alt="goalkeeper"
+                    />
                   </Box>
                 </Box>
               </Box>
@@ -494,164 +491,134 @@ export default function ClashOfSquads() {
                   <Box
                     mt={8}
                     sx={{
-                      flex: "1 160px",
+                      flex: "1 180px",
                       display: "flex",
                       justifyContent: "center",
-                      gap: "40px",
+                      gap: "50px",
                     }}
                   >
-                    <Box sx={{ display: "flex" }}>
-                      <Box>
-                        <Typography variant="h6" color="white">
-                          ST
-                        </Typography>
-                        <Typography variant="h6" color="white">
-                          99
-                        </Typography>
-                        <Typography color="white">Maguire</Typography>
-                      </Box>
-                      <img width="100px" src={GoldCard} />
-                    </Box>
-                    <Box sx={{ display: "flex" }}>
-                      <Box>
-                        <Typography variant="h6" color="white">
-                          ST
-                        </Typography>
-                        <Typography variant="h6" color="white">
-                          99
-                        </Typography>
-                        <Typography color="white">Maguire</Typography>
-                      </Box>
-                      <img width="100px" src={GoldCard} />
-                    </Box>
+                    {opponentSquad &&
+                      opponentSquad.strikers?.map((striker, idx) => (
+                        <Box key={idx + 120} sx={{ display: "flex" }}>
+                          <Box>
+                            <Typography variant="h6" color="white">
+                              {striker.position}
+                            </Typography>
+                            <Typography variant="h6" color="white">
+                              {striker.rating}
+                            </Typography>
+                            <Typography color="white">
+                              {striker.lastname}
+                            </Typography>
+                          </Box>
+                          <img
+                            width="100px"
+                            src={
+                              striker.tier === "Bronze"
+                                ? Bronzes
+                                : striker.tier === "Silver"
+                                ? Silvers
+                                : striker.tier === "Gold"
+                                ? GoldCard
+                                : striker.tier === "Platinium"
+                                ? Platinum
+                                : striker.tier === "Diamond"
+                                ? Diamonds
+                                : Platinum
+                            }
+                            alt="Striker"
+                          />
+                        </Box>
+                      ))}
                   </Box>
                   <Box
-                    mt={4}
+                    mt={10}
                     sx={{
                       flex: "1 160px",
                       display: "flex",
                       justifyContent: "center",
-                      gap: "80px",
+                      gap: "2px",
                     }}
                   >
-                    <Box sx={{ display: "flex" }}>
-                      <Box>
-                        <Typography variant="h6" color="white">
-                          ST
-                        </Typography>
-                        <Typography variant="h6" color="white">
-                          99
-                        </Typography>
-                        <Typography color="white">Maguire</Typography>
-                      </Box>
-                      <img width="100px" src={GoldCard} />
-                    </Box>
-                    <Box sx={{ display: "flex" }}>
-                      <Box>
-                        <Typography variant="h6" color="white">
-                          ST
-                        </Typography>
-                        <Typography variant="h6" color="white">
-                          99
-                        </Typography>
-                        <Typography color="white">Maguire</Typography>
-                      </Box>
-                      <img width="100px" src={GoldCard} />
-                    </Box>
-                    <Box sx={{ display: "flex" }}>
-                      <Box>
-                        <Typography variant="h6" color="white">
-                          ST
-                        </Typography>
-                        <Typography variant="h6" color="white">
-                          99
-                        </Typography>
-                        <Typography color="white">Maguire</Typography>
-                      </Box>
-                      <img width="100px" src={GoldCard} />
-                    </Box>
+                    {opponentSquad &&
+                      opponentSquad?.midfields?.map((midfield, idx) => (
+                        <Box key={idx + 130} sx={{ display: "flex" }}>
+                          <Box>
+                            <Typography variant="h6" color="white">
+                              {midfield.position}
+                            </Typography>
+                            <Typography variant="h6" color="white">
+                              {midfield.rating}
+                            </Typography>
+                            <Typography color="white">
+                              {midfield.lastname}
+                            </Typography>
+                          </Box>
+                          <img
+                            width="100px"
+                            src={
+                              midfield.tier === "Bronze"
+                                ? Bronzes
+                                : midfield.tier === "Silver"
+                                ? Silvers
+                                : midfield.tier === "Gold"
+                                ? GoldCard
+                                : midfield.tier === "Platinium"
+                                ? Platinum
+                                : midfield.tier === "Diamond"
+                                ? Diamonds
+                                : Platinum
+                            }
+                            alt="midfield"
+                          />
+                        </Box>
+                      ))}
                   </Box>
                   <Box
-                    mt={4}
+                    mt={12}
                     sx={{
                       flex: "1 160px",
                       display: "flex",
                       justifyContent: "center",
-                      gap: "120px",
+                      gap: "2px",
                     }}
                   >
-                    <Box sx={{ display: "flex" }}>
-                      <Box>
-                        <Typography variant="h6" color="white">
-                          ST
-                        </Typography>
-                        <Typography variant="h6" color="white">
-                          99
-                        </Typography>
-                        <Typography color="white">Maguire</Typography>
-                      </Box>
-                      <img width="100px" src={GoldCard} />
-                    </Box>
+                    {opponentSquad &&
+                      opponentSquad.defenders?.map((defender, idx) => (
+                        <Box key={idx + 140} sx={{ display: "flex" }}>
+                          <Box>
+                            <Typography variant="h6" color="white">
+                              {defender.position}
+                            </Typography>
+                            <Typography variant="h6" color="white">
+                              {defender.rating}
+                            </Typography>
+                            <Typography color="white">
+                              {defender.lastname}
+                            </Typography>
+                          </Box>
+                          <img
+                            width="100px"
+                            src={
+                              defender.tier === "Bronze"
+                                ? Bronzes
+                                : defender.tier === "Silver"
+                                ? Silvers
+                                : defender.tier === "Gold"
+                                ? GoldCard
+                                : defender.tier === "Platinium"
+                                ? Platinum
+                                : defender.tier === "Diamond"
+                                ? Diamonds
+                                : Platinum
+                            }
+                            alt="centerBack1"
+                          />
+                        </Box>
+                      ))}
                   </Box>
                   <Box
-                    mt={4}
-                    sx={{
-                      flex: "1 160px",
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Box sx={{ display: "flex" }}>
-                      <Box>
-                        <Typography variant="h6" color="white">
-                          ST
-                        </Typography>
-                        <Typography variant="h6" color="white">
-                          99
-                        </Typography>
-                        <Typography color="white">Maguire</Typography>
-                      </Box>
-                      <img width="100px" src={GoldCard} />
-                    </Box>
-                    <Box sx={{ display: "flex" }}>
-                      <Box>
-                        <Typography variant="h6" color="white">
-                          ST
-                        </Typography>
-                        <Typography variant="h6" color="white">
-                          99
-                        </Typography>
-                        <Typography color="white">Maguire</Typography>
-                      </Box>
-                      <img width="100px" src={GoldCard} />
-                    </Box>
-                    <Box sx={{ display: "flex" }}>
-                      <Box>
-                        <Typography variant="h6" color="white">
-                          ST
-                        </Typography>
-                        <Typography variant="h6" color="white">
-                          99
-                        </Typography>
-                        <Typography color="white">Maguire</Typography>
-                      </Box>
-                      <img width="100px" src={GoldCard} />
-                    </Box>
-                    <Box sx={{ display: "flex" }}>
-                      <Box>
-                        <Typography variant="h6" color="white">
-                          ST
-                        </Typography>
-                        <Typography variant="h6" color="white">
-                          99
-                        </Typography>
-                        <Typography color="white">Maguire</Typography>
-                      </Box>
-                      <img width="100px" src={GoldCard} />
-                    </Box>
-                  </Box>
-                  <Box
-                    mt={4}
+                    mt={10}
                     sx={{
                       flex: "1 160px",
                       display: "flex",
@@ -662,14 +629,32 @@ export default function ClashOfSquads() {
                     <Box sx={{ display: "flex" }}>
                       <Box>
                         <Typography variant="h6" color="white">
-                          ST
+                          {opponentSquad?.goalkeeper?.position}
                         </Typography>
                         <Typography variant="h6" color="white">
-                          99
+                          {opponentSquad?.goalkeeper?.rating}
                         </Typography>
-                        <Typography color="white">Maguire</Typography>
+                        <Typography color="white">
+                          {opponentSquad?.goalkeeper?.lastname}
+                        </Typography>
                       </Box>
-                      <img width="100px" src={GoldCard} />
+                      <img
+                        width="100px"
+                        src={
+                          opponentSquad?.goalkeeper?.tier === "Bronze"
+                            ? Bronzes
+                            : opponentSquad?.goalkeeper?.tier === "Silver"
+                            ? Silvers
+                            : opponentSquad?.goalkeeper?.tier === "Gold"
+                            ? GoldCard
+                            : opponentSquad?.goalkeeper?.tier === "Platinium"
+                            ? Platinum
+                            : opponentSquad?.goalkeeper?.tier === "Diamond"
+                            ? Diamonds
+                            : Platinum
+                        }
+                        alt="goalkeeper"
+                      />
                     </Box>
                   </Box>
                 </Box>
