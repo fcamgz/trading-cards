@@ -414,6 +414,10 @@ export default function CreateSquad() {
         .then((res) => res.data)
         .then((res) => {
           console.log("Squad created " + res);
+          axios.post("/api/createStat", {
+            userId: user?._id,
+            username: user?.username,
+          });
         })
         .catch((err) => console.log(err));
     }

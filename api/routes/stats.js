@@ -36,7 +36,7 @@ router.put("/:userId/modifyStat", async (req, res) => {
 // get all stats
 router.get("/stats", async (req, res) => {
   try {
-    const stats = await UserStats.find();
+    const stats = await UserStats.find().sort({ wins: "desc" });
     res.send(stats);
   } catch (err) {
     res.send(err);
@@ -52,3 +52,5 @@ router.get("/:userId/stats", async (req, res) => {
     res.send(err);
   }
 });
+
+module.exports = router;

@@ -4,11 +4,8 @@ import StripeCheckout from "react-stripe-checkout";
 import Navbar from "../components/Navbar";
 import {
   Box,
-  Button,
   Card,
   CardActionArea,
-  CardActions,
-  CardMedia,
   CardContent,
   Grid,
   Typography,
@@ -17,22 +14,16 @@ import {
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
-import MyTradesImage from "../images/trade-ıcon.png";
 import HandshakeIcon from "@mui/icons-material/Handshake";
 import CelebrationIcon from "@mui/icons-material/Celebration";
-import BuyCoinsImage from "../images/Coin_Bag.png";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
-import OpenPacksImage from "../images/pack-background4.png";
 import LocalAtmIcon from "@mui/icons-material/LocalAtm";
-import PersonIcon from "@mui/icons-material/Person";
-import MyProfileImage from "../images/avatar.png";
-import AddFunds from "../images/add-funds.png";
-import Market from "../images/market.png";
 import ChatIcon from "@mui/icons-material/Chat";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import SportsSoccerIcon from "@mui/icons-material/SportsSoccer";
+import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router";
@@ -194,6 +185,25 @@ export default function UserDashboard() {
                     </Typography>
                     <Box sx={{ display: "flex", justifyContent: "center" }}>
                       <SportsSoccerIcon sx={{ fontSize: "140px" }} />
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Box>
+            <Box sx={{ padding: "20px" }}>
+              <Card sx={{ width: "300px" }}>
+                <CardActionArea onClick={() => navigate("/stats")}>
+                  <CardContent>
+                    <Typography
+                      textAlign="center"
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                    >
+                      Leaderboard
+                    </Typography>
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <LeaderboardIcon sx={{ fontSize: "140px" }} />
                     </Box>
                   </CardContent>
                 </CardActionArea>

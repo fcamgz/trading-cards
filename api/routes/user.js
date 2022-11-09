@@ -2,23 +2,23 @@ const router = require("express").Router();
 const { findByIdAndUpdate } = require("../models/User");
 const User = require("../models/User");
 const Card = require("../models/Card").Card;
-const PackOpened = require('../models/PackOpened')
+const PackOpened = require("../models/PackOpened");
 
 // schema test
-User.schema.static.adjustUserBalance = function (
-  userId,
-  coinAmount,
-  moneyAmount
-) {
-  User.findByIdAndUpdate(userId, {
-    $set: {
-      coinBalance: coinBalance + coinAmount,
-      moneyBalance: moneyBalance + moneyAmount,
-    },
-  });
-  User.save();
-  return "User balance is updated";
-};
+// User.schema.static.adjustUserBalance = function (
+//   userId,
+//   coinAmount,
+//   moneyAmount
+// ) {
+//   User.findByIdAndUpdate(userId, {
+//     $set: {
+//       coinBalance: coinBalance + coinAmount,
+//       moneyBalance: moneyBalance + moneyAmount,
+//     },
+//   });
+//   User.save();
+//   return "User balance is updated";
+// };
 
 // get user information
 router.get("/profile/:userId", async (req, res) => {
@@ -149,8 +149,6 @@ router.get("/getAllUsers", async (req, res) => {
     res.send(err);
   }
 });
-
-
 
 router.post("/banUser", async (req, res) => {
   try {

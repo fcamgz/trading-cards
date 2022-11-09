@@ -13,6 +13,7 @@ const packRoute = require("./routes/pack");
 const adminRoute = require("./routes/admin");
 const tradesRoute = require("./routes/trades");
 const squadRoute = require("./routes/squad");
+const statsRoute = require("./routes/stats");
 
 // server setup
 const app = express();
@@ -52,6 +53,7 @@ app.use("/api/packs", packRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/trades", tradesRoute);
 app.use("/api/squad", squadRoute);
+app.use("/api/stats", statsRoute);
 
 // creating server
 /*
