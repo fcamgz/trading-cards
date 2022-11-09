@@ -85,7 +85,7 @@ export default function ClashOfSquads() {
     <Box
       sx={{
         height: "100vh",
-        width: "99%",
+        width: "98%",
         margin: 0,
         boxSizing: "border-box",
       }}
@@ -138,10 +138,10 @@ export default function ClashOfSquads() {
           <Box
             mt={8}
             sx={{
-              flex: "1 180px",
+              flex: "1 160px",
               display: "flex",
               justifyContent: "center",
-              gap: "50px",
+              gap: "20px",
             }}
           >
             <Box sx={{ flex: "1" }}>
