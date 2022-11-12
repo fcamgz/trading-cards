@@ -151,9 +151,20 @@ export default function Stats() {
                             </TableCell>
                             <TableCell
                               sx={{ fontWeight: "600", fontSize: "18px" }}
+                            >
+                              Draws
+                            </TableCell>
+                            <TableCell
+                              sx={{ fontWeight: "600", fontSize: "18px" }}
                               align="left"
                             >
                               Defeats
+                            </TableCell>
+                            <TableCell
+                              sx={{ fontWeight: "600", fontSize: "18px" }}
+                              align="right"
+                            >
+                              Points
                             </TableCell>
                           </TableRow>
                         </TableHead>
@@ -192,7 +203,19 @@ export default function Stats() {
                                   sx={{ fontSize: "16px" }}
                                   align="left"
                                 >
+                                  {stat.draws}
+                                </TableCell>
+                                <TableCell
+                                  sx={{ fontSize: "16px" }}
+                                  align="left"
+                                >
                                   {stat.defeats}
+                                </TableCell>
+                                <TableCell
+                                  sx={{ fontSize: "16px", fontWeight: "600" }}
+                                  align="right"
+                                >
+                                  {stat.wins * 3 + stat.draws}
                                 </TableCell>
                               </TableRow>
                             ))}

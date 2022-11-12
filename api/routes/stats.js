@@ -23,6 +23,10 @@ router.put("/:userId/modifyStat", async (req, res) => {
       await UserStats.findByIdAndUpdate(req.params.userId, {
         $inc: { wins: 1 },
       });
+    } else if (req.body.draws) {
+      await UserStats.findByIdAndUpdate(req.params.userId, {
+        $inc: { draws: 1 },
+      });
     } else {
       await UserStats.findByIdAndUpdate(req.params.userId, {
         $inc: { defeats: 1 },
@@ -38,10 +42,9 @@ router.get("/", async (req, res) => {
   try {
     // get stats that have equal or more than 1 wins
     const stats = await UserStats.find()
-      .where("wins")
-      .gte(1)
       .sort({
         wins: "desc",
+        draws: "desc",
       })
       .exec();
     console.log(stats);
@@ -53,9 +56,10 @@ router.get("/", async (req, res) => {
 });
 
 // get user stats
-router.get("/:userId/stats", async (req, res) => {
+router.get("/:userId", async (req, res) => {
   try {
     const userStats = await UserStats.findById(req.params.userId);
+    console.log(userStats);
     res.send(userStats);
   } catch (err) {
     res.send(err);

@@ -31,11 +31,14 @@ export default function ClashOfSquads() {
   const [userSquad, setUserSquad] = useState([]);
   const [opponentSquad, setOpponentSquad] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [userStats, setUserStats] = useState({});
+  const [opponentStats, setOpponentStats] = useState({});
 
   const location = useLocation();
 
   useEffect(() => {
-    console.log(location.pathname.split("/")[[2]]);
+    setIsLoading(true);
+    console.log(opponentSquad);
     // get user
     axios
       .get("/api/getUsername", {
@@ -54,8 +57,6 @@ export default function ClashOfSquads() {
       })
       .catch((err) => console.log(err));
 
-    setIsLoading(true);
-
     axios
       .get(
         `http://localhost:5000/api/squad/getSquadArray/${
@@ -65,21 +66,31 @@ export default function ClashOfSquads() {
       .then((res) => res.data)
       .then((res) => {
         setOpponentSquad(res[0]);
-        console.log("opp" + JSON.stringify(opponentSquad));
       })
-      .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false));
+      .catch((err) => console.log(err));
+
+    axios
+      .get(`http://localhost:5000/api/stats/${user?._id}`)
+      .then((res) => res.data)
+      .then((res) => {
+        console.log(res);
+        setUserStats(res);
+      })
+      .catch((err) => console.log(err));
 
     axios
       .get(`http://localhost:5000/api/squad/getSquadArray/${user?._id}`)
       .then((res) => res.data)
       .then((res) => {
         setUserSquad(res[0]);
-        console.log(userSquad);
       })
       .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false));
-  }, [user?._id]);
+      .finally(() =>
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1500)
+      );
+  }, [user?._id, userStats]);
 
   return (
     <Box
@@ -146,8 +157,8 @@ export default function ClashOfSquads() {
           >
             <Box sx={{ flex: "1" }}>
               <Box mt={2} mb={2}>
-                <Typography textAlign="center" variant="h5" color="white">
-                  Your Squad
+                <Typography textAlign="center" variant="h4" color="white">
+                  {userSquad?.ownerUsername}'s Squad
                 </Typography>
               </Box>
               <img
@@ -166,7 +177,7 @@ export default function ClashOfSquads() {
                     flex: "1 180px",
                     display: "flex",
                     justifyContent: "center",
-                    gap: "50px",
+                    gap: "20px",
                   }}
                 >
                   {userSquad &&
@@ -348,7 +359,8 @@ export default function ClashOfSquads() {
                   variant="h5"
                   color="white"
                 >
-                  12W - 10L
+                  {userStats?.wins}W - {userStats?.draws}D -{" "}
+                  {userStats?.defeats}L
                 </Typography>
               </Box>
               <Box mt={4}>
@@ -474,8 +486,8 @@ export default function ClashOfSquads() {
             >
               <Box mt={2}>
                 <Box mt={2} mb={2}>
-                  <Typography textAlign="center" variant="h5" color="white">
-                    Your Opponent's Squad
+                  <Typography textAlign="center" variant="h4" color="white">
+                    {opponentSquad?.ownerUsername}'s Squad
                   </Typography>
                 </Box>
                 <img
