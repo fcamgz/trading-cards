@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Grid, Typography } from "@mui/material";
+import {
+  Alert,
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router";
@@ -29,6 +38,8 @@ export default function Pack() {
   const [pack, setPack] = useState({});
   const [apiMessage, setApiMessage] = useState("");
   const [buttonValue, setButtonValue] = useState("");
+  const [notEnoughFunds, setNotEnoughFunds] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const classes = useStyles();
 
@@ -39,6 +50,7 @@ export default function Pack() {
   const cardSamples = [sampleCard1, sampleCard2, sampleCard3];
 
   useEffect(() => {
+    setIsLoading(true);
     // get user
     axios
       .get("/api/getUsername", {
@@ -59,7 +71,12 @@ export default function Pack() {
       })
       .catch((err) => {
         console.log(err);
-      });
+      })
+      .finally(() =>
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000)
+      );
 
     // get pack info
     axios
@@ -71,14 +88,31 @@ export default function Pack() {
       });
   }, []);
 
-  const handleOpenPack = () => {
-    navigate(`/showcase/${packId}`);
+  const handleOpenPack = (e) => {
+    e.preventDefault();
+    if (user?.coinBalance > pack.price) {
+      navigate(`/showcase/${packId}`);
+    } else {
+      setNotEnoughFunds(true);
+      setTimeout(() => {
+        navigate("/buyCoins");
+      }, 3000);
+    }
   };
 
   return (
     <Box
       sx={{ height: "100vh", width: "100vw", margin: 0, overflowX: "hidden" }}
     >
+      <Backdrop
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         mb={6}
@@ -105,99 +139,116 @@ export default function Pack() {
           }}
           alt="background"
         />
-        <Box
-          mt={6}
-          mb={6}
-          sx={{
-            position: "relative",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
+        {!isLoading && (
           <Box
+            mt={6}
+            mb={6}
             sx={{
-              display: "flex",
-              justifyContent: "space-around",
-              padding: "40px",
-              width: "60%",
+              position: "relative",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: "100%",
-                width: "30%",
-              }}
-            >
-              <Typography
-                sx={{ color: "yellow" }}
-                variant="h4"
-                color="white"
-                textAlign="center"
-              >
-                <MonetizationOnIcon />
-                {pack.price} TCC
-              </Typography>
-              <img
-                className={classes.cardHover}
-                src={
-                  pack.packRarity === 1
-                    ? Bronzes
-                    : pack.packRarity === 2
-                    ? Silvers
-                    : pack.packRarity === 3
-                    ? Golds
-                    : Diamonds
-                }
-                sx={{ position: "relative" }}
-                alt="Forwards Pack"
-              />
-            </Box>
-
-            <Box
-              component="form"
-              onSubmit={handleOpenPack}
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
-              }}
-            >
-              <Typography variant="h4" mb={4} color="white" textAlign="center">
+            <Box>
+              <Typography variant="h3" textAlign="center" color="white">
                 Pack Details
               </Typography>
-              <Typography variant="h6" color="white">
-                Pack Name: {pack.name}
-              </Typography>
-              <Typography color="white" mt={1} variant="h6">
-                Price: {pack.price} TCC
-              </Typography>
-              <Typography mt={1} variant="h6" color="white">
-                Card Rarity:
-                {pack.packRarity === 1
-                  ? " Low"
-                  : pack.packRarity === 2
-                  ? " Medium"
-                  : " High"}
-              </Typography>
-              <Typography mt={1} mb={4} variant="h6" color="white">
-                Number of Cards: {pack.numberOfCards ? pack.numberOfCards : "5"}
-              </Typography>
-              <Button
-                color="inherit"
-                sx={{ fontWeight: "600" }}
-                variant="contained"
-                value={buttonValue}
-                type="submit"
+              <Divider sx={{ color: "white", margin: "40px" }} />
+            </Box>
+            {notEnoughFunds && (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                }}
               >
-                Open the {pack.name}
-              </Button>
+                <Alert severity="error">
+                  You don't have enough coins. You are getting redirected to buy
+                  coins page...
+                </Alert>
+              </Box>
+            )}
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-around",
+                  padding: "40px",
+                  width: "60%",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    width: "30%",
+                  }}
+                >
+                  <Typography
+                    sx={{ color: "yellow" }}
+                    variant="h4"
+                    color="white"
+                    textAlign="center"
+                  >
+                    <MonetizationOnIcon />
+                    {pack.price} TCC
+                  </Typography>
+                  <img
+                    className={classes.cardHover}
+                    src={
+                      pack.packRarity === 1
+                        ? Bronzes
+                        : pack.packRarity === 2
+                        ? Silvers
+                        : pack.packRarity === 3
+                        ? Golds
+                        : Diamonds
+                    }
+                    sx={{ position: "relative" }}
+                    alt="Forwards Pack"
+                  />
+                </Box>
+                <Box
+                  component="form"
+                  onSubmit={handleOpenPack}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Typography variant="h6" color="white">
+                    Pack Name: {pack.name}
+                  </Typography>
+                  <Typography color="white" mt={1} variant="h6">
+                    Price: {pack.price} TCC
+                  </Typography>
+                  <Typography mt={1} variant="h6" color="white">
+                    Card Rarity:
+                    {pack.packRarity === 1
+                      ? " Low"
+                      : pack.packRarity === 2
+                      ? " Medium"
+                      : " High"}
+                  </Typography>
+                  <Typography mt={1} mb={4} variant="h6" color="white">
+                    Number of Cards:{" "}
+                    {pack.numberOfCards ? pack.numberOfCards : "5"}
+                  </Typography>
+                  <Button
+                    color="inherit"
+                    sx={{ fontWeight: "600" }}
+                    variant="contained"
+                    type="submit"
+                  >
+                    Open the {pack.name}
+                  </Button>
+                </Box>
+              </Box>
             </Box>
           </Box>
-        </Box>
+        )}
         <br />
-        <Footer />
+        {!isLoading && <Footer />}
       </Box>
     </Box>
   );

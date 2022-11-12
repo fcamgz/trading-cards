@@ -49,7 +49,7 @@ export default function AddCardForm() {
   const [formInformation, setFormInformation] = useState({
     firstname: "",
     lastname: "",
-    category: "",
+    position: "",
     // category that it belongs to could be more than one
     // rarity
     tier: "",
@@ -140,14 +140,7 @@ export default function AddCardForm() {
       })
       .catch((err) => console.log(err));
   };
-  const categories = [
-    "Fifa",
-    "Soccer",
-    "Forward",
-    "Midfielder",
-    "Defender",
-    "Goalkeeper",
-  ];
+  const categories = ["Forward", "Midfielder", "Defender", "Goalkeeper"];
 
   const tiers = ["Diamond", "Platinium", "Gold", "Silver", "Bronze"];
 
@@ -394,15 +387,15 @@ export default function AddCardForm() {
                 <FormControl sx={{ m: 1, width: "48%" }}>
                   <InputLabel>Category</InputLabel>
                   <Select
-                    value={formInformation.category}
+                    value={formInformation.position}
                     onChange={(e) => {
                       setFormInformation({
                         ...formInformation,
-                        category: e.target.value,
+                        position: e.target.value,
                       });
                     }}
                     sx={{ backgroundColor: "white" }}
-                    input={<OutlinedInput label="Category" />}
+                    input={<OutlinedInput label="Position" />}
                     fullWidth
                     defaultValue={categories[0]}
                   >

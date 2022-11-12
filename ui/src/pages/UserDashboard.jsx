@@ -10,6 +10,8 @@ import {
   Grid,
   Typography,
   Divider,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import BackgroundImage from "../images/page-backgrounds/stadium-image.jpg";
@@ -27,11 +29,21 @@ import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router";
+import { withStyles } from "@mui/styles";
 
-export default function UserDashboard() {
+const styles = {
+  box: {
+    "&:hover": {
+      background: "#E5E4E2",
+    },
+  },
+};
+
+function UserDashboard(props) {
   const [cardData, setCardData] = useState([{}]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -44,34 +56,43 @@ export default function UserDashboard() {
   };
 
   useEffect(() => {
-    // get cards
-    axios
-      .get("http://localhost:5000/api/cards/")
-      .then((res) => res.data)
-      .then((res) => {
-        setCardData(res);
-        console.log(res);
-      })
-      .catch((err) => console.log(err));
-    // get user
-    axios
-      .get("/api/getUsername", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => res.data)
-      .then((data) => {
-        console.log(data);
-        console.log(data.isLoggedIn);
-        if (data.isLoggedIn) {
-          setUser(data.user);
-          setIsLoggedIn(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    setIsLoading(true);
+    try {
+      // get cards
+      axios
+        .get("http://localhost:5000/api/cards/")
+        .then((res) => res.data)
+        .then((res) => {
+          setCardData(res);
+          console.log(res);
+        })
+        .catch((err) => console.log(err));
+      // get user
+      axios
+        .get("/api/getUsername", {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        })
+        .then((res) => res.data)
+        .then((data) => {
+          console.log(data);
+          console.log(data.isLoggedIn);
+          if (data.isLoggedIn) {
+            setUser(data.user);
+            setIsLoggedIn(true);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    }
   }, []);
   return (
     <Box
@@ -82,6 +103,12 @@ export default function UserDashboard() {
         overflowX: "hidden",
       }}
     >
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         container
@@ -115,14 +142,16 @@ export default function UserDashboard() {
             Dashboard
           </Typography>
           <Divider sx={{ color: "white", margin: "40px" }} />
-          <Box>
-            <Typography mt={2} textAlign="center" variant="h6" color="white">
-              Available Funds: ${user?.moneyBalance}
-            </Typography>
-            <Typography mt={1} textAlign="center" variant="h6" color="white">
-              Coins: {user?.coinBalance} TCC
-            </Typography>
-          </Box>
+          {!isLoading && (
+            <Box>
+              <Typography mt={2} textAlign="center" variant="h6" color="white">
+                Available Funds: ${user?.moneyBalance}
+              </Typography>
+              <Typography mt={1} textAlign="center" variant="h6" color="white">
+                Coins: {user?.coinBalance} TCC
+              </Typography>
+            </Box>
+          )}
           <Grid
             mt={6}
             sx={{
@@ -134,7 +163,7 @@ export default function UserDashboard() {
             container
           >
             <Box sx={{ padding: "20px" }}>
-              <Card sx={{ width: "300px" }}>
+              <Card sx={{ width: "300px" }} className={props.classes.box}>
                 <CardActionArea onClick={() => navigate("/myCards")}>
                   <CardContent>
                     <Typography
@@ -153,7 +182,7 @@ export default function UserDashboard() {
               </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Card sx={{ width: "300px" }}>
+              <Card sx={{ width: "300px" }} className={props.classes.box}>
                 <CardActionArea onClick={() => navigate("/modifySquad")}>
                   <CardContent>
                     <Typography
@@ -172,7 +201,7 @@ export default function UserDashboard() {
               </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Card sx={{ width: "300px" }}>
+              <Card sx={{ width: "300px" }} className={props.classes.box}>
                 <CardActionArea onClick={() => navigate("/challenges")}>
                   <CardContent>
                     <Typography
@@ -191,7 +220,7 @@ export default function UserDashboard() {
               </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Card sx={{ width: "300px" }}>
+              <Card sx={{ width: "300px" }} className={props.classes.box}>
                 <CardActionArea onClick={() => navigate("/stats")}>
                   <CardContent>
                     <Typography
@@ -210,7 +239,7 @@ export default function UserDashboard() {
               </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Card sx={{ width: "300px" }}>
+              <Card sx={{ width: "300px" }} className={props.classes.box}>
                 <CardActionArea onClick={() => navigate("/trades")}>
                   <CardContent>
                     <Typography
@@ -229,7 +258,7 @@ export default function UserDashboard() {
               </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Card sx={{ width: "300px" }}>
+              <Card sx={{ width: "300px" }} className={props.classes.box}>
                 <CardActionArea onClick={() => navigate("/tradeOffers")}>
                   <CardContent>
                     <Typography
@@ -248,7 +277,7 @@ export default function UserDashboard() {
               </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Card sx={{ width: "300px" }}>
+              <Card sx={{ width: "300px" }} className={props.classes.box}>
                 <CardActionArea onClick={() => navigate("/packs")}>
                   <CardContent>
                     <Typography
@@ -267,7 +296,7 @@ export default function UserDashboard() {
               </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Card sx={{ width: "300px" }}>
+              <Card sx={{ width: "300px" }} className={props.classes.box}>
                 <CardActionArea onClick={() => navigate("/announcements")}>
                   <CardContent>
                     <Typography
@@ -286,7 +315,7 @@ export default function UserDashboard() {
               </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Card sx={{ width: "300px" }}>
+              <Card sx={{ width: "300px" }} className={props.classes.box}>
                 <CardActionArea onClick={() => navigate("/chat")}>
                   <CardContent>
                     <Typography
@@ -305,7 +334,7 @@ export default function UserDashboard() {
               </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Card sx={{ width: "300px" }}>
+              <Card sx={{ width: "300px" }} className={props.classes.box}>
                 <CardActionArea onClick={() => navigate("/buyCoins")}>
                   <CardContent>
                     <Typography
@@ -324,7 +353,7 @@ export default function UserDashboard() {
               </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Card sx={{ width: "300px" }}>
+              <Card sx={{ width: "300px" }} className={props.classes.box}>
                 <CardActionArea onClick={() => navigate("/addFunds")}>
                   <CardContent>
                     <Typography
@@ -343,7 +372,7 @@ export default function UserDashboard() {
               </Card>
             </Box>
             <Box sx={{ padding: "20px" }}>
-              <Card sx={{ width: "300px" }}>
+              <Card sx={{ width: "300px" }} className={props.classes.box}>
                 <CardActionArea onClick={() => navigate("/cards")}>
                   <CardContent>
                     <Typography
@@ -368,3 +397,5 @@ export default function UserDashboard() {
     </Box>
   );
 }
+
+export default withStyles(styles)(UserDashboard);

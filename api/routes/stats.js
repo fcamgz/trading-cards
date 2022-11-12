@@ -34,11 +34,20 @@ router.put("/:userId/modifyStat", async (req, res) => {
 });
 
 // get all stats
-router.get("/stats", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const stats = await UserStats.find().sort({ wins: "desc" });
+    // get stats that have equal or more than 1 wins
+    const stats = await UserStats.find()
+      .where("wins")
+      .gte(1)
+      .sort({
+        wins: "desc",
+      })
+      .exec();
+    console.log(stats);
     res.send(stats);
   } catch (err) {
+    console.log(err);
     res.send(err);
   }
 });

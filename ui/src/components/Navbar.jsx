@@ -345,7 +345,7 @@ export default function Navbar(props) {
                   }}
                 >
                   <MonetizationOnIcon />
-                  {props.user.coinBalance}
+                  {props.user?.coinBalance}
                 </Typography>
               </Box>
             </Box>

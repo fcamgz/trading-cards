@@ -36,7 +36,12 @@ export default function Packs() {
         setPackData(res);
         console.log("Pack data" + res);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() =>
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000)
+      );
 
     // get user
     axios
@@ -55,8 +60,7 @@ export default function Packs() {
           setIsAdmin(data.user.isAdmin);
         }
       })
-      .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false));
+      .catch((err) => console.log(err));
   }, [isClicked]);
 
   const deletePack = (id) => {
@@ -126,88 +130,100 @@ export default function Packs() {
             </Typography>
             <Divider sx={{ color: "white", margin: "40px" }} />
           </Box>
-          <Box>
-            <Box
-              mt={4}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <Typography color="white" variant="h6">
-                Money Amount: ${user?.moneyBalance}
-              </Typography>
-              <Typography color="white" variant="h6">
-                Coin Amount: {user?.coinBalance} TCC
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-        <Box
-          component="form"
-          sx={{ display: "flex", justifyContent: "center", width: "100%" }}
-        >
-          <Box sx={{ zIndex: 1, width: "95%" }} mt={6}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-around",
-              }}
-            >
-              {packData.map((pack) => (
+          {!isLoading && (
+            <Box>
+              <Box>
                 <Box
+                  mt={4}
                   sx={{
                     display: "flex",
+                    alignItems: "center",
                     flexDirection: "column",
-                    height: "100%",
-                    width: "18%",
                   }}
                 >
-                  <Typography variant="h5" color="white" textAlign="center">
-                    {pack.price} TCC
+                  <Typography color="white" variant="h6">
+                    Money Amount: ${user?.moneyBalance}
                   </Typography>
-                  <img
-                    src={
-                      pack.packRarity === 1
-                        ? Bronzes
-                        : pack.packRarity === 2
-                        ? Silvers
-                        : pack.packRarity === 3
-                        ? Golds
-                        : Diamonds
-                    }
-                    sx={{ position: "relative" }}
-                    alt="Forwards Pack"
-                  />
-                  <Button
-                    variant="contained"
-                    value={buttonValue}
-                    href={`packs/${pack._id}`}
-                    type="submit"
-                    color="inherit"
-                    sx={{ fontWeight: "600" }}
-                  >
-                    {pack.name}
-                  </Button>
-                  {user?.isAdmin && (
-                    <Box mt={2}>
-                      <Button
-                        color="error"
-                        variant="contained"
-                        onClick={() => deletePack(pack._id)}
-                      >
-                        Delete {pack.name}
-                      </Button>
-                    </Box>
-                  )}
+                  <Typography color="white" variant="h6">
+                    Coin Amount: {user?.coinBalance} TCC
+                  </Typography>
                 </Box>
-              ))}
+              </Box>
+              <Box
+                component="form"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
+              >
+                <Box sx={{ zIndex: 1, width: "95%" }} mt={6}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-around",
+                    }}
+                  >
+                    {packData.map((pack) => (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          height: "100%",
+                          width: "18%",
+                        }}
+                      >
+                        <Typography
+                          variant="h5"
+                          color="white"
+                          textAlign="center"
+                        >
+                          {pack.price} TCC
+                        </Typography>
+                        <img
+                          src={
+                            pack.packRarity === 1
+                              ? Bronzes
+                              : pack.packRarity === 2
+                              ? Silvers
+                              : pack.packRarity === 3
+                              ? Golds
+                              : Diamonds
+                          }
+                          sx={{ position: "relative" }}
+                          alt="Forwards Pack"
+                        />
+                        <Button
+                          variant="contained"
+                          value={buttonValue}
+                          href={`packs/${pack._id}`}
+                          type="submit"
+                          color="inherit"
+                          sx={{ fontWeight: "600" }}
+                        >
+                          {pack.name}
+                        </Button>
+                        {user?.isAdmin && (
+                          <Box mt={2}>
+                            <Button
+                              color="error"
+                              variant="contained"
+                              onClick={() => deletePack(pack._id)}
+                            >
+                              Delete {pack.name}
+                            </Button>
+                          </Box>
+                        )}
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+              </Box>
             </Box>
-          </Box>
+          )}
+          <br />
+          {!isLoading && <Footer />}
         </Box>
-        <br />
-        <Footer />
       </Box>
     </Box>
   );

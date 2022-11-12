@@ -100,7 +100,11 @@ export default function BuyCoins() {
       .catch((err) => {
         console.log(err);
       })
-      .finally(() => setIsPageLoading(false));
+      .finally(() =>
+        setTimeout(() => {
+          setIsPageLoading(false);
+        }, 1500)
+      );
   }, []);
 
   return (
@@ -154,122 +158,138 @@ export default function BuyCoins() {
 
             <Divider sx={{ color: "white", margin: "40px" }} />
           </Box>
-          <Box>
-            <Box
-              mt={4}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <Typography color="white" variant="h6">
-                Available Funds: ${user?.moneyBalance}
-              </Typography>
-              <Typography color="white" variant="h6">
-                Coin Amount: {user?.coinBalance} TCC
-              </Typography>
+          {!isPageLoading && (
+            <Box>
+              <Box
+                mt={4}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <Typography color="white" variant="h6">
+                  Available Funds: ${user?.moneyBalance}
+                </Typography>
+                <Typography color="white" variant="h6">
+                  Coin Amount: {user?.coinBalance} TCC
+                </Typography>
+              </Box>
             </Box>
-          </Box>
+          )}
         </Box>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{ display: "flex", justifyContent: "center", width: "100%" }}
-        >
-          <Box sx={{ zIndex: 1, width: "100%" }} mt={6}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-around",
-              }}
-            >
+        {!isPageLoading && (
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+          >
+            <Box sx={{ zIndex: 1, width: "100%" }} mt={6}>
               <Box
                 sx={{
                   display: "flex",
-                  flexDirection: "column",
-                  height: "100%",
-                  width: "18%",
+                  justifyContent: "space-around",
                 }}
               >
-                <Typography variant="h5" color="white" textAlign="center">
-                  $10.00
-                </Typography>
-                <img
-                  src={TCCLogo1}
-                  sx={{ position: "relative" }}
-                  alt="50.000 TCC"
-                />
-                <Button
-                  variant="contained"
-                  value={buttonValue}
-                  onClick={() => setButtonValue("low")}
-                  type="submit"
-                  color="inherit"
-                  sx={{ fontWeight: "600" }}
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    width: "18%",
+                  }}
                 >
-                  50.000 TCC
-                </Button>
-              </Box>
-              <Box
-                sx={{ display: "flex", flexDirection: "column", width: "18%" }}
-              >
-                <Typography variant="h5" color="white" textAlign="center">
-                  $20.00
-                </Typography>
-                <img src={TCCLogo2} alt="100.000 TCC" />
-                <Button
-                  variant="contained"
-                  value={buttonValue}
-                  onClick={() => setButtonValue("med")}
-                  type="submit"
-                  color="inherit"
-                  sx={{ fontWeight: "600" }}
+                  <Typography variant="h5" color="white" textAlign="center">
+                    $10.00
+                  </Typography>
+                  <img
+                    src={TCCLogo1}
+                    sx={{ position: "relative" }}
+                    alt="50.000 TCC"
+                  />
+                  <Button
+                    variant="contained"
+                    value={buttonValue}
+                    onClick={() => setButtonValue("low")}
+                    type="submit"
+                    color="inherit"
+                    sx={{ fontWeight: "600" }}
+                  >
+                    50.000 TCC
+                  </Button>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "18%",
+                  }}
                 >
-                  100.000 TCC
-                </Button>
-              </Box>
-              <Box
-                sx={{ display: "flex", flexDirection: "column", width: "18%" }}
-              >
-                <Typography variant="h5" color="white" textAlign="center">
-                  $30.00
-                </Typography>
-                <img src={TCCLogo3} alt="200.000 TCC" />
-                <Button
-                  variant="contained"
-                  value={buttonValue}
-                  onClick={() => setButtonValue("high")}
-                  type="submit"
-                  color="inherit"
-                  sx={{ fontWeight: "600" }}
+                  <Typography variant="h5" color="white" textAlign="center">
+                    $20.00
+                  </Typography>
+                  <img src={TCCLogo2} alt="100.000 TCC" />
+                  <Button
+                    variant="contained"
+                    value={buttonValue}
+                    onClick={() => setButtonValue("med")}
+                    type="submit"
+                    color="inherit"
+                    sx={{ fontWeight: "600" }}
+                  >
+                    100.000 TCC
+                  </Button>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "18%",
+                  }}
                 >
-                  200.000 TCC
-                </Button>
-              </Box>
-              <Box
-                sx={{ display: "flex", flexDirection: "column", width: "18%" }}
-              >
-                <Typography variant="h5" color="white" textAlign="center">
-                  $50.00
-                </Typography>
-                <img src={TCCLogo4} alt="500.000 TCC" />
-                <Button
-                  variant="contained"
-                  value={buttonValue}
-                  onClick={() => setButtonValue("mega")}
-                  type="submit"
-                  color="inherit"
-                  sx={{ fontWeight: "600" }}
+                  <Typography variant="h5" color="white" textAlign="center">
+                    $30.00
+                  </Typography>
+                  <img src={TCCLogo3} alt="200.000 TCC" />
+                  <Button
+                    variant="contained"
+                    value={buttonValue}
+                    onClick={() => setButtonValue("high")}
+                    type="submit"
+                    color="inherit"
+                    sx={{ fontWeight: "600" }}
+                  >
+                    200.000 TCC
+                  </Button>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "18%",
+                  }}
                 >
-                  500.000 TCC
-                </Button>
+                  <Typography variant="h5" color="white" textAlign="center">
+                    $50.00
+                  </Typography>
+                  <img src={TCCLogo4} alt="500.000 TCC" />
+                  <Button
+                    variant="contained"
+                    value={buttonValue}
+                    onClick={() => setButtonValue("mega")}
+                    type="submit"
+                    color="inherit"
+                    sx={{ fontWeight: "600" }}
+                  >
+                    500.000 TCC
+                  </Button>
+                </Box>
               </Box>
             </Box>
           </Box>
-        </Box>
+        )}
         <br />
-        <Footer />
+        {!isPageLoading && <Footer />}
       </Box>
     </Box>
   );

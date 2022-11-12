@@ -67,9 +67,13 @@ export default function Challenges() {
         .then((res) => {
           setChallengeData(res);
           console.log(res);
-          setIsLoading(false);
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err))
+        .finally(() =>
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 1000)
+        );
 
       // get goalkeeper rating
       await axios
@@ -77,7 +81,6 @@ export default function Challenges() {
         .then((res) => res.data)
         .then((res) => {
           setGoalkeeperRating(res[0].goalkeeper?.rating);
-          setIsLoading(false);
         })
         .catch((err) => console.log(err));
 
@@ -88,7 +91,6 @@ export default function Challenges() {
         .then((res) => {
           setDefendersRating(res.total);
           console.log(`Defenders rating ${res}`);
-          setIsLoading(false);
         })
         .catch((err) => console.log(err));
 
@@ -100,7 +102,6 @@ export default function Challenges() {
         .then((res) => res.data)
         .then((res) => {
           setMidfieldersRating(res.total);
-          setIsLoading(false);
         })
         .catch((err) => console.log(err));
 
@@ -110,7 +111,6 @@ export default function Challenges() {
         .then((res) => res.data)
         .then((res) => {
           setStrikersRating(res.total);
-          setIsLoading(false);
         })
         .catch((err) => console.log(err));
     };
@@ -182,108 +182,111 @@ export default function Challenges() {
             Challenge to other players and see who has the best squad!
           </Typography>
           <Divider sx={{ color: "white", margin: "40px" }} />
-          <Grid
-            container
-            spacing={2}
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-            p={8}
-          >
-            {challengeData &&
-              challengeData?.map((challenge) => (
-                <Grid key={challenge._id} item xs={12} sm={6} md={4} lg={3}>
-                  <Box>
-                    {user?._id === challenge.owner ? (
-                      <Card>
-                        <CardHeader
-                          title={`Your Squad - W0-L0`}
-                          subheader={`Squad Rating ${Math.floor(
-                            (strikersRating / 2 +
-                              midfieldersRating / 4 +
-                              defendersRating / 4 +
-                              goalkeeperRating) /
-                              4
-                          )} -  Squad Owner: ${user?.username}`}
-                        ></CardHeader>
-                        <CardContent>
-                          <Stack>
-                            {user?.isAdmin ? (
-                              <Box mb={2}>
-                                <Button
-                                  onClick={() =>
-                                    handleDoNotAllowPlayersToChallengeSquad(
-                                      challenge._id
-                                    )
-                                  }
-                                  color="error"
-                                  variant="contained"
-                                >
-                                  Remove Challenge From Challenges
-                                </Button>
-                              </Box>
-                            ) : (
-                              ""
-                            )}
-                          </Stack>
-                          <Box
-                            sx={{ display: "flex", justifyContent: "center" }}
-                          >
-                            <img
-                              src={PitchImage}
-                              width="226px"
-                              alt="Forwards Pack"
-                            />
-                          </Box>
-                        </CardContent>
-                      </Card>
-                    ) : (
-                      <Card>
-                        <CardHeader
-                          title={`${challenge.ownerUsername}'s Squad 
-                        W0-L0 `}
-                          subheader={`Squad owner: ${challenge.ownerUsername} - Squad Rating ${challenge.rating} `}
-                        ></CardHeader>
-
-                        <CardContent>
-                          <Stack>
-                            <Button
-                              href={`challenges/${challenge.owner}`}
-                              variant="contained"
-                              color="inherit"
-                              sx={{ fontWeight: "600" }}
+          {!isLoading && (
+            <Grid
+              container
+              spacing={2}
+              direction="row"
+              justify="flex-start"
+              alignItems="flex-start"
+              p={8}
+            >
+              {challengeData &&
+                challengeData?.map((challenge) => (
+                  <Grid key={challenge._id} item xs={12} sm={6} md={4} lg={3}>
+                    <Box>
+                      {user?._id === challenge.owner ? (
+                        <Card>
+                          <CardHeader
+                            title={`Your Squad - W0-L0`}
+                            subheader={`Squad Rating ${Math.floor(
+                              (strikersRating / 2 +
+                                midfieldersRating / 4 +
+                                defendersRating / 4 +
+                                goalkeeperRating) /
+                                4
+                            )} -  Squad Owner: ${user?.username}`}
+                          ></CardHeader>
+                          <CardContent>
+                            <Stack>
+                              {user?.isAdmin ? (
+                                <Box mb={2}>
+                                  <Button
+                                    onClick={() =>
+                                      handleDoNotAllowPlayersToChallengeSquad(
+                                        challenge._id
+                                      )
+                                    }
+                                    color="error"
+                                    variant="contained"
+                                  >
+                                    Remove Challenge From Challenges
+                                  </Button>
+                                </Box>
+                              ) : (
+                                ""
+                              )}
+                            </Stack>
+                            <Box
+                              sx={{ display: "flex", justifyContent: "center" }}
                             >
-                              Challenge Player
-                            </Button>
-                            {user?.isAdmin || user?._id === challenge.owner ? (
-                              <Box mt={2}>
-                                <Button color="error" variant="contained">
-                                  Remove Card From Challenges
-                                </Button>
-                              </Box>
-                            ) : (
-                              ""
-                            )}
-                          </Stack>
-                          <Box
-                            mt={2}
-                            sx={{ display: "flex", justifyContent: "center" }}
-                          >
-                            <img
-                              src={PitchImage}
-                              width="226px"
-                              alt="Forwards Pack"
-                            />
-                          </Box>
-                        </CardContent>
-                      </Card>
-                    )}
-                  </Box>
-                </Grid>
-              ))}
-          </Grid>
+                              <img
+                                src={PitchImage}
+                                width="226px"
+                                alt="Forwards Pack"
+                              />
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      ) : (
+                        <Card>
+                          <CardHeader
+                            title={`${challenge.ownerUsername}'s Squad 
+                        W0-L0 `}
+                            subheader={`Squad owner: ${challenge.ownerUsername} - Squad Rating ${challenge.rating} `}
+                          ></CardHeader>
+
+                          <CardContent>
+                            <Stack>
+                              <Button
+                                href={`challenges/${challenge.owner}`}
+                                variant="contained"
+                                color="inherit"
+                                sx={{ fontWeight: "600" }}
+                              >
+                                Challenge Player
+                              </Button>
+                              {user?.isAdmin ||
+                              user?._id === challenge.owner ? (
+                                <Box mt={2}>
+                                  <Button color="error" variant="contained">
+                                    Remove Card From Challenges
+                                  </Button>
+                                </Box>
+                              ) : (
+                                ""
+                              )}
+                            </Stack>
+                            <Box
+                              mt={2}
+                              sx={{ display: "flex", justifyContent: "center" }}
+                            >
+                              <img
+                                src={PitchImage}
+                                width="226px"
+                                alt="Forwards Pack"
+                              />
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </Box>
+                  </Grid>
+                ))}
+            </Grid>
+          )}
         </Box>
-        <Footer />
+        {!isLoading && <Footer />}
       </Box>
     </Box>
   );

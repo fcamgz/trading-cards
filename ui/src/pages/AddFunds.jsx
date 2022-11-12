@@ -59,7 +59,6 @@ export default function AddFunds() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsPageLoading(true);
     switch (buttonValue) {
       case "low":
         checkBalanceAndCallAPI(10, 50000);
@@ -77,13 +76,10 @@ export default function AddFunds() {
         setApiMessage("Form Submit error");
         break;
     }
-    setIsPageLoading(false);
   };
 
   useEffect(() => {
     setIsLoading(true);
-    // get user
-    setIsPageLoading(true);
     axios
       .get("/api/getUsername", {
         headers: {
@@ -104,8 +100,11 @@ export default function AddFunds() {
       .catch((err) => {
         console.log(err);
       })
-      .finally(() => setIsLoading(false));
-    setIsPageLoading(false);
+      .finally(() =>
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1500)
+      );
   }, []);
 
   return (
@@ -158,190 +157,206 @@ export default function AddFunds() {
             </Typography>
             <Divider sx={{ color: "white", margin: "40px" }} />
           </Box>
-          <Box>
-            <Box
-              mt={4}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-              }}
-            >
-              <Typography color="white" variant="h6">
-                Available Funds: ${user?.moneyBalance}
-              </Typography>
-              <Typography color="white" variant="h6">
-                Coin Amount: {user?.coinBalance} TCC
-              </Typography>
+          {!isLoading && (
+            <Box>
+              <Box
+                mt={4}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <Typography color="white" variant="h6">
+                  Available Funds: ${user?.moneyBalance}
+                </Typography>
+                <Typography color="white" variant="h6">
+                  Coin Amount: {user?.coinBalance} TCC
+                </Typography>
+              </Box>
             </Box>
-          </Box>
+          )}
         </Box>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{ display: "flex", justifyContent: "center", width: "100%" }}
-        >
-          <Box sx={{ zIndex: 1, width: "100%" }} mt={6}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-around",
-              }}
-            >
+        {!isLoading && (
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ display: "flex", justifyContent: "center", width: "100%" }}
+          >
+            <Box sx={{ zIndex: 1, width: "100%" }} mt={6}>
               <Box
                 sx={{
                   display: "flex",
-                  flexDirection: "column",
-                  height: "100%",
-                  width: "18%",
+                  justifyContent: "space-around",
                 }}
               >
-                <img
-                  src={TCCLogo1}
-                  sx={{ position: "relative" }}
-                  alt="10.00$"
-                />
-                <StripeCheckout
-                  name="Trading Cards Co." // the pop-in header title
-                  description="Add more funds to buy more cards" // the pop-in header subtitle
-                  image={AddFundsPicture} // the pop-in header image (default none)
-                  ComponentClass="div"
-                  panelLabel="Pay" // prepended to the amount in the bottom pay button
-                  amount={1000} // cents
-                  currency="USD"
-                  stripeKey="..."
-                  email="trading@cards.co"
-                  // Note: Enabling either address option will give the user the ability to
-                  // fill out both. Addresses are sent as a second parameter in the token callback.
-                  billingAddress={true}
-                  // Note: enabling both zipCode checks and billing or shipping address will
-                  // cause zipCheck to be pulled from billing address (set to shipping if none provided).
-                  zipCode={false}
-                  bitcoin={true} // accept Bitcoins (default false)
-                  allowRememberMe // "Remember Me" option (default true)
-                  // Note: you can change the event to `onTouchTap`, `onClick`, `onTouchStart`
-                  // useful if you're using React-Tap-Event-Plugin
-                  triggerEvent="onClick"
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    width: "18%",
+                  }}
                 >
-                  <Button
-                    color="inherit"
-                    sx={{ width: "100%", fontWeight: "600" }}
-                    variant="contained"
+                  <img
+                    src={TCCLogo1}
+                    sx={{ position: "relative" }}
+                    alt="10.00$"
+                  />
+                  <StripeCheckout
+                    name="Trading Cards Co." // the pop-in header title
+                    description="Add more funds to buy more cards" // the pop-in header subtitle
+                    image={AddFundsPicture} // the pop-in header image (default none)
+                    ComponentClass="div"
+                    panelLabel="Pay" // prepended to the amount in the bottom pay button
+                    amount={1000} // cents
+                    currency="USD"
+                    stripeKey="..."
+                    email="trading@cards.co"
+                    // Note: Enabling either address option will give the user the ability to
+                    // fill out both. Addresses are sent as a second parameter in the token callback.
+                    billingAddress={true}
+                    // Note: enabling both zipCode checks and billing or shipping address will
+                    // cause zipCheck to be pulled from billing address (set to shipping if none provided).
+                    zipCode={false}
+                    bitcoin={true} // accept Bitcoins (default false)
+                    allowRememberMe // "Remember Me" option (default true)
+                    // Note: you can change the event to `onTouchTap`, `onClick`, `onTouchStart`
+                    // useful if you're using React-Tap-Event-Plugin
+                    triggerEvent="onClick"
                   >
-                    $10.00
-                  </Button>
-                </StripeCheckout>
-              </Box>
-              <Box
-                sx={{ display: "flex", flexDirection: "column", width: "18%" }}
-              >
-                <img src={TCCLogo2} alt="$20.00" />
-                <StripeCheckout
-                  name="Trading Cards Co." // the pop-in header title
-                  description="Add more funds to buy more cards" // the pop-in header subtitle
-                  image={AddFundsPicture} // the pop-in header image (default none)
-                  ComponentClass="div"
-                  panelLabel="Pay" // prepended to the amount in the bottom pay button
-                  amount={2000} // cents
-                  currency="USD"
-                  stripeKey="..."
-                  email="trading@cards.co"
-                  // Note: Enabling either address option will give the user the ability to
-                  // fill out both. Addresses are sent as a second parameter in the token callback.
-                  billingAddress={true}
-                  // Note: enabling both zipCode checks and billing or shipping address will
-                  // cause zipCheck to be pulled from billing address (set to shipping if none provided).
-                  zipCode={false}
-                  bitcoin={true} // accept Bitcoins (default false)
-                  allowRememberMe // "Remember Me" option (default true)
-                  // Note: you can change the event to `onTouchTap`, `onClick`, `onTouchStart`
-                  // useful if you're using React-Tap-Event-Plugin
-                  triggerEvent="onClick"
+                    <Button
+                      color="inherit"
+                      sx={{ width: "100%", fontWeight: "600" }}
+                      variant="contained"
+                    >
+                      $10.00
+                    </Button>
+                  </StripeCheckout>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "18%",
+                  }}
                 >
-                  <Button
-                    color="inherit"
-                    sx={{ width: "100%", fontWeight: "600" }}
-                    variant="contained"
+                  <img src={TCCLogo2} alt="$20.00" />
+                  <StripeCheckout
+                    name="Trading Cards Co." // the pop-in header title
+                    description="Add more funds to buy more cards" // the pop-in header subtitle
+                    image={AddFundsPicture} // the pop-in header image (default none)
+                    ComponentClass="div"
+                    panelLabel="Pay" // prepended to the amount in the bottom pay button
+                    amount={2000} // cents
+                    currency="USD"
+                    stripeKey="..."
+                    email="trading@cards.co"
+                    // Note: Enabling either address option will give the user the ability to
+                    // fill out both. Addresses are sent as a second parameter in the token callback.
+                    billingAddress={true}
+                    // Note: enabling both zipCode checks and billing or shipping address will
+                    // cause zipCheck to be pulled from billing address (set to shipping if none provided).
+                    zipCode={false}
+                    bitcoin={true} // accept Bitcoins (default false)
+                    allowRememberMe // "Remember Me" option (default true)
+                    // Note: you can change the event to `onTouchTap`, `onClick`, `onTouchStart`
+                    // useful if you're using React-Tap-Event-Plugin
+                    triggerEvent="onClick"
                   >
-                    $20.00
-                  </Button>
-                </StripeCheckout>
-              </Box>
-              <Box
-                sx={{ display: "flex", flexDirection: "column", width: "18%" }}
-              >
-                <img src={TCCLogo3} alt="$30.00" />
-                <StripeCheckout
-                  name="Trading Cards Co." // the pop-in header title
-                  description="Add more funds to buy more cards" // the pop-in header subtitle
-                  image={AddFundsPicture} // the pop-in header image (default none)
-                  ComponentClass="div"
-                  panelLabel="Pay" // prepended to the amount in the bottom pay button
-                  amount={3000} // cents
-                  currency="USD"
-                  stripeKey="..."
-                  email="trading@cards.co"
-                  // Note: Enabling either address option will give the user the ability to
-                  // fill out both. Addresses are sent as a second parameter in the token callback.
-                  billingAddress={true}
-                  // Note: enabling both zipCode checks and billing or shipping address will
-                  // cause zipCheck to be pulled from billing address (set to shipping if none provided).
-                  zipCode={false}
-                  bitcoin={true} // accept Bitcoins (default false)
-                  allowRememberMe // "Remember Me" option (default true)
-                  // Note: you can change the event to `onTouchTap`, `onClick`, `onTouchStart`
-                  // useful if you're using React-Tap-Event-Plugin
-                  triggerEvent="onClick"
+                    <Button
+                      color="inherit"
+                      sx={{ width: "100%", fontWeight: "600" }}
+                      variant="contained"
+                    >
+                      $20.00
+                    </Button>
+                  </StripeCheckout>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "18%",
+                  }}
                 >
-                  <Button
-                    color="inherit"
-                    sx={{ width: "100%", fontWeight: "600" }}
-                    variant="contained"
+                  <img src={TCCLogo3} alt="$30.00" />
+                  <StripeCheckout
+                    name="Trading Cards Co." // the pop-in header title
+                    description="Add more funds to buy more cards" // the pop-in header subtitle
+                    image={AddFundsPicture} // the pop-in header image (default none)
+                    ComponentClass="div"
+                    panelLabel="Pay" // prepended to the amount in the bottom pay button
+                    amount={3000} // cents
+                    currency="USD"
+                    stripeKey="..."
+                    email="trading@cards.co"
+                    // Note: Enabling either address option will give the user the ability to
+                    // fill out both. Addresses are sent as a second parameter in the token callback.
+                    billingAddress={true}
+                    // Note: enabling both zipCode checks and billing or shipping address will
+                    // cause zipCheck to be pulled from billing address (set to shipping if none provided).
+                    zipCode={false}
+                    bitcoin={true} // accept Bitcoins (default false)
+                    allowRememberMe // "Remember Me" option (default true)
+                    // Note: you can change the event to `onTouchTap`, `onClick`, `onTouchStart`
+                    // useful if you're using React-Tap-Event-Plugin
+                    triggerEvent="onClick"
                   >
-                    $30.00
-                  </Button>
-                </StripeCheckout>
-              </Box>
-              <Box
-                sx={{ display: "flex", flexDirection: "column", width: "18%" }}
-              >
-                <img src={TCCLogo4} alt="$50.00" />
-                <StripeCheckout
-                  name="Trading Cards Co." // the pop-in header title
-                  description="Add more funds to buy more cards" // the pop-in header subtitle
-                  image={AddFundsPicture} // the pop-in header image (default none)
-                  ComponentClass="div"
-                  panelLabel="Pay" // prepended to the amount in the bottom pay button
-                  amount={5000} // cents
-                  currency="USD"
-                  stripeKey="..."
-                  email="trading@cards.co"
-                  // Note: Enabling either address option will give the user the ability to
-                  // fill out both. Addresses are sent as a second parameter in the token callback.
-                  billingAddress={true}
-                  // Note: enabling both zipCode checks and billing or shipping address will
-                  // cause zipCheck to be pulled from billing address (set to shipping if none provided).
-                  zipCode={false}
-                  bitcoin={true} // accept Bitcoins (default false)
-                  allowRememberMe // "Remember Me" option (default true)
-                  // Note: you can change the event to `onTouchTap`, `onClick`, `onTouchStart`
-                  // useful if you're using React-Tap-Event-Plugin
-                  triggerEvent="onClick"
+                    <Button
+                      color="inherit"
+                      sx={{ width: "100%", fontWeight: "600" }}
+                      variant="contained"
+                    >
+                      $30.00
+                    </Button>
+                  </StripeCheckout>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "18%",
+                  }}
                 >
-                  <Button
-                    color="inherit"
-                    sx={{ width: "100%", fontWeight: "600" }}
-                    variant="contained"
+                  <img src={TCCLogo4} alt="$50.00" />
+                  <StripeCheckout
+                    name="Trading Cards Co." // the pop-in header title
+                    description="Add more funds to buy more cards" // the pop-in header subtitle
+                    image={AddFundsPicture} // the pop-in header image (default none)
+                    ComponentClass="div"
+                    panelLabel="Pay" // prepended to the amount in the bottom pay button
+                    amount={5000} // cents
+                    currency="USD"
+                    stripeKey="..."
+                    email="trading@cards.co"
+                    // Note: Enabling either address option will give the user the ability to
+                    // fill out both. Addresses are sent as a second parameter in the token callback.
+                    billingAddress={true}
+                    // Note: enabling both zipCode checks and billing or shipping address will
+                    // cause zipCheck to be pulled from billing address (set to shipping if none provided).
+                    zipCode={false}
+                    bitcoin={true} // accept Bitcoins (default false)
+                    allowRememberMe // "Remember Me" option (default true)
+                    // Note: you can change the event to `onTouchTap`, `onClick`, `onTouchStart`
+                    // useful if you're using React-Tap-Event-Plugin
+                    triggerEvent="onClick"
                   >
-                    $50.00
-                  </Button>
-                </StripeCheckout>
+                    <Button
+                      color="inherit"
+                      sx={{ width: "100%", fontWeight: "600" }}
+                      variant="contained"
+                    >
+                      $50.00
+                    </Button>
+                  </StripeCheckout>
+                </Box>
               </Box>
             </Box>
           </Box>
-        </Box>
+        )}
         <br />
-        <Footer />
+        {!isLoading && <Footer />}
       </Box>
     </Box>
   );
