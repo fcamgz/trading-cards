@@ -400,10 +400,7 @@ export default function TradeOffers() {
                     </Grid>
                   </>
                 ) : (
-                  <Alert severity="warning">
-                    You don't have any offers, go ahead and check out the trade
-                    market!
-                  </Alert>
+                  ""
                 )
               )}
             </Grid>
