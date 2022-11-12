@@ -90,9 +90,13 @@ export default function Trades() {
       .then((res) => {
         setCardData(res);
         console.log(res);
-        setIsLoading(false);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() =>
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1500)
+      );
   }, [postRequest, resetIsClicked]);
   return (
     <Box
@@ -139,149 +143,169 @@ export default function Trades() {
           >
             Trade Market
           </Typography>
+          <Typography
+            variant="subtitle1"
+            mt={2}
+            color="white"
+            textAlign="center"
+            gutterBottom
+          >
+            See all the cards that are up for a trade offer
+          </Typography>
           <Divider sx={{ color: "white", margin: "40px" }} />
 
-          <Grid
-            container
-            spacing={2}
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-            p={8}
-          >
-            {cardData.map((card) => (
-              <Grid key={card._id} item xs={12} sm={6} md={4} lg={3}>
-                <Box>
-                  {user?._id === card.owner ? (
-                    <Card sx={{ backgroundColor: "#90EE90" }}>
-                      {user?._id === card.owner ? (
-                        <>
+          {!isLoading && (
+            <Grid
+              container
+              spacing={2}
+              direction="row"
+              justify="flex-start"
+              alignItems="flex-start"
+              p={8}
+            >
+              {cardData.map((card) => (
+                <Grid key={card._id} item xs={12} sm={6} md={4} lg={3}>
+                  <Box>
+                    {user?._id === card.owner ? (
+                      <Card>
+                        {user?._id === card.owner ? (
+                          <>
+                            <CardHeader
+                              sx={{ color: "#8AFF8A" }}
+                              title={`${card.firstname} ${card.lastname}`}
+                              subheader={`Price: ${card.price} - Rating ${card.rating} - Owned by You`}
+                            ></CardHeader>
+                          </>
+                        ) : (
                           <CardHeader
                             title={`${card.firstname} ${card.lastname}`}
-                            subheader={`Price: ${card.price} - Rating ${card.rating}`}
+                            subheader={`Price: ${card.price} - Rating ${
+                              card.rating
+                            } - Owner ${card.owner.slice(0, 6)}...`}
                           ></CardHeader>
-                        </>
-                      ) : (
-                        <CardHeader
-                          title={`${card.firstname} ${card.lastname}`}
-                          subheader={`Price: ${card.price} - Rating ${card.rating} - Owner ${card.owner}`}
-                        ></CardHeader>
-                      )}
-                      <CardContent>
-                        <Stack>
-                          <Button
-                            href={`trades/${card._id}`}
-                            variant="contained"
-                            color="inherit"
-                            sx={{ fontWeight: "600" }}
+                        )}
+                        <CardContent>
+                          <Stack>
+                            <Button
+                              href={`trades/${card._id}`}
+                              variant="contained"
+                              color="inherit"
+                              sx={{ fontWeight: "600" }}
+                            >
+                              Go to Card
+                            </Button>
+                            {user?.isAdmin || user?._id === card.owner ? (
+                              <Box mt={2}>
+                                <Button
+                                  color="error"
+                                  onClick={() =>
+                                    handleRemoveFromTradeList(card._id)
+                                  }
+                                  variant="contained"
+                                >
+                                  Remove Card From Trade Market
+                                </Button>
+                              </Box>
+                            ) : (
+                              ""
+                            )}
+                          </Stack>
+                          <Box
+                            sx={{ display: "flex", justifyContent: "center" }}
                           >
-                            Go to Card
-                          </Button>
-                          {user?.isAdmin || user?._id === card.owner ? (
-                            <Box mt={2}>
-                              <Button
-                                color="error"
-                                onClick={() =>
-                                  handleRemoveFromTradeList(card._id)
-                                }
-                                variant="contained"
-                              >
-                                Remove Card From Trade Market
-                              </Button>
-                            </Box>
-                          ) : (
-                            ""
-                          )}
-                        </Stack>
-                        <Box sx={{ display: "flex", justifyContent: "center" }}>
-                          <img
-                            src={
-                              card.tier === "Bronze"
-                                ? Bronzes
-                                : card.tier === "Silver"
-                                ? Silvers
-                                : card.tier === "Gold"
-                                ? Golds
-                                : card.tier === "Platinium"
-                                ? Platinum
-                                : card.tier === "Diamond"
-                                ? Diamonds
-                                : ""
-                            }
-                            width="226px"
-                            alt="Forwards Pack"
-                          />
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  ) : (
-                    <Card>
-                      {user?._id === card.owner ? (
-                        <>
+                            <img
+                              src={
+                                card.tier === "Bronze"
+                                  ? Bronzes
+                                  : card.tier === "Silver"
+                                  ? Silvers
+                                  : card.tier === "Gold"
+                                  ? Golds
+                                  : card.tier === "Platinium"
+                                  ? Platinum
+                                  : card.tier === "Diamond"
+                                  ? Diamonds
+                                  : ""
+                              }
+                              width="226px"
+                              alt="Forwards Pack"
+                            />
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    ) : (
+                      <Card>
+                        {user?._id === card.owner ? (
+                          <>
+                            <CardHeader
+                              title={`${card.firstname} ${card.lastname}`}
+                              subheader={`Price: ${card.price} - Rating ${card.rating}`}
+                            ></CardHeader>
+                          </>
+                        ) : (
                           <CardHeader
                             title={`${card.firstname} ${card.lastname}`}
-                            subheader={`Price: ${card.price} - Rating ${card.rating}`}
+                            subheader={`Price: ${card.price} - Rating ${
+                              card.rating
+                            } - Owner ${card.owner?.slice(0, 6)}...`}
                           ></CardHeader>
-                        </>
-                      ) : (
-                        <CardHeader
-                          title={`${card.firstname} ${card.lastname}`}
-                          subheader={`Price: ${card.price} - Rating ${card.rating} - Owner ${card.owner}`}
-                        ></CardHeader>
-                      )}
-                      <CardContent>
-                        <Stack>
-                          <Button
-                            href={`trades/${card._id}`}
-                            variant="contained"
-                            color="inherit"
+                        )}
+                        <CardContent>
+                          <Stack>
+                            <Button
+                              href={`trades/${card._id}`}
+                              variant="contained"
+                              color="inherit"
+                            >
+                              Go to Card
+                            </Button>
+                            {user?.isAdmin || user?._id === card.owner ? (
+                              <Box mt={2}>
+                                <Button
+                                  color="secondary"
+                                  onClick={() =>
+                                    handleRemoveFromTradeList(card._id)
+                                  }
+                                  variant="contained"
+                                >
+                                  Remove Card From Trade Market
+                                </Button>
+                              </Box>
+                            ) : (
+                              ""
+                            )}
+                          </Stack>
+                          <Box
+                            sx={{ display: "flex", justifyContent: "center" }}
                           >
-                            Go to Card
-                          </Button>
-                          {user?.isAdmin || user?._id === card.owner ? (
-                            <Box mt={2}>
-                              <Button
-                                color="secondary"
-                                onClick={() =>
-                                  handleRemoveFromTradeList(card._id)
-                                }
-                                variant="contained"
-                              >
-                                Remove Card From Trade Market
-                              </Button>
-                            </Box>
-                          ) : (
-                            ""
-                          )}
-                        </Stack>
-                        <Box sx={{ display: "flex", justifyContent: "center" }}>
-                          <img
-                            src={
-                              card.tier === "Bronze"
-                                ? Bronzes
-                                : card.tier === "Silver"
-                                ? Silvers
-                                : card.tier === "Gold"
-                                ? Golds
-                                : card.tier === "Platinium"
-                                ? Platinum
-                                : card.tier === "Diamond"
-                                ? Diamonds
-                                : ""
-                            }
-                            width="226px"
-                            alt="Forwards Pack"
-                          />
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  )}
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
+                            <img
+                              src={
+                                card.tier === "Bronze"
+                                  ? Bronzes
+                                  : card.tier === "Silver"
+                                  ? Silvers
+                                  : card.tier === "Gold"
+                                  ? Golds
+                                  : card.tier === "Platinium"
+                                  ? Platinum
+                                  : card.tier === "Diamond"
+                                  ? Diamonds
+                                  : ""
+                              }
+                              width="226px"
+                              alt="Forwards Pack"
+                            />
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          )}
         </Box>
-        <Footer />
+        {!isLoading && <Footer />}
       </Box>
     </Box>
   );

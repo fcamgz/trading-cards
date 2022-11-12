@@ -90,40 +90,52 @@ router.post("/:packid/open/:cardnum", async (req, res) => {
     // get a random card from all the cards in pack, send those cards, are duplicates
 
     // const baseCards = Card.find({ owner: { $eq: "TCC" } });
-    let cardsToSend;
-    if (pack.packRarity === 1) {
-      cardsToSend = await Card.aggregate([
-        {
-          $match: {
-            owner: { $eq: "TCC" },
-            pack: { $eq: pack.name },
-            tier: { $in: ["Silver", "Bronze", "Gold"] },
+    if (user.coinBalance > pack.price) {
+      console.log(`pack data ${pack}`);
+      let cardsToSend;
+      if (pack.packRarity === 1) {
+        cardsToSend = await Card.aggregate([
+          {
+            $match: {
+              owner: { $eq: "TCC" },
+              pack: { $eq: pack.name },
+              tier: { $in: ["Silver", "Bronze", "Gold"] },
+            },
           },
-        },
-        { $sample: { size: 5 } },
-      ]);
-    } else if (pack.packRarity === 2) {
-      cardsToSend = await Card.aggregate([
-        {
-          $match: {
-            owner: { $eq: "TCC" },
-            pack: { $eq: pack.name },
-            tier: { $in: ["Silver", "Platinium", "Gold"] },
+          { $sample: { size: 5 } },
+        ]);
+      } else if (pack.packRarity === 2) {
+        cardsToSend = await Card.aggregate([
+          {
+            $match: {
+              owner: { $eq: "TCC" },
+              pack: { $eq: pack.name },
+              tier: { $in: ["Silver", "Platinium", "Gold"] },
+            },
           },
-        },
-        { $sample: { size: 5 } },
-      ]);
+          { $sample: { size: 5 } },
+        ]);
+      } else {
+        cardsToSend = await Card.aggregate([
+          {
+            $match: {
+              owner: { $eq: "TCC" },
+              pack: { $eq: pack.name },
+              tier: { $in: ["Diamond", "Platinium", "Gold"] },
+            },
+          },
+          { $sample: { size: 5 } },
+        ]);
+      }
+      const newUserBalance = user.coinBalance - pack.price;
+      console.log("User coin balance: " + user.coinBalance);
+
+      await User.findByIdAndUpdate(user._id, {
+        $set: { coinBalance: newUserBalance },
+      });
+      res.send(cardsToSend);
     } else {
-      cardsToSend = await Card.aggregate([
-        {
-          $match: {
-            owner: { $eq: "TCC" },
-            pack: { $eq: pack.name },
-            tier: { $in: ["Diamond", "Platinium", "Gold"] },
-          },
-        },
-        { $sample: { size: 5 } },
-      ]);
+      console.log("not enough funds");
     }
     // switch (pack.tier) {
     //   case "LOW":
@@ -235,13 +247,6 @@ router.post("/:packid/open/:cardnum", async (req, res) => {
     //     ]);
     //     break;
     // }
-    const newUserBalance = user.coinBalance - pack.price;
-    console.log("User coin balance: " + user.coinBalance);
-
-    await User.findByIdAndUpdate(user._id, {
-      $set: { coinBalance: newUserBalance },
-    });
-    res.send(cardsToSend);
   } catch (err) {
     console.log(err);
     res.status(500).send(err);

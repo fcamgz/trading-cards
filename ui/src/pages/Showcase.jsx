@@ -69,14 +69,18 @@ export default function Showcase() {
               setCardData(res);
               console.log(res);
               setRevealCards(false);
-              setIsLoading(false);
             })
             .catch((err) => console.log(err));
         } else {
           console.log("Cards revealed");
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() =>
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000)
+      );
   }, [user?.username]);
 
   const handleAddCollection = () => {
@@ -104,9 +108,7 @@ export default function Showcase() {
     >
       <Backdrop
         sx={{
-          color: "black",
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: "black",
         }}
         open={isLoading}
       >
@@ -132,67 +134,76 @@ export default function Showcase() {
           }}
           alt="background"
         />
-        <Box sx={{ position: "relative" }} mb={2}>
-          <Typography variant="h3" mt={4} color="white" textAlign="center">
-            Congratulations! You've Opened
-          </Typography>
-          <Grid
-            mt={4}
-            container
-            spacing={2}
-            direction="row"
-            sx={{ display: "flex", justifyContent: "center" }}
-          >
-            {cardData.map((card, index) => (
-              <Grid key={card._id} item xs={12} sm={6} md={4} lg={2}>
-                <Box>
-                  <Card>
-                    <Box
-                      sx={{ display: "flex", justifyContent: "space-between" }}
-                    >
-                      <CardHeader
-                        title={`${card.firstname} ${card.lastname}`}
-                        subheader={`Price: ${card.price} - Rating ${card.rating}`}
-                      ></CardHeader>
+        {!isLoading && (
+          <Box sx={{ position: "relative" }} mb={2}>
+            <Box>
+              <Typography variant="h3" mt={4} color="white" textAlign="center">
+                Congratulations! You've Opened
+              </Typography>
+              <Grid
+                mt={4}
+                container
+                spacing={2}
+                direction="row"
+                sx={{ display: "flex", justifyContent: "center" }}
+              >
+                {cardData.map((card, index) => (
+                  <Grid key={card._id} item xs={12} sm={6} md={4} lg={2}>
+                    <Box>
+                      <Card>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <CardHeader
+                            title={`${card.firstname} ${card.lastname}`}
+                            subheader={`Price: ${card.price} - Rating ${card.rating}`}
+                          ></CardHeader>
+                        </Box>
+                        <CardContent>
+                          <Box
+                            sx={{ display: "flex", justifyContent: "center" }}
+                          >
+                            <img
+                              src={
+                                card.tier === "Bronze"
+                                  ? Bronzes
+                                  : card.tier === "Silver"
+                                  ? Silvers
+                                  : card.tier === "Gold"
+                                  ? Golds
+                                  : card.tier === "Platinium"
+                                  ? Platinum
+                                  : card.tier === "Diamond"
+                                  ? Diamonds
+                                  : ""
+                              }
+                              width="226px"
+                              alt="Forwards Pack"
+                            />
+                          </Box>
+                        </CardContent>
+                      </Card>
                     </Box>
-                    <CardContent>
-                      <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <img
-                          src={
-                            card.tier === "Bronze"
-                              ? Bronzes
-                              : card.tier === "Silver"
-                              ? Silvers
-                              : card.tier === "Gold"
-                              ? Golds
-                              : card.tier === "Platinium"
-                              ? Platinum
-                              : card.tier === "Diamond"
-                              ? Diamonds
-                              : ""
-                          }
-                          width="226px"
-                          alt="Forwards Pack"
-                        />
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </Box>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
-          <Box mt={4} sx={{ display: "flex", justifyContent: "center" }}>
-            <Button
-              color="inherit"
-              sx={{ fontWeight: "600" }}
-              onClick={() => handleAddCollection()}
-              variant="contained"
-            >
-              Add Cards to My Collection
-            </Button>
+              <Box mt={4} sx={{ display: "flex", justifyContent: "center" }}>
+                <Button
+                  color="inherit"
+                  sx={{ fontWeight: "600" }}
+                  onClick={() => handleAddCollection()}
+                  variant="contained"
+                >
+                  Add Cards to My Collection
+                </Button>
+              </Box>
+            </Box>
+            <Footer />
           </Box>
-        </Box>
-        <Footer />
+        )}
       </Box>
     </Box>
   );

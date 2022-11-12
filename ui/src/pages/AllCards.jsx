@@ -53,7 +53,7 @@ export default function AllCards() {
   const [searchKey, setSearchKey] = useState("");
   const [resetIsClicked, setResetIsClicked] = useState(false);
   const [orderBy, setOrderBy] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleReset = () => {
     setSearchKey("");
@@ -110,7 +110,11 @@ export default function AllCards() {
         }
       })
       .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false));
+      .finally(() =>
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1500)
+      );
   }, [buttonClicked, resetIsClicked]);
   return (
     <Box
@@ -123,9 +127,8 @@ export default function AllCards() {
     >
       <Backdrop
         sx={{
-          color: "black",
+          color: "#fff",
           zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: "black",
         }}
         open={isLoading}
       >
@@ -165,176 +168,187 @@ export default function AllCards() {
             See all the cards in the database
           </Typography>
           <Divider sx={{ color: "white", margin: "40px" }} />
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              padding: "0 60px",
-            }}
-          >
-            <TableContainer
-              sx={{ border: "4px solid #AFAFAF" }}
-              color="transparent"
-            >
-              <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell
-                      sx={{
-                        padding: "10px",
-                        display: "flex",
-                        justifyContent: "flex-start",
-                        gap: "12px",
-                        alignItems: "center",
-                      }}
-                    >
-                      <TextField
-                        label="Search Card by Name"
-                        sx={{ backgroundColor: "#FAFAFA" }}
-                        onChange={(e) => setSearchKey(e.target.value)}
-                        value={searchKey}
-                      />
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "4px",
-                        }}
-                      >
-                        <Button
-                          onClick={() => handleSearch(searchKey)}
-                          variant="contained"
+          {!isLoading && (
+            <Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "0 60px",
+                }}
+              >
+                <TableContainer
+                  sx={{ border: "4px solid #AFAFAF" }}
+                  color="transparent"
+                >
+                  <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                    <TableHead>
+                      <TableRow>
+                        <StyledTableCell
+                          sx={{
+                            padding: "10px",
+                            display: "flex",
+                            justifyContent: "flex-start",
+                            gap: "12px",
+                            alignItems: "center",
+                          }}
                         >
-                          Search
-                        </Button>
-                        <Button
-                          onClick={handleReset}
-                          sx={{ color: "black" }}
-                          size="small"
-                          variant="contained"
-                          color="inherit"
-                        >
-                          Reset
-                        </Button>
-                      </Box>
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          gap: "12px",
-                        }}
-                      >
-                        <FormControl
-                          sx={{ width: "140px", backgroundColor: "white" }}
-                        >
-                          <InputLabel id="demo-simple-select-label">
-                            Order By
-                          </InputLabel>
-                          <Select
-                            value={orderBy}
-                            label="Order By"
-                            onChange={(e) => setOrderBy(e.target.value)}
-                          >
-                            <MenuItem value="firstName">First Name</MenuItem>
-                            <MenuItem value="lastName">Last Name</MenuItem>
-                            <MenuItem value="price">Price</MenuItem>
-                            <MenuItem value="rating">Rating</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Box>
-                    </StyledTableCell>
-                  </TableRow>
-                </TableHead>
-              </Table>
-            </TableContainer>
-          </Box>
-          <Grid
-            container
-            spacing={2}
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-            p={4}
-          >
-            {cardData.map((card) => (
-              <Grid key={card._id} item xs={12} sm={6} md={4} lg={3}>
-                <Box>
-                  <Card>
-                    <Box
-                      sx={{ display: "flex", justifyContent: "space-between" }}
-                    >
-                      <CardHeader
-                        title={`${card.firstname} ${card.lastname}`}
-                        subheader={`Price: ${card.price} - Rating ${card.rating}`}
-                      ></CardHeader>
-                      <Box m={4}>
-                        {card.owner === user?._id ? (
-                          <Chip
-                            label="Owned"
+                          <TextField
+                            label="Search Card by Name"
+                            sx={{ backgroundColor: "#FAFAFA" }}
+                            onChange={(e) => setSearchKey(e.target.value)}
+                            value={searchKey}
+                          />
+                          <Box
                             sx={{
                               display: "flex",
-                              backgroundColor: "green",
-                              color: "white",
+                              flexDirection: "column",
+                              gap: "4px",
                             }}
-                          />
-                        ) : (
-                          ""
-                        )}
-                      </Box>
-                    </Box>
-                    <CardContent>
-                      <Stack>
-                        <Button
-                          href={`cards/${card._id}`}
-                          variant="contained"
-                          color="inherit"
-                          sx={{ fontWeight: "600" }}
-                        >
-                          Go to Card
-                        </Button>
-                        {user?.isAdmin ? (
-                          <Box mt={2}>
+                          >
                             <Button
-                              color="error"
-                              onClick={() => handleDelete(card._id)}
+                              onClick={() => handleSearch(searchKey)}
                               variant="contained"
                             >
-                              Delete Card
+                              Search
+                            </Button>
+                            <Button
+                              onClick={handleReset}
+                              sx={{ color: "black" }}
+                              size="small"
+                              variant="contained"
+                              color="inherit"
+                            >
+                              Reset
                             </Button>
                           </Box>
-                        ) : (
-                          ""
-                        )}
-                      </Stack>
-                      <Box sx={{ display: "flex", justifyContent: "center" }}>
-                        <img
-                          src={
-                            card.tier === "Bronze"
-                              ? Bronzes
-                              : card.tier === "Silver"
-                              ? Silvers
-                              : card.tier === "Gold"
-                              ? Golds
-                              : card.tier === "Platinium"
-                              ? Platinum
-                              : card.tier === "Diamond"
-                              ? Diamonds
-                              : ""
-                          }
-                          width="226px"
-                          alt="Forwards Pack"
-                        />
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </Box>
+                        </StyledTableCell>
+                        <StyledTableCell align="right">
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              gap: "12px",
+                            }}
+                          >
+                            <FormControl
+                              sx={{ width: "140px", backgroundColor: "white" }}
+                            >
+                              <InputLabel id="demo-simple-select-label">
+                                Order By
+                              </InputLabel>
+                              <Select
+                                value={orderBy}
+                                label="Order By"
+                                onChange={(e) => setOrderBy(e.target.value)}
+                              >
+                                <MenuItem value="firstName">
+                                  First Name
+                                </MenuItem>
+                                <MenuItem value="lastName">Last Name</MenuItem>
+                                <MenuItem value="price">Price</MenuItem>
+                                <MenuItem value="rating">Rating</MenuItem>
+                              </Select>
+                            </FormControl>
+                          </Box>
+                        </StyledTableCell>
+                      </TableRow>
+                    </TableHead>
+                  </Table>
+                </TableContainer>
+              </Box>
+              <Grid
+                container
+                spacing={2}
+                direction="row"
+                justify="flex-start"
+                alignItems="flex-start"
+                p={4}
+              >
+                {cardData.map((card) => (
+                  <Grid key={card._id} item xs={12} sm={6} md={4} lg={3}>
+                    <Box>
+                      <Card>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <CardHeader
+                            title={`${card.firstname} ${card.lastname}`}
+                            subheader={`Price: ${card.price} - Rating ${card.rating}`}
+                          ></CardHeader>
+                          <Box m={4}>
+                            {card.owner === user?._id ? (
+                              <Chip
+                                label="Owned"
+                                sx={{
+                                  display: "flex",
+                                  backgroundColor: "green",
+                                  color: "white",
+                                }}
+                              />
+                            ) : (
+                              ""
+                            )}
+                          </Box>
+                        </Box>
+                        <CardContent>
+                          <Stack>
+                            <Button
+                              href={`cards/${card._id}`}
+                              variant="contained"
+                              color="inherit"
+                              sx={{ fontWeight: "600" }}
+                            >
+                              Go to Card
+                            </Button>
+                            {user?.isAdmin ? (
+                              <Box mt={2}>
+                                <Button
+                                  color="error"
+                                  onClick={() => handleDelete(card._id)}
+                                  variant="contained"
+                                >
+                                  Delete Card
+                                </Button>
+                              </Box>
+                            ) : (
+                              ""
+                            )}
+                          </Stack>
+                          <Box
+                            sx={{ display: "flex", justifyContent: "center" }}
+                          >
+                            <img
+                              src={
+                                card.tier === "Bronze"
+                                  ? Bronzes
+                                  : card.tier === "Silver"
+                                  ? Silvers
+                                  : card.tier === "Gold"
+                                  ? Golds
+                                  : card.tier === "Platinium"
+                                  ? Platinum
+                                  : card.tier === "Diamond"
+                                  ? Diamonds
+                                  : ""
+                              }
+                              width="226px"
+                              alt="Forwards Pack"
+                            />
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </Box>
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
+            </Box>
+          )}
         </Box>
-        <Footer />
+        {!isLoading && <Footer />}
       </Box>
     </Box>
   );

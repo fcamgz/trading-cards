@@ -20,6 +20,7 @@ const PackSchema = mongoose.Schema({
     type: Date,
     required: true,
   },
+  packRarity: { type: Number, required: true },
 });
 
 module.exports = mongoose.model("Pack", PackSchema);

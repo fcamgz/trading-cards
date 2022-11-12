@@ -161,33 +161,41 @@ export default function MyCards() {
   useEffect(() => {
     setIsLoading(true);
     // get user
-    axios
-      .get("/api/getUsername", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-      })
-      .then((res) => res.data)
-      .then((data) => {
-        console.log(data);
-        console.log(data.isLoggedIn);
-        if (data.isLoggedIn) {
-          setUser(data.user);
-          setIsLoggedIn(true);
-          console.log("get username stuff");
-        }
-      })
-      .catch((err) => console.log(err));
-    axios
-      .get(`http://localhost:5000/api/cards/userCollection/${user?._id}`)
-      .then((res) => res.data)
-      .then((res) => {
-        setCardData(res);
-        console.log(res);
-        console.log("fetch card stuff");
+    try {
+      axios
+        .get("/api/getUsername", {
+          headers: {
+            "x-access-token": localStorage.getItem("token"),
+          },
+        })
+        .then((res) => res.data)
+        .then((data) => {
+          console.log(data);
+          console.log(data.isLoggedIn);
+          if (data.isLoggedIn) {
+            setUser(data.user);
+            setIsLoggedIn(true);
+            console.log("get username stuff");
+          }
+        })
+        .catch((err) => console.log(err));
+      axios
+        .get(`http://localhost:5000/api/cards/userCollection/${user?._id}`)
+        .then((res) => res.data)
+        .then((res) => {
+          setCardData(res);
+          console.log(res);
+          console.log("fetch card stuff");
+          setIsLoading(false);
+        })
+        .catch((err) => console.log(err));
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setTimeout(() => {
         setIsLoading(false);
-      })
-      .catch((err) => console.log(err));
+      }, 1500);
+    }
   }, [user?.username, postRequest, resetIsClicked]);
   return (
     <Box
@@ -243,7 +251,6 @@ export default function MyCards() {
             See your card collection, view details, and trade them as you wish
           </Typography>
           <Divider sx={{ color: "white", margin: "40px" }} />
-
           <Box
             sx={{
               display: "flex",
@@ -329,166 +336,176 @@ export default function MyCards() {
               </Table>
             </TableContainer>
           </Box>
-          <Grid
-            container
-            spacing={2}
-            direction="row"
-            justify="flex-start"
-            alignItems="flex-start"
-            p={8}
-          >
-            {cardData.map((card) => (
-              <>
-                <Grid key={card._id} item xs={12} sm={6} md={4} lg={3}>
-                  <Modal open={openTradeIt} onClose={handleCloseTradeIt}>
-                    <Box className={classes.modal}>
-                      <Typography
-                        textAlign="center"
-                        variant="h4"
-                        component="h2"
-                      >
-                        Trade your Card
-                      </Typography>
-                      <Typography variant="h5" mt={1} textAlign="center">
-                        {selectedCard?.firstname} {selectedCard?.lastname}
-                      </Typography>
-                      <Typography variant="h6" mt={1} textAlign="center">
-                        Rating: {selectedCard?.rating}
-                      </Typography>
-                      <Typography variant="h6" mt={1} textAlign="center">
-                        Sell Now Price: {selectedCard?.price}
-                      </Typography>
-                      <Box
-                        mt={4}
-                        sx={{ display: "flex", justifyContent: "space-around" }}
-                      >
-                        <Button
-                          onClick={() => handleTradeNow(selectedCard)}
-                          variant="contained"
+          {!isLoading && (
+            <Grid
+              container
+              spacing={2}
+              direction="row"
+              justify="flex-start"
+              alignItems="flex-start"
+              p={8}
+            >
+              {cardData.map((card) => (
+                <>
+                  <Grid key={card._id} item xs={12} sm={6} md={4} lg={3}>
+                    <Modal open={openTradeIt} onClose={handleCloseTradeIt}>
+                      <Box className={classes.modal}>
+                        <Typography
+                          textAlign="center"
+                          variant="h4"
+                          component="h2"
                         >
-                          List on Trade Market
-                        </Button>
-                        <Button
-                          onClick={handleCloseTradeIt}
-                          variant="contained"
-                          color="inherit"
+                          Trade your Card
+                        </Typography>
+                        <Typography variant="h5" mt={1} textAlign="center">
+                          {selectedCard?.firstname} {selectedCard?.lastname}
+                        </Typography>
+                        <Typography variant="h6" mt={1} textAlign="center">
+                          Rating: {selectedCard?.rating}
+                        </Typography>
+                        <Typography variant="h6" mt={1} textAlign="center">
+                          Sell Now Price: {selectedCard?.price}
+                        </Typography>
+                        <Box
+                          mt={4}
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-around",
+                          }}
                         >
-                          Cancel
-                        </Button>
-                      </Box>
-                    </Box>
-                  </Modal>
-
-                  <Modal open={openSellNow} onClose={handleCloseSellNow}>
-                    <Box className={classes.modal}>
-                      <Typography
-                        textAlign="center"
-                        variant="h4"
-                        component="h2"
-                      >
-                        Sell your Card
-                      </Typography>
-                      <Typography variant="h5" mt={1} textAlign="center">
-                        {selectedCard?.firstname} {selectedCard?.lastname}
-                      </Typography>
-                      <Typography variant="h6" mt={1} textAlign="center">
-                        Rating: {selectedCard?.rating}
-                      </Typography>
-                      <Typography variant="h6" mt={1} textAlign="center">
-                        Sell Now Price: {selectedCard?.price}
-                      </Typography>
-                      <Box
-                        mt={4}
-                        sx={{ display: "flex", justifyContent: "space-around" }}
-                      >
-                        <Button
-                          onClick={() => handleSellNow(selectedCard)}
-                          variant="contained"
-                        >
-                          Sell Now
-                        </Button>
-                        <Button
-                          onClick={handleCloseSellNow}
-                          variant="contained"
-                          color="inherit"
-                        >
-                          Cancel
-                        </Button>
-                      </Box>
-                    </Box>
-                  </Modal>
-                  <Box>
-                    <Card>
-                      <CardHeader
-                        title={`${card.firstname} ${card.lastname}`}
-                        subheader={`Price: ${card.price} - Rating ${card.rating}`}
-                      ></CardHeader>
-                      <CardContent>
-                        <Stack>
                           <Button
-                            href={`cards/${card._id}`}
+                            onClick={() => handleTradeNow(selectedCard)}
+                            variant="contained"
+                          >
+                            List on Trade Market
+                          </Button>
+                          <Button
+                            onClick={handleCloseTradeIt}
                             variant="contained"
                             color="inherit"
-                            sx={{ fontWeight: "600" }}
                           >
-                            Go to Card
+                            Cancel
                           </Button>
-                          <Box
-                            mt={2}
-                            sx={{
-                              display: "flex",
-                              justifyContent: "space-around",
-                            }}
-                          >
-                            {card.availableToTrade === "true" ? (
-                              <Button
-                                color="success"
-                                onClick={() =>
-                                  handleRemoveFromTradeList(card._id)
-                                }
-                                variant="contained"
-                              >
-                                Remove From Trade Market
-                              </Button>
-                            ) : (
-                              <Button
-                                color="warning"
-                                onClick={() => handleClickTradeIt(card)}
-                                variant="contained"
-                              >
-                                List on Trade Market
-                              </Button>
-                            )}
-                          </Box>
-                        </Stack>
-                        <Box sx={{ display: "flex", justifyContent: "center" }}>
-                          <img
-                            src={
-                              card.tier === "Bronze"
-                                ? Bronzes
-                                : card.tier === "Silver"
-                                ? Silvers
-                                : card.tier === "Gold"
-                                ? Golds
-                                : card.tier === "Platinium"
-                                ? Platinum
-                                : card.tier === "Diamond"
-                                ? Diamonds
-                                : ""
-                            }
-                            width="226px"
-                            alt="Forwards Pack"
-                          />
                         </Box>
-                      </CardContent>
-                    </Card>
-                  </Box>
-                </Grid>
-              </>
-            ))}
-          </Grid>
+                      </Box>
+                    </Modal>
+
+                    <Modal open={openSellNow} onClose={handleCloseSellNow}>
+                      <Box className={classes.modal}>
+                        <Typography
+                          textAlign="center"
+                          variant="h4"
+                          component="h2"
+                        >
+                          Sell your Card
+                        </Typography>
+                        <Typography variant="h5" mt={1} textAlign="center">
+                          {selectedCard?.firstname} {selectedCard?.lastname}
+                        </Typography>
+                        <Typography variant="h6" mt={1} textAlign="center">
+                          Rating: {selectedCard?.rating}
+                        </Typography>
+                        <Typography variant="h6" mt={1} textAlign="center">
+                          Sell Now Price: {selectedCard?.price}
+                        </Typography>
+                        <Box
+                          mt={4}
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-around",
+                          }}
+                        >
+                          <Button
+                            onClick={() => handleSellNow(selectedCard)}
+                            variant="contained"
+                          >
+                            Sell Now
+                          </Button>
+                          <Button
+                            onClick={handleCloseSellNow}
+                            variant="contained"
+                            color="inherit"
+                          >
+                            Cancel
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Modal>
+                    <Box>
+                      <Card>
+                        <CardHeader
+                          title={`${card.firstname} ${card.lastname}`}
+                          subheader={`Price: ${card.price} - Rating ${card.rating}`}
+                        ></CardHeader>
+                        <CardContent>
+                          <Stack>
+                            <Button
+                              href={`cards/${card._id}`}
+                              variant="contained"
+                              color="inherit"
+                              sx={{ fontWeight: "600" }}
+                            >
+                              Go to Card
+                            </Button>
+                            <Box
+                              mt={2}
+                              sx={{
+                                display: "flex",
+                                justifyContent: "space-around",
+                              }}
+                            >
+                              {card.availableToTrade === "true" ? (
+                                <Button
+                                  color="success"
+                                  onClick={() =>
+                                    handleRemoveFromTradeList(card._id)
+                                  }
+                                  variant="contained"
+                                >
+                                  Remove From Trade Market
+                                </Button>
+                              ) : (
+                                <Button
+                                  color="warning"
+                                  onClick={() => handleClickTradeIt(card)}
+                                  variant="contained"
+                                >
+                                  List on Trade Market
+                                </Button>
+                              )}
+                            </Box>
+                          </Stack>
+                          <Box
+                            sx={{ display: "flex", justifyContent: "center" }}
+                          >
+                            <img
+                              src={
+                                card.tier === "Bronze"
+                                  ? Bronzes
+                                  : card.tier === "Silver"
+                                  ? Silvers
+                                  : card.tier === "Gold"
+                                  ? Golds
+                                  : card.tier === "Platinium"
+                                  ? Platinum
+                                  : card.tier === "Diamond"
+                                  ? Diamonds
+                                  : ""
+                              }
+                              width="226px"
+                              alt="Forwards Pack"
+                            />
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </Box>
+                  </Grid>
+                </>
+              ))}
+            </Grid>
+          )}
         </Box>
-        <Footer />
+        {!isLoading && <Footer />}
       </Box>
     </Box>
   );

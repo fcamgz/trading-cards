@@ -94,9 +94,8 @@ export default function CreateSquad() {
 
   useEffect(() => {
     setIsLoading(true);
-
-    const fetchData = async () => {
-      await axios
+    try {
+      axios
         .get("/api/getUsername", {
           headers: {
             "x-access-token": localStorage.getItem("token"),
@@ -114,7 +113,7 @@ export default function CreateSquad() {
         .catch((err) => console.log(err));
 
       // get cards
-      await axios
+      axios
         .get(`http://localhost:5000/api/cards/userCollection/${user?._id}`)
         .then((res) => res.data)
         .then((res) => {
@@ -124,22 +123,8 @@ export default function CreateSquad() {
         })
         .catch((err) => console.log(err));
 
-      /*
-        // get squad
-      await axios
-        .get(`http://localhost:5000/api/squad/getSquad/${user?._id}`)
-        .then((res) => res.data)
-        .then((res) => {
-          setSquad(res[0]);
-          setSquadArray(res);
-          console.log("Squad array " + squadArray);
-          setIsLoading(false);
-        })
-        .catch((err) => console.log(err));
-    };
-    */
       // get squad array
-      await axios
+      axios
         .get(`http://localhost:5000/api/squad/getSquadArray/${user?._id}`)
         .then((res) => res.data)
         .then((res) => {
@@ -149,7 +134,6 @@ export default function CreateSquad() {
           //   striker1: res[0].strikers[0],
           //   striker2: res[0].strikers[1],
           // });
-          setIsLoading(false);
           setStrikersInput({
             striker1: res[0]?.strikers[0],
             striker2: res[0]?.strikers[1],
@@ -171,113 +155,59 @@ export default function CreateSquad() {
         .catch((err) => console.log(err));
 
       // get goalkeeper rating
-      await axios
+      axios
         .get(`http://localhost:5000/api/squad/getGoalkeeperRating/${user?._id}`)
         .then((res) => res.data)
         .then((res) => {
           setGoalkeeperRating(res[0]?.goalkeeper?.rating);
-          setIsLoading(false);
         })
-        .catch((err) => console.log(err))
-        .finally(() => setIsLoading(false));
-
-      if (squadExist) {
-        // get goalkeeper rating
-        await axios
-          .get(
-            `http://localhost:5000/api/squad/getGoalkeeperRating/${user?._id}`
-          )
-          .then((res) => res.data)
-          .then((res) => {
-            console.log(`goalkeeper ${res[0].goalkeeper}`);
-            setGoalkeeperRating(res[0].goalkeeper?.rating);
-          })
-          .catch((err) => console.log(err))
-          .finally(() => setIsLoading(false));
-
-        // get defenders rating
-        await axios
-          .get(
-            `http://localhost:5000/api/squad/getDefendersRating/${user?._id}`
-          )
-          .then((res) => res.data)
-          .then((res) => {
-            setDefendersRating(res.total);
-            console.log(`Defenders rating ${res}`);
-          })
-          .catch((err) => console.log(err))
-          .finally(() => setIsLoading(false));
-      }
-      // get midfielders rating
-      await axios
-        .get(
-          `http://localhost:5000/api/squad/getMidfieldersRating/${user?._id}`
-        )
+        .catch((err) => console.log(err));
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+    }
+    if (squadExist) {
+      // get goalkeeper rating
+      axios
+        .get(`http://localhost:5000/api/squad/getGoalkeeperRating/${user?._id}`)
         .then((res) => res.data)
         .then((res) => {
-          setMidfieldersRating(res.total);
+          console.log(`goalkeeper ${res[0].goalkeeper}`);
+          setGoalkeeperRating(res[0].goalkeeper?.rating);
         })
-        .catch((err) => console.log(err))
-        .finally(() => setIsLoading(false));
+        .catch((err) => console.log(err));
 
-      // get strikers rating
-      await axios
-        .get(`http://localhost:5000/api/squad/getStrikersRating/${user?._id}`)
+      // get defenders rating
+      axios
+        .get(`http://localhost:5000/api/squad/getDefendersRating/${user?._id}`)
         .then((res) => res.data)
         .then((res) => {
-          setStrikersRating(res.total);
+          setDefendersRating(res.total);
+          console.log(`Defenders rating ${res}`);
         })
-        .catch((err) => console.log(err))
-        .finally(() => setIsLoading(false));
-    };
-    /*
-    // get user
+        .catch((err) => console.log(err));
+    }
+    // get midfielders rating
     axios
-      .get("/api/getUsername", {
-        headers: {
-          "x-access-token": localStorage.getItem("token"),
-        },
-      })
+      .get(`http://localhost:5000/api/squad/getMidfieldersRating/${user?._id}`)
       .then((res) => res.data)
-      .then((data) => {
-        console.log(data);
-        console.log(data.isLoggedIn);
-        if (data.isLoggedIn) {
-          setUser(data.user);
-          setIsLoggedIn(true);
-        }
+      .then((res) => {
+        setMidfieldersRating(res.total);
       })
-      .then(() => {
-        // get cards
-        axios
-          .get(`http://localhost:5000/api/cards/userCollection/${user?._id}`)
-          .then((res) => res.data)
-          .then((res) => {
-            setCardData(res);
-            console.log(res);
-            console.log("fetch card stuff");
-          })
-          .catch((err) => console.log(err));
-      })
-      .then(() => {
-        // get squad
-        axios
-          .get(`http://localhost:5000/api/squad/getSquad/${user?._id}`)
-          .then((res) => res.data)
-          .then((res) => {
-            setSquad(res[0]);
-            setSquadArray(res);
-            console.log("Squad array " + squadArray);
-            setIsLoading(false);
-          })
-          .catch((err) => console.log(err));
-      })
-      .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false));
-      */
-    // calculateTeamRating();
+      .catch((err) => console.log(err));
 
-    fetchData();
+    // get strikers rating
+    axios
+      .get(`http://localhost:5000/api/squad/getStrikersRating/${user?._id}`)
+      .then((res) => res.data)
+      .then((res) => {
+        setStrikersRating(res.total);
+      })
+      .catch((err) => console.log(err));
+
     setModified(true);
     // if squad exist then set card data to chosen squad excluding
   }, [user?._id, updated]);
@@ -414,7 +344,7 @@ export default function CreateSquad() {
         .then((res) => res.data)
         .then((res) => {
           console.log("Squad created " + res);
-          axios.post("/api/createStat", {
+          axios.post("http://localhost:5000/api/stats/createStat", {
             userId: user?._id,
             username: user?.username,
           });
@@ -1099,177 +1029,187 @@ export default function CreateSquad() {
                 }}
                 alt="background"
               />
-              <Box sx={{ position: "relative" }}>
-                <Box
-                  mt={6}
-                  sx={{
-                    flex: "1 160px",
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: "40px",
-                  }}
-                >
-                  {squad &&
-                    squad.strikers?.map((striker, idx) => (
-                      <Box key={idx + 120} sx={{ display: "flex" }}>
+              {!isLoading && (
+                <Box sx={{ position: "relative" }}>
+                  <Box
+                    mt={6}
+                    sx={{
+                      flex: "1 160px",
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "40px",
+                    }}
+                  >
+                    {!isLoading &&
+                      squad.strikers?.map((striker, idx) => (
+                        <Box key={idx + 120} sx={{ display: "flex" }}>
+                          <Box>
+                            <Typography variant="h6" color="white">
+                              {striker.position}
+                            </Typography>
+                            <Typography variant="h6" color="white">
+                              {striker.rating}
+                            </Typography>
+                            <Typography color="white">
+                              {striker.lastname}
+                            </Typography>
+                          </Box>
+                          <img
+                            width="100px"
+                            src={
+                              striker.tier === "Bronze"
+                                ? Bronzes
+                                : striker.tier === "Silver"
+                                ? Silvers
+                                : striker.tier === "Gold"
+                                ? GoldCard
+                                : striker.tier === "Platinium"
+                                ? Platinum
+                                : striker.tier === "Diamond"
+                                ? Diamonds
+                                : Platinum
+                            }
+                            alt="Striker"
+                          />
+                        </Box>
+                      ))}
+                  </Box>
+                  <Box
+                    mt={10}
+                    sx={{
+                      flex: "1 160px",
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "2px",
+                    }}
+                  >
+                    {squad &&
+                      squad?.midfields?.map((midfield, idx) => (
+                        <Box key={idx + 130} sx={{ display: "flex" }}>
+                          <Box>
+                            <Typography variant="h6" color="white">
+                              {midfield.position}
+                            </Typography>
+                            <Typography variant="h6" color="white">
+                              {midfield.rating}
+                            </Typography>
+                            <Typography color="white">
+                              {midfield.lastname}
+                            </Typography>
+                          </Box>
+                          <img
+                            width="100px"
+                            src={
+                              midfield.tier === "Bronze"
+                                ? Bronzes
+                                : midfield.tier === "Silver"
+                                ? Silvers
+                                : midfield.tier === "Gold"
+                                ? GoldCard
+                                : midfield.tier === "Platinium"
+                                ? Platinum
+                                : midfield.tier === "Diamond"
+                                ? Diamonds
+                                : Platinum
+                            }
+                            alt="midfield"
+                          />
+                        </Box>
+                      ))}
+                  </Box>
+                  <Box
+                    mt={12}
+                    sx={{
+                      flex: "1 160px",
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    {squad &&
+                      squad.defenders?.map((defender, idx) => (
+                        <Box key={idx + 140} sx={{ display: "flex" }}>
+                          <Box>
+                            <Typography variant="h6" color="white">
+                              {defender.position}
+                            </Typography>
+                            <Typography variant="h6" color="white">
+                              {defender.rating}
+                            </Typography>
+                            <Typography color="white">
+                              {defender.lastname}
+                            </Typography>
+                          </Box>
+                          <img
+                            width="100px"
+                            src={
+                              defender.tier === "Bronze"
+                                ? Bronzes
+                                : defender.tier === "Silver"
+                                ? Silvers
+                                : defender.tier === "Gold"
+                                ? GoldCard
+                                : defender.tier === "Platinium"
+                                ? Platinum
+                                : defender.tier === "Diamond"
+                                ? Diamonds
+                                : Platinum
+                            }
+                            alt="centerBack1"
+                          />
+                        </Box>
+                      ))}
+                  </Box>
+                  <Box
+                    mt={10}
+                    sx={{
+                      flex: "1 160px",
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "120px",
+                    }}
+                  >
+                    {squad?.goalkeeper?.lastname !== "" && (
+                      <Box sx={{ display: "flex" }}>
                         <Box>
                           <Typography variant="h6" color="white">
-                            {striker.position}
+                            {squad?.goalkeeper?.position}
                           </Typography>
                           <Typography variant="h6" color="white">
-                            {striker.rating}
+                            {squad?.goalkeeper?.rating}
                           </Typography>
                           <Typography color="white">
-                            {striker.lastname}
+                            {squad?.goalkeeper?.lastname}
                           </Typography>
                         </Box>
-                        <img
-                          width="100px"
-                          src={
-                            striker.tier === "Bronze"
-                              ? Bronzes
-                              : striker.tier === "Silver"
-                              ? Silvers
-                              : striker.tier === "Gold"
-                              ? GoldCard
-                              : striker.tier === "Platinium"
-                              ? Platinum
-                              : striker.tier === "Diamond"
-                              ? Diamonds
-                              : Platinum
-                          }
-                          alt="Striker"
-                        />
+                        {squad?.goalkeeper?.lastname !== "" ? (
+                          <Box>
+                            <img
+                              width="100px"
+                              src={
+                                squad?.goalkeeper?.tier === "Bronze"
+                                  ? Bronzes
+                                  : squad?.goalkeeper?.tier === "Silver"
+                                  ? Silvers
+                                  : squad?.goalkeeper?.tier === "Gold"
+                                  ? GoldCard
+                                  : squad?.goalkeeper?.tier === "Platinium"
+                                  ? Platinum
+                                  : squad?.goalkeeper?.tier === "Diamond"
+                                  ? Diamonds
+                                  : ""
+                              }
+                              alt="goalkeeper"
+                            />
+                          </Box>
+                        ) : (
+                          ""
+                        )}
                       </Box>
-                    ))}
-                </Box>
-                <Box
-                  mt={10}
-                  sx={{
-                    flex: "1 160px",
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: "2px",
-                  }}
-                >
-                  {squad &&
-                    squad?.midfields?.map((midfield, idx) => (
-                      <Box key={idx + 130} sx={{ display: "flex" }}>
-                        <Box>
-                          <Typography variant="h6" color="white">
-                            {midfield.position}
-                          </Typography>
-                          <Typography variant="h6" color="white">
-                            {midfield.rating}
-                          </Typography>
-                          <Typography color="white">
-                            {midfield.lastname}
-                          </Typography>
-                        </Box>
-                        <img
-                          width="100px"
-                          src={
-                            midfield.tier === "Bronze"
-                              ? Bronzes
-                              : midfield.tier === "Silver"
-                              ? Silvers
-                              : midfield.tier === "Gold"
-                              ? GoldCard
-                              : midfield.tier === "Platinium"
-                              ? Platinum
-                              : midfield.tier === "Diamond"
-                              ? Diamonds
-                              : Platinum
-                          }
-                          alt="midfield"
-                        />
-                      </Box>
-                    ))}
-                </Box>
-                <Box
-                  mt={12}
-                  sx={{
-                    flex: "1 160px",
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: "2px",
-                  }}
-                >
-                  {squad &&
-                    squad.defenders?.map((defender, idx) => (
-                      <Box key={idx + 140} sx={{ display: "flex" }}>
-                        <Box>
-                          <Typography variant="h6" color="white">
-                            {defender.position}
-                          </Typography>
-                          <Typography variant="h6" color="white">
-                            {defender.rating}
-                          </Typography>
-                          <Typography color="white">
-                            {defender.lastname}
-                          </Typography>
-                        </Box>
-                        <img
-                          width="100px"
-                          src={
-                            defender.tier === "Bronze"
-                              ? Bronzes
-                              : defender.tier === "Silver"
-                              ? Silvers
-                              : defender.tier === "Gold"
-                              ? GoldCard
-                              : defender.tier === "Platinium"
-                              ? Platinum
-                              : defender.tier === "Diamond"
-                              ? Diamonds
-                              : Platinum
-                          }
-                          alt="centerBack1"
-                        />
-                      </Box>
-                    ))}
-                </Box>
-                <Box
-                  mt={10}
-                  sx={{
-                    flex: "1 160px",
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: "120px",
-                  }}
-                >
-                  <Box sx={{ display: "flex" }}>
-                    <Box>
-                      <Typography variant="h6" color="white">
-                        {squad?.goalkeeper?.position}
-                      </Typography>
-                      <Typography variant="h6" color="white">
-                        {squad?.goalkeeper?.rating}
-                      </Typography>
-                      <Typography color="white">
-                        {squad?.goalkeeper?.lastname}
-                      </Typography>
-                    </Box>
-                    <img
-                      width="100px"
-                      src={
-                        squad?.goalkeeper?.tier === "Bronze"
-                          ? Bronzes
-                          : squad?.goalkeeper?.tier === "Silver"
-                          ? Silvers
-                          : squad?.goalkeeper?.tier === "Gold"
-                          ? GoldCard
-                          : squad?.goalkeeper?.tier === "Platinium"
-                          ? Platinum
-                          : squad?.goalkeeper?.tier === "Diamond"
-                          ? Diamonds
-                          : Platinum
-                      }
-                      alt="goalkeeper"
-                    />
+                    )}
                   </Box>
                 </Box>
-              </Box>
+              )}
             </Box>
           </Box>
         </Box>

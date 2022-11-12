@@ -15,6 +15,8 @@ import {
   Stack,
   TextField,
   Typography,
+  Alert,
+  Tooltip,
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -113,7 +115,11 @@ export default function TradeOffers() {
         }
       })
       .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false));
+      .finally(() =>
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1500)
+      );
   }, [buttonClicked]);
   return (
     <Box
@@ -165,249 +171,245 @@ export default function TradeOffers() {
             Trade Offers
           </Typography>
           <Divider sx={{ color: "white", margin: "40px" }} />
-          <Grid
-            container
-            direction="row"
-            alignItems="center"
-            spacing={1}
-            p={8}
-            sx={{ display: "flex", justifyContent: "center" }}
-          >
-            {cardData.length > 0
-              ? cardData?.map((offer) =>
-                  offer.offerTo === user?._id ||
-                  offer.offerFrom === user?._id ? (
-                    <>
-                      <Grid key={offer._id} item sm={5} md={5} lg={4}>
-                        <Box>
-                          <Card>
-                            <Typography p={2} variant="h5" textAlign="center">
-                              Offer For the Card
-                            </Typography>
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <Box sx={{ width: "auto" }}>
+              <Alert severity="info">
+                Pending trade offers are shown here. You can cancel sent offers
+                by clicking the "X" button or accept by clicking thums up
+                button.
+              </Alert>
+            </Box>
+          </Box>
+          {!isLoading && (
+            <Grid
+              container
+              direction="row"
+              alignItems="center"
+              spacing={1}
+              p={8}
+              sx={{ display: "flex", justifyContent: "center" }}
+            >
+              {cardData?.map((offer) =>
+                offer.offerTo === user?._id || offer.offerFrom === user?._id ? (
+                  <>
+                    <Grid key={offer._id} item sm={5} md={5} lg={4}>
+                      <Box>
+                        <Card>
+                          <Typography p={2} variant="h5" textAlign="center">
+                            Offer For the Card
+                          </Typography>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <CardHeader
+                              title={`${offer.wantedCard?.firstname} ${offer.wantedCard?.lastname} - Value: ${offer.wantedCard?.price}`}
+                              subheader={`Owner: ${
+                                offer.wantedCard?.owner === user?._id
+                                  ? "You"
+                                  : offer.wantedCard?.owner
+                              }`}
+                            ></CardHeader>
+                            <Box m={4}>
+                              {offer.owner === user?._id ? (
+                                <Chip
+                                  label="Owned"
+                                  sx={{
+                                    display: "flex",
+                                    backgroundColor: "green",
+                                    color: "white",
+                                  }}
+                                />
+                              ) : (
+                                ""
+                              )}
+                            </Box>
+                          </Box>
+                          <CardContent>
+                            <Stack>
+                              <Button
+                                href={`cards/${offer.wantedCard?._id}`}
+                                variant="contained"
+                                color="inherit"
+                                sx={{ fontWeight: "600" }}
+                              >
+                                Go to Card
+                              </Button>
+                              {user?.isAdmin ? (
+                                <Box mt={2}>
+                                  <Button
+                                    color="secondary"
+                                    onClick={() =>
+                                      handleDelete(offer.wantedCard?._id)
+                                    }
+                                    variant="contained"
+                                  >
+                                    Delete Card
+                                  </Button>
+                                </Box>
+                              ) : (
+                                ""
+                              )}
+                            </Stack>
                             <Box
                               sx={{
                                 display: "flex",
-                                justifyContent: "space-between",
+                                justifyContent: "center",
                               }}
                             >
-                              <CardHeader
-                                title={`${offer.wantedCard?.firstname} ${offer.wantedCard?.lastname} - Value: ${offer.wantedCard?.price}`}
-                                subheader={`Owner: ${
-                                  offer.wantedCard?.owner === user?._id
-                                    ? "You"
-                                    : offer.wantedCard?.owner
-                                }`}
-                              ></CardHeader>
-                              <Box m={4}>
-                                {offer.owner === user?._id ? (
-                                  <Chip
-                                    label="Owned"
-                                    sx={{
-                                      display: "flex",
-                                      backgroundColor: "green",
-                                      color: "white",
-                                    }}
-                                  />
-                                ) : (
-                                  ""
-                                )}
-                              </Box>
+                              <img
+                                src={
+                                  offer.wantedCard?.tier === "Bronze"
+                                    ? Bronzes
+                                    : offer.wantedCard?.tier === "Silver"
+                                    ? Silvers
+                                    : offer.wantedCard?.tier === "Gold"
+                                    ? Golds
+                                    : offer.wantedCard?.tier === "Platinium"
+                                    ? Platinum
+                                    : offer.wantedCard?.tier === "Diamond"
+                                    ? Diamonds
+                                    : ""
+                                }
+                                width="226px"
+                                alt="Forwards Pack"
+                              />
                             </Box>
-                            <CardContent>
-                              <Stack>
-                                <Button
-                                  href={`cards/${offer.wantedCard?._id}`}
-                                  variant="contained"
-                                  color="inherit"
-                                  sx={{ fontWeight: "600" }}
-                                >
-                                  Go to Card
-                                </Button>
-                                {user?.isAdmin ? (
-                                  <Box mt={2}>
-                                    <Button
-                                      color="secondary"
-                                      onClick={() =>
-                                        handleDelete(offer.wantedCard?._id)
-                                      }
-                                      variant="contained"
-                                    >
-                                      Delete Card
-                                    </Button>
-                                  </Box>
-                                ) : (
-                                  ""
-                                )}
-                              </Stack>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                <img
-                                  src={
-                                    offer.wantedCard?.tier === "Bronze"
-                                      ? Bronzes
-                                      : offer.wantedCard?.tier === "Silver"
-                                      ? Silvers
-                                      : offer.wantedCard?.tier === "Gold"
-                                      ? Golds
-                                      : offer.wantedCard?.tier === "Platinium"
-                                      ? Platinum
-                                      : offer.wantedCard?.tier === "Diamond"
-                                      ? Diamonds
-                                      : ""
-                                  }
-                                  width="226px"
-                                  alt="Forwards Pack"
-                                />
-                              </Box>
-                            </CardContent>
-                          </Card>
-                        </Box>
-                      </Grid>
-                      <Box sx={{ display: "flex", flexDirection: "column" }}>
-                        {offer.offerFrom === user?._id ? (
-                          <Button onClick={() => refuseOffer(offer._id)}>
+                          </CardContent>
+                        </Card>
+                      </Box>
+                    </Grid>
+                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                      {offer.offerFrom === user?._id ? (
+                        <Button onClick={() => refuseOffer(offer._id)}>
+                          <Tooltip title="Cancel offer">
                             <CancelIcon
                               sx={{ color: "white", fontSize: "40px" }}
                             />
-                          </Button>
-                        ) : (
-                          <Button
-                            onClick={() =>
-                              acceptOffer(
-                                offer.offerFrom,
-                                offer.offerTo,
-                                offer._id,
-                                offer.wantedCard,
-                                offer.offeredCard
-                              )
-                            }
-                          >
+                          </Tooltip>
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() =>
+                            acceptOffer(
+                              offer.offerFrom,
+                              offer.offerTo,
+                              offer._id,
+                              offer.wantedCard,
+                              offer.offeredCard
+                            )
+                          }
+                        >
+                          <Tooltip title="Accept offer" placement="top">
                             <ThumbUpAltIcon
                               sx={{ color: "white", fontSize: "40px" }}
                             />
-                          </Button>
-                        )}
-                        <Typography
-                          variant="h5"
-                          color="white"
-                          textAlign="center"
-                        >
-                          In
-                        </Typography>
-                        <ArrowForwardIcon
-                          sx={{ color: "green", fontSize: "80px" }}
-                        />
-
-                        <Divider sx={{ color: "white" }} />
-                        <Typography
-                          variant="h5"
-                          color="white"
-                          textAlign="center"
-                        >
-                          Out
-                        </Typography>
-                        <ArrowBackIcon
-                          sx={{ color: "red", fontSize: "80px" }}
-                        />
-                        {offer.offerFrom === user?._id ? (
-                          ""
-                        ) : (
-                          <Button onClick={() => refuseOffer(offer._id)}>
+                          </Tooltip>
+                        </Button>
+                      )}
+                      <Divider sx={{ color: "white" }} />
+                      {offer.offerFrom === user?._id ? (
+                        ""
+                      ) : (
+                        <Button onClick={() => refuseOffer(offer._id)}>
+                          <Tooltip title="Refuse offer">
                             <ThumbDownAltIcon
                               sx={{ color: "white", fontSize: "40px" }}
                             />
-                          </Button>
-                        )}
-                      </Box>
+                          </Tooltip>
+                        </Button>
+                      )}
+                    </Box>
 
-                      <Grid key={offer._id} item sm={5} md={5} lg={4}>
-                        <Box>
-                          <Card>
-                            <Typography p={2} variant="h5" textAlign="center">
-                              Offered Card
-                            </Typography>
+                    <Grid key={offer._id} item sm={5} md={5} lg={4}>
+                      <Box>
+                        <Card>
+                          <Typography p={2} variant="h5" textAlign="center">
+                            Offered Card
+                          </Typography>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <CardHeader
+                              title={`${offer.offeredCard?.firstname} ${offer.offeredCard?.lastname} - Value: ${offer.offeredCard?.price}`}
+                              subheader={`Offer From: ${
+                                offer.offerFrom === user?._id
+                                  ? "You"
+                                  : offer.offerFrom
+                              }`}
+                            ></CardHeader>
+                          </Box>
+                          <CardContent>
+                            <Stack>
+                              <Button
+                                href={`cards/${offer.offeredCard?._id}`}
+                                variant="contained"
+                                color="inherit"
+                                sx={{ fontWeight: "600" }}
+                              >
+                                Go to Card
+                              </Button>
+                              {user?.isAdmin ? (
+                                <Box mt={2}>
+                                  <Button
+                                    color="secondary"
+                                    onClick={() =>
+                                      handleDelete(offer.offeredCard?._id)
+                                    }
+                                    variant="contained"
+                                  >
+                                    Delete Card
+                                  </Button>
+                                </Box>
+                              ) : (
+                                ""
+                              )}
+                            </Stack>
                             <Box
                               sx={{
                                 display: "flex",
-                                justifyContent: "space-between",
+                                justifyContent: "center",
                               }}
                             >
-                              <CardHeader
-                                title={`${offer.offeredCard?.firstname} ${offer.offeredCard?.lastname} - Value: ${offer.offeredCard?.price}`}
-                                subheader={`Offer From: ${
-                                  offer.offerFrom === user?._id
-                                    ? "You"
-                                    : offer.offerFrom
-                                }`}
-                              ></CardHeader>
+                              <img
+                                src={
+                                  offer.offeredCard?.tier === "Bronze"
+                                    ? Bronzes
+                                    : offer.offeredCard?.tier === "Silver"
+                                    ? Silvers
+                                    : offer.offeredCard?.tier === "Gold"
+                                    ? Golds
+                                    : offer.offeredCard?.tier === "Platinium"
+                                    ? Platinum
+                                    : offer.offeredCard?.tier === "Diamond"
+                                    ? Diamonds
+                                    : ""
+                                }
+                                width="226px"
+                                alt="Forwards Pack"
+                              />
                             </Box>
-                            <CardContent>
-                              <Stack>
-                                <Button
-                                  href={`cards/${offer.offeredCard?._id}`}
-                                  variant="contained"
-                                  color="inherit"
-                                  sx={{ fontWeight: "600" }}
-                                >
-                                  Go to Card
-                                </Button>
-                                {user?.isAdmin ? (
-                                  <Box mt={2}>
-                                    <Button
-                                      color="secondary"
-                                      onClick={() =>
-                                        handleDelete(offer.offeredCard?._id)
-                                      }
-                                      variant="contained"
-                                    >
-                                      Delete Card
-                                    </Button>
-                                  </Box>
-                                ) : (
-                                  ""
-                                )}
-                              </Stack>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                <img
-                                  src={
-                                    offer.offeredCard?.tier === "Bronze"
-                                      ? Bronzes
-                                      : offer.offeredCard?.tier === "Silver"
-                                      ? Silvers
-                                      : offer.offeredCard?.tier === "Gold"
-                                      ? Golds
-                                      : offer.offeredCard?.tier === "Platinium"
-                                      ? Platinum
-                                      : offer.offeredCard?.tier === "Diamond"
-                                      ? Diamonds
-                                      : ""
-                                  }
-                                  width="226px"
-                                  alt="Forwards Pack"
-                                />
-                              </Box>
-                            </CardContent>
-                          </Card>
-                        </Box>
-                      </Grid>
-                    </>
-                  ) : (
-                    ""
-                  )
+                          </CardContent>
+                        </Card>
+                      </Box>
+                    </Grid>
+                  </>
+                ) : (
+                  <Alert severity="warning">
+                    You don't have any offers, go ahead and check out the trade
+                    market!
+                  </Alert>
                 )
-              : ""}
-          </Grid>
+              )}
+            </Grid>
+          )}
         </Box>
-        <Footer />
+        {!isLoading && <Footer />}
       </Box>
     </Box>
   );
