@@ -118,7 +118,7 @@ export default function TradeOffers() {
       .finally(() =>
         setTimeout(() => {
           setIsLoading(false);
-        }, 1500)
+        }, 500)
       );
   }, [buttonClicked]);
   return (

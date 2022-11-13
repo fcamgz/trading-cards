@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Grid, Modal, TextField, Typography } from "@mui/material";
+import {
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Modal,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import axios from "axios";
 import { useLocation, useNavigate, useParams } from "react-router";
@@ -53,6 +62,7 @@ export default function Card() {
   const [open, setOpen] = React.useState(false);
   const [openTradeIt, setOpenTradeIt] = useState(false);
   const [listPrice, setListPrice] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleDelete = (cardId) => {
     axios
@@ -81,7 +91,7 @@ export default function Card() {
   const cardSamples = [sampleCard1, sampleCard2, sampleCard3];
 
   useEffect(() => {
-    console.log(location.pathname.split("/")[[2]]);
+    setIsLoading(true);
     axios
       .get(
         `http://localhost:5000/api/cards/${location.pathname.split("/")[[2]]}`
@@ -93,7 +103,12 @@ export default function Card() {
       })
       .catch((err) => {
         console.log(err);
-      });
+      })
+      .finally(() =>
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 500)
+      );
     // get user
     axios
       .get("/api/getUsername", {
@@ -161,7 +176,7 @@ export default function Card() {
       .then((res) => res.data)
       .then((res) => {
         console.log(res);
-        navigate("/myCards");
+        navigate("/trades");
       })
       .catch((err) => console.log(err))
       .finally(() => handleCloseTradeIt());
@@ -171,6 +186,12 @@ export default function Card() {
     <Box
       sx={{ height: "100vh", width: "100vw", margin: 0, overflowX: "hidden" }}
     >
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Navbar user={user} isLoggedIn={isLoggedIn} />
       <Box
         mb={6}
@@ -294,140 +315,147 @@ export default function Card() {
               </Box>
             </Box>
           </Modal>
-          <Box
-            className={classes.mainStructure}
-            sx={{
-              display: "flex",
-              justifyContent: "space-around",
-              padding: "40px",
-              width: "60%",
-              gap: "42px",
-            }}
-          >
+          {!isLoading && (
             <Box
+              className={classes.mainStructure}
               sx={{
                 display: "flex",
-                flexDirection: "column",
-                height: "100%",
-                minWidth: "20vw",
-                maxWidth: "20vw",
+                justifyContent: "space-around",
+                padding: "40px",
+                width: "60%",
+                gap: "42px",
               }}
             >
-              <Typography
-                variant="h4"
-                sx={{ color: "yellow" }}
-                textAlign="center"
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  height: "100%",
+                  minWidth: "20vw",
+                  maxWidth: "20vw",
+                }}
               >
-                <MonetizationOnIcon />
-                {cardData.price}
-              </Typography>
-              <img
-                className={classes.cardHover}
-                src={
-                  cardData.tier === "Platinium"
-                    ? Platinium
-                    : cardData.tier === "Diamond"
-                    ? Diamonds
-                    : cardData.tier === "Gold"
-                    ? Golds
-                    : cardData.tier === "Silver"
-                    ? Silvers
-                    : Bronzes
-                }
-                alt="cardimage"
-                sx={{ position: "relative" }}
-              />
-            </Box>
+                <Typography
+                  variant="h4"
+                  sx={{ color: "yellow" }}
+                  textAlign="center"
+                >
+                  <MonetizationOnIcon />
+                  {cardData.price}
+                </Typography>
+                <img
+                  className={classes.cardHover}
+                  src={
+                    cardData.tier === "Platinium"
+                      ? Platinium
+                      : cardData.tier === "Diamond"
+                      ? Diamonds
+                      : cardData.tier === "Gold"
+                      ? Golds
+                      : cardData.tier === "Silver"
+                      ? Silvers
+                      : Bronzes
+                  }
+                  alt="cardimage"
+                  sx={{ position: "relative" }}
+                />
+              </Box>
 
-            <Box
-              component="form"
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
-              }}
-            >
-              <Typography variant="h4" mb={4} color="white" textAlign="center">
-                {cardData.firstname} {cardData.lastname}
-              </Typography>
-              <Typography mt={1} variant="h6" color="white">
-                Rating: {cardData.rating}
-              </Typography>
-              <Typography mt={1} variant="h6" color="white">
-                Team: {cardData.team}
-              </Typography>
-              <Typography mt={1} variant="h6" color="white">
-                Nationality: {cardData.nationality}
-              </Typography>
-              <Typography mt={1} variant="h6" color="white">
-                Card Tier: {cardData.tier}
-              </Typography>
-              <Typography mt={1} variant="h6" color="white">
-                Package: {cardData.pack}
-              </Typography>
-              <Typography mt={1} variant="h6" color="white">
-                Card Category: {cardData.category}
-              </Typography>
-              <Typography mt={1} variant="h6" color="white">
-                Speed: {cardData.speed}
-              </Typography>
-              <Typography mt={1} variant="h6" color="white">
-                Power: {cardData.power}
-              </Typography>
-              <Typography mt={1} variant="h6" color="white">
-                Vision: {cardData.vision}
-              </Typography>
-              <Typography mt={1} variant="h6" color="white">
-                Passing: {cardData.passing}
-              </Typography>
-              <Typography mt={1} variant="h6" color="white">
-                Defending: {cardData.defending}
-              </Typography>
-              <Typography mt={1} mb={4} variant="h6" color="white">
-                Stamina: {cardData.stamina}
-              </Typography>
-              {user._id === cardData.owner ? (
-                <Box>
-                  <Box mb={2}>
+              <Box
+                component="form"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <Typography
+                  variant="h4"
+                  mb={4}
+                  color="white"
+                  textAlign="center"
+                >
+                  {cardData.firstname} {cardData.lastname}
+                </Typography>
+                <Typography mt={1} variant="h6" color="white">
+                  Rating: {cardData.rating}
+                </Typography>
+                <Typography mt={1} variant="h6" color="white">
+                  Team: {cardData.team}
+                </Typography>
+                <Typography mt={1} variant="h6" color="white">
+                  Nationality: {cardData.nationality}
+                </Typography>
+                <Typography mt={1} variant="h6" color="white">
+                  Card Tier: {cardData.tier}
+                </Typography>
+                <Typography mt={1} variant="h6" color="white">
+                  Package: {cardData.pack}
+                </Typography>
+                <Typography mt={1} variant="h6" color="white">
+                  Card Category: {cardData.category}
+                </Typography>
+                <Typography mt={1} variant="h6" color="white">
+                  Speed: {cardData.speed}
+                </Typography>
+                <Typography mt={1} variant="h6" color="white">
+                  Power: {cardData.power}
+                </Typography>
+                <Typography mt={1} variant="h6" color="white">
+                  Vision: {cardData.vision}
+                </Typography>
+                <Typography mt={1} variant="h6" color="white">
+                  Passing: {cardData.passing}
+                </Typography>
+                <Typography mt={1} variant="h6" color="white">
+                  Defending: {cardData.defending}
+                </Typography>
+                <Typography mt={1} mb={4} variant="h6" color="white">
+                  Stamina: {cardData.stamina}
+                </Typography>
+                {user._id === cardData.owner ? (
+                  <Box>
+                    <Box mb={2}>
+                      <Button
+                        color="success"
+                        onClick={handleOpen}
+                        variant="contained"
+                      >
+                        Sell now for {cardData.price} TCC
+                      </Button>
+                    </Box>
                     <Button
-                      color="success"
-                      onClick={handleOpen}
+                      onClick={handleOpenTradeIt}
                       variant="contained"
+                      color="warning"
                     >
-                      Sell now for {cardData.price} TCC
+                      List on Trade Market
                     </Button>
                   </Box>
-                  <Button
-                    onClick={handleOpenTradeIt}
-                    variant="contained"
-                    color="warning"
-                  >
-                    List on Trade Market
+                ) : (
+                  <Button onClick={handleOpen} variant="contained">
+                    Buy it for {cardData.price} TCC
                   </Button>
-                </Box>
-              ) : (
-                <Button onClick={handleOpen} variant="contained">
-                  Buy it for {cardData.price} TCC
-                </Button>
-              )}
-              {user.isAdmin ? (
-                <Box mt={2}>
-                  <Button
-                    color="error"
-                    onClick={() => handleDelete(cardData._id)}
-                    variant="contained"
-                  >
-                    Delete Card
-                  </Button>
-                </Box>
-              ) : (
-                ""
-              )}
+                )}
+                {user.isAdmin ? (
+                  <Box mt={2}>
+                    <Button
+                      color="error"
+                      onClick={() => handleDelete(cardData._id)}
+                      variant="contained"
+                    >
+                      Delete Card
+                    </Button>
+                  </Box>
+                ) : (
+                  ""
+                )}
+              </Box>
             </Box>
-          </Box>
+          )}
         </Box>
         <br />
-        <Footer />
+        {!isLoading && <Footer />}
       </Box>
     </Box>
   );

@@ -95,7 +95,7 @@ export default function Trades() {
       .finally(() =>
         setTimeout(() => {
           setIsLoading(false);
-        }, 1500)
+        }, 500)
       );
   }, [postRequest, resetIsClicked]);
   return (

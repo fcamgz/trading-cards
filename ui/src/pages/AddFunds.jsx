@@ -103,7 +103,7 @@ export default function AddFunds() {
       .finally(() =>
         setTimeout(() => {
           setIsLoading(false);
-        }, 1500)
+        }, 500)
       );
   }, []);
 

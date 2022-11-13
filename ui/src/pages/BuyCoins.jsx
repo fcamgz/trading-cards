@@ -103,7 +103,7 @@ export default function BuyCoins() {
       .finally(() =>
         setTimeout(() => {
           setIsPageLoading(false);
-        }, 1500)
+        }, 500)
       );
   }, []);
 

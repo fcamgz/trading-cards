@@ -194,7 +194,7 @@ export default function MyCards() {
     } finally {
       setTimeout(() => {
         setIsLoading(false);
-      }, 1500);
+      }, 500);
     }
   }, [user?.username, postRequest, resetIsClicked]);
   return (

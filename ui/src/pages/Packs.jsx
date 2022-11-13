@@ -40,7 +40,7 @@ export default function Packs() {
       .finally(() =>
         setTimeout(() => {
           setIsLoading(false);
-        }, 1000)
+        }, 500)
       );
 
     // get user

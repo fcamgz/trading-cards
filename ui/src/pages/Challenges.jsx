@@ -72,7 +72,7 @@ export default function Challenges() {
         .finally(() =>
           setTimeout(() => {
             setIsLoading(false);
-          }, 1000)
+          }, 500)
         );
 
       // get goalkeeper rating

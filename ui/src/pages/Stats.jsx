@@ -38,7 +38,7 @@ export default function Stats() {
       .finally(() =>
         setTimeout(() => {
           setIsLoading(false);
-        }, 1500)
+        }, 500)
       );
     // get user
     axios

@@ -56,9 +56,9 @@ router.get("/", async (req, res) => {
 });
 
 // get user stats
-router.get("/:userId", async (req, res) => {
+router.get("/:username", async (req, res) => {
   try {
-    const userStats = await UserStats.findById(req.params.userId);
+    const userStats = await UserStats.find({ username: req.params.username });
     console.log(userStats);
     res.send(userStats);
   } catch (err) {

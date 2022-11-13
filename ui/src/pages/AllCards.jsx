@@ -113,7 +113,7 @@ export default function AllCards() {
       .finally(() =>
         setTimeout(() => {
           setIsLoading(false);
-        }, 1500)
+        }, 500)
       );
   }, [buttonClicked, resetIsClicked]);
   return (
