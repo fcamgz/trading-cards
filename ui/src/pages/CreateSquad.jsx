@@ -32,7 +32,12 @@ export default function CreateSquad() {
   const [cardData, setCardData] = useState([{}]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
-  const [squad, setSquad] = useState([]);
+  const [squad, setSquad] = useState({
+    strikers: [],
+    midfields: [],
+    defenders: [],
+    goalkeeper: {},
+  });
   const [squadArray, setSquadArray] = useState([]);
   const [strikersInput, setStrikersInput] = useState([
     {
@@ -94,81 +99,77 @@ export default function CreateSquad() {
 
   useEffect(() => {
     setIsLoading(true);
-    try {
-      axios
-        .get("/api/getUsername", {
-          headers: {
-            "x-access-token": localStorage.getItem("token"),
-          },
-        })
-        .then((res) => res.data)
-        .then((data) => {
-          console.log(data);
-          console.log(data.isLoggedIn);
-          if (data.isLoggedIn) {
-            setUser(data.user);
-            setIsLoggedIn(true);
-          }
-        })
-        .catch((err) => console.log(err));
+    axios
+      .get("/api/getUsername", {
+        headers: {
+          "x-access-token": localStorage.getItem("token"),
+        },
+      })
+      .then((res) => res.data)
+      .then((data) => {
+        console.log(data);
+        console.log(data.isLoggedIn);
+        if (data.isLoggedIn) {
+          setUser(data.user);
+          setIsLoggedIn(true);
+        }
+      })
+      .catch((err) => console.log(err));
 
-      // get cards
-      axios
-        .get(`http://localhost:5000/api/cards/userCollection/${user?._id}`)
-        .then((res) => res.data)
-        .then((res) => {
-          setCardData(res);
-          console.log(res);
-          console.log("fetch card stuff");
-        })
-        .catch((err) => console.log(err));
+    // get cards
+    axios
+      .get(`http://localhost:5000/api/cards/userCollection/${user?._id}`)
+      .then((res) => res.data)
+      .then((res) => {
+        setCardData(res);
+        console.log(res);
+        console.log("fetch card stuff");
+      })
+      .catch((err) => console.log(err));
 
-      // get squad array
-      axios
-        .get(`http://localhost:5000/api/squad/getSquadArray/${user?._id}`)
-        .then((res) => res.data)
-        .then((res) => {
-          setSquad(res[0]);
-          setSquadExist(true);
-          // setStrikersInput({
-          //   striker1: res[0].strikers[0],
-          //   striker2: res[0].strikers[1],
-          // });
-          setStrikersInput({
-            striker1: res[0]?.strikers[0],
-            striker2: res[0]?.strikers[1],
-          });
-          setMidfieldsInput({
-            midfield1: res[0]?.midfields[0],
-            midfield2: res[0]?.midfields[1],
-            midfield3: res[0]?.midfields[2],
-            midfield4: res[0]?.midfields[3],
-          });
-          setDefendersInput({
-            defender1: res[0]?.defenders[0],
-            defender2: res[0]?.defenders[1],
-            defender3: res[0]?.defenders[2],
-            defender4: res[0]?.defenders[3],
-          });
-          setGoalkeeperInput(res[0]?.goalkeeper);
-        })
-        .catch((err) => console.log(err));
+    // get squad array
+    axios
+      .get(`http://localhost:5000/api/squad/getSquadArray/${user?._id}`)
+      .then((res) => res.data)
+      .then((res) => {
+        setSquad(res[0]);
+        setSquadExist(true);
+        console.log(squad);
+        console.log("yarrak " + JSON.stringify(res[0]));
+        setStrikersInput({
+          striker1: res[0]?.strikers[0],
+          striker2: res[0]?.strikers[1],
+        });
+        setMidfieldsInput({
+          midfield1: res[0]?.midfields[0],
+          midfield2: res[0]?.midfields[1],
+          midfield3: res[0]?.midfields[2],
+          midfield4: res[0]?.midfields[3],
+        });
+        setDefendersInput({
+          defender1: res[0]?.defenders[0],
+          defender2: res[0]?.defenders[1],
+          defender3: res[0]?.defenders[2],
+          defender4: res[0]?.defenders[3],
+        });
+        setGoalkeeperInput(res[0]?.goalkeeper);
+      })
+      .catch((err) => console.log(err))
+      .finally(() =>
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1500)
+      );
 
-      // get goalkeeper rating
-      axios
-        .get(`http://localhost:5000/api/squad/getGoalkeeperRating/${user?._id}`)
-        .then((res) => res.data)
-        .then((res) => {
-          setGoalkeeperRating(res[0]?.goalkeeper?.rating);
-        })
-        .catch((err) => console.log(err));
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-    }
+    // get goalkeeper rating
+    axios
+      .get(`http://localhost:5000/api/squad/getGoalkeeperRating/${user?._id}`)
+      .then((res) => res.data)
+      .then((res) => {
+        setGoalkeeperRating(res[0]?.goalkeeper?.rating);
+      })
+      .catch((err) => console.log(err));
+
     if (squadExist) {
       // get goalkeeper rating
       axios
@@ -186,7 +187,6 @@ export default function CreateSquad() {
         .then((res) => res.data)
         .then((res) => {
           setDefendersRating(res.total);
-          console.log(`Defenders rating ${res}`);
         })
         .catch((err) => console.log(err));
     }
@@ -210,7 +210,7 @@ export default function CreateSquad() {
 
     setModified(true);
     // if squad exist then set card data to chosen squad excluding
-  }, [user?._id, updated]);
+  }, [user?._id, updated, squadExist]);
 
   useEffect(() => {
     setCardData(
@@ -229,44 +229,7 @@ export default function CreateSquad() {
           item._id !== goalkeeperInput?._id
       )
     );
-    console.log("squadArray " + JSON.stringify(midfieldsInput));
-  }, []);
-
-  /*
-  const handleSubmit = () => {
-    if (squad?._id !== "") {
-      axios
-        .post(`http://localhost:5000/api/squad/modify/${squad?._id}`, squad)
-        .then((res) => res.data)
-        .then((res) => {
-          console.log("Squad updated " + res);
-        })
-        .catch((err) => console.log(err));
-    } else {
-      axios
-        .post(`http://localhost:5000/api/squad/create`, {
-          striker1: squad.striker1,
-          striker2: squad.striker2,
-          midfield1: squad.midfield1,
-          midfield2: squad.midfield2,
-          midfield3: squad.midfield3,
-          midfield4: squad.midfield4,
-          centerBack1: squad.centerBack1,
-          centerBack2: squad.centerBack2,
-          centerBack3: squad.centerBack3,
-          centerBack4: squad.centerBack4,
-          goalkeeper: squad.goalkeeper,
-          owner: user?._id,
-        })
-        .then((res) => res.data)
-        .then((res) => {
-          console.log("Squad created " + res);
-        })
-        .catch((err) => console.log(err));
-    }
-    setUpdated(!updated);
-  };
-  */
+  }, [cardData.length]);
 
   const handleSubmit = () => {
     if (squad?._id !== undefined) {
@@ -312,6 +275,13 @@ export default function CreateSquad() {
             ],
             goalkeeper: goalkeeperInput,
             owner: user?._id,
+            rating: Math.floor(
+              (strikersRating / 2 +
+                midfieldersRating / 4 +
+                defendersRating / 4 +
+                goalkeeperRating) /
+                4
+            ),
           }
         )
         .then((res) => res.data)
@@ -340,6 +310,13 @@ export default function CreateSquad() {
           goalkeeper: goalkeeperInput,
           owner: user?._id,
           ownerUsername: user?.username,
+          rating: Math.floor(
+            (strikersRating / 2 +
+              midfieldersRating / 4 +
+              defendersRating / 4 +
+              goalkeeperRating) /
+              4
+          ),
         })
         .then((res) => res.data)
         .then((res) => {
@@ -902,119 +879,121 @@ export default function CreateSquad() {
                 </Box>
               </Box>
             </Box>
-            <Box sx={{ flex: "0.28" }}>
-              <Box mt={6}>
-                <Typography
-                  gutterBottom
-                  variant="h6"
-                  textAlign="center"
-                  color="white"
-                >
-                  Squad Rating
-                </Typography>
-                <Divider sx={{ color: "white" }} />
-                <Typography
-                  gutterBottom
-                  variant="h6"
-                  textAlign="center"
-                  color="white"
-                >
-                  {Math.floor(
-                    (strikersRating / 2 +
-                      midfieldersRating / 4 +
-                      defendersRating / 4 +
-                      goalkeeperRating) /
-                      4
-                  )}
-                </Typography>
+            {!isLoading && (
+              <Box sx={{ flex: "0.28" }}>
+                <Box mt={6}>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    textAlign="center"
+                    color="white"
+                  >
+                    Squad Rating
+                  </Typography>
+                  <Divider sx={{ color: "white" }} />
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    textAlign="center"
+                    color="white"
+                  >
+                    {Math.floor(
+                      (strikersRating / 2 +
+                        midfieldersRating / 4 +
+                        defendersRating / 4 +
+                        goalkeeperRating) /
+                        4
+                    )}
+                  </Typography>
+                </Box>
+                <Box mt={6}>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    textAlign="center"
+                    color="white"
+                  >
+                    Strikers Rating
+                  </Typography>
+                  <Divider sx={{ color: "white" }} />
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    textAlign="center"
+                    color="white"
+                  >
+                    {Math.floor(strikersRating / 2)}
+                  </Typography>
+                </Box>
+                <Box mt={6}>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    textAlign="center"
+                    color="white"
+                  >
+                    Midfielders Rating
+                  </Typography>
+                  <Divider sx={{ color: "white" }} />
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    textAlign="center"
+                    color="white"
+                  >
+                    {Math.floor(midfieldersRating / 4)}
+                  </Typography>
+                </Box>
+                <Box mt={6}>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    textAlign="center"
+                    color="white"
+                  >
+                    Defenders Rating
+                  </Typography>
+                  <Divider sx={{ color: "white" }} />
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    textAlign="center"
+                    color="white"
+                  >
+                    {Math.floor(defendersRating / 4)}
+                  </Typography>
+                </Box>
+                <Box mt={6}>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    textAlign="center"
+                    color="white"
+                  >
+                    Cards List
+                  </Typography>
+                  <Paper style={{ maxHeight: 320, overflow: "auto" }}>
+                    <List>
+                      {cardData.map((card, idx) => (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            padding: "18px 6px",
+                            borderBottom: "2px solid #AFAFAF",
+                          }}
+                          key={idx + 110}
+                        >
+                          <Typography>{card.lastname}</Typography>
+                          <Typography>{card.position}</Typography>
+                          <Typography>{card.rating}</Typography>
+                        </Box>
+                      ))}
+                    </List>
+                  </Paper>
+                </Box>
               </Box>
-              <Box mt={6}>
-                <Typography
-                  gutterBottom
-                  variant="h6"
-                  textAlign="center"
-                  color="white"
-                >
-                  Strikers Rating
-                </Typography>
-                <Divider sx={{ color: "white" }} />
-                <Typography
-                  gutterBottom
-                  variant="h6"
-                  textAlign="center"
-                  color="white"
-                >
-                  {Math.floor(strikersRating / 2)}
-                </Typography>
-              </Box>
-              <Box mt={6}>
-                <Typography
-                  gutterBottom
-                  variant="h6"
-                  textAlign="center"
-                  color="white"
-                >
-                  Midfielders Rating
-                </Typography>
-                <Divider sx={{ color: "white" }} />
-                <Typography
-                  gutterBottom
-                  variant="h6"
-                  textAlign="center"
-                  color="white"
-                >
-                  {Math.floor(midfieldersRating / 4)}
-                </Typography>
-              </Box>
-              <Box mt={6}>
-                <Typography
-                  gutterBottom
-                  variant="h6"
-                  textAlign="center"
-                  color="white"
-                >
-                  Defenders Rating
-                </Typography>
-                <Divider sx={{ color: "white" }} />
-                <Typography
-                  gutterBottom
-                  variant="h6"
-                  textAlign="center"
-                  color="white"
-                >
-                  {Math.floor(defendersRating / 4)}
-                </Typography>
-              </Box>
-              <Box mt={6}>
-                <Typography
-                  gutterBottom
-                  variant="h6"
-                  textAlign="center"
-                  color="white"
-                >
-                  Cards List
-                </Typography>
-                <Paper style={{ maxHeight: 320, overflow: "auto" }}>
-                  <List>
-                    {cardData.map((card, idx) => (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          padding: "18px 6px",
-                          borderBottom: "2px solid #AFAFAF",
-                        }}
-                        key={idx + 110}
-                      >
-                        <Typography>{card.lastname}</Typography>
-                        <Typography>{card.position}</Typography>
-                        <Typography>{card.rating}</Typography>
-                      </Box>
-                    ))}
-                  </List>
-                </Paper>
-              </Box>
-            </Box>
+            )}
             <Box
               sx={{
                 flex: "1",
@@ -1024,6 +1003,8 @@ export default function CreateSquad() {
                 src={PitchImage}
                 style={{
                   position: "absolute",
+                  backgroundColor: "green",
+                  borderRadius: "10px",
                   minWidth: "46%",
                   height: "900px",
                 }}
@@ -1041,7 +1022,7 @@ export default function CreateSquad() {
                     }}
                   >
                     {!isLoading &&
-                      squad.strikers?.map((striker, idx) => (
+                      squad?.strikers?.map((striker, idx) => (
                         <Box key={idx + 120} sx={{ display: "flex" }}>
                           <Box>
                             <Typography variant="h6" color="white">

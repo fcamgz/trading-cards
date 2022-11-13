@@ -92,7 +92,6 @@ router.get("/pack/:id", async (req, res) => {
 
 // name image matches with the input name image
 router.post("/add", (req, res) => {
-  console.log(req.body);
   try {
     const newCard = new Card(req.body);
     const savedCard = newCard.save();

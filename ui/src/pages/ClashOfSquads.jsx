@@ -23,7 +23,7 @@ import Bronzes from "../images/Bronze-Card.png";
 import Silvers from "../images/Silver-Card.png";
 import Platinum from "../images/Platinium-Card.png";
 import Diamonds from "../images/pack-background2.png";
-import { useLocation, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 
 export default function ClashOfSquads() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,6 +35,7 @@ export default function ClashOfSquads() {
   const [opponentStats, setOpponentStats] = useState([]);
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoading(true);
@@ -355,6 +356,44 @@ export default function ClashOfSquads() {
                 </Box>
               </Box>
               <Box sx={{ flex: "0.44" }}>
+                <Box mt={4}>
+                  <Typography
+                    gutterBottom
+                    textAlign="center"
+                    variant="h6"
+                    color="white"
+                  >
+                    Your Squad Rating
+                  </Typography>
+                  <Divider sx={{ color: "white", marginBottom: "12px" }} />
+                  <Typography
+                    gutterBottom
+                    textAlign="center"
+                    variant="h5"
+                    color="white"
+                  >
+                    {userSquad?.rating}
+                  </Typography>
+                </Box>
+                <Box mt={4}>
+                  <Typography
+                    gutterBottom
+                    textAlign="center"
+                    variant="h6"
+                    color="white"
+                  >
+                    Opponent's Squad Rating
+                  </Typography>
+                  <Divider sx={{ color: "white", marginBottom: "12px" }} />
+                  <Typography
+                    gutterBottom
+                    textAlign="center"
+                    variant="h5"
+                    color="white"
+                  >
+                    {opponentSquad?.rating}
+                  </Typography>
+                </Box>
                 <Box mt={2}>
                   <Typography
                     gutterBottom
@@ -446,6 +485,7 @@ export default function ClashOfSquads() {
                     sx={{ fontWeight: "600" }}
                     variant="contained"
                     color="inherit"
+                    onClick={() => navigate("/modifySquad")}
                   >
                     Edit Squad
                   </Button>

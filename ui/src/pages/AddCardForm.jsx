@@ -115,17 +115,18 @@ export default function AddCardForm() {
       .catch((err) => console.log(err));
   }, [cardData._id]);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     axios
-      .get("http://localhost:5000/api/cards/", {
-        lastName: formInformation.lastname,
-      })
+      .get(`http://localhost:5000/api/cards/${formInformation.lastname}`)
       .then((res) => res.data)
       .then((res) => {
         console.log(res);
         if (res === "Card already exist") {
+          console.log("card already exist");
           setError("Card already exist");
         } else {
+          console.log(formInformation);
           axios
             .post("http://localhost:5000/api/cards/add", formInformation)
             .then((res) => res.data)
@@ -138,9 +139,14 @@ export default function AddCardForm() {
             });
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() =>
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000)
+      );
   };
-  const categories = ["Forward", "Midfielder", "Defender", "Goalkeeper"];
+  const categories = ["FW", "MD", "CB", "GK"];
 
   const tiers = ["Diamond", "Platinium", "Gold", "Silver", "Bronze"];
 
@@ -385,7 +391,7 @@ export default function AddCardForm() {
                   />
                 </FormControl>
                 <FormControl sx={{ m: 1, width: "48%" }}>
-                  <InputLabel>Category</InputLabel>
+                  <InputLabel>Position</InputLabel>
                   <Select
                     value={formInformation.position}
                     onChange={(e) => {
