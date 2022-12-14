@@ -58,7 +58,7 @@ Users can trade the cards that they own with other users.
 
 - Create and Modify Squad using collected cards
 
-![sample image](https://github.com/fcamgz/Trading-Cards-Co./blob/main/images/createModifySquad%20(2).png?raw=true)
+![sample image](https://github.com/fcamgz/Trading-Cards-Co./blob/main/images/customize%20squad.PNG?raw=true)
 
 
 # Technology: 
