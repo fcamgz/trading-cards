@@ -56,6 +56,7 @@ export default function TradeCard() {
   const [open, setOpen] = React.useState(false);
   const [chosenCard, setChosenCard] = React.useState({});
   const [ownedCards, setOwnedCards] = React.useState([]);
+  const [cardStatusChanged, setCardStatusChanged] = useState(false);
 
   const handleDelete = (cardId) => {
     axios
@@ -142,13 +143,15 @@ export default function TradeCard() {
         console.log("fetch card stuff");
       })
       .catch((err) => console.log(err));
-  }, [ownedCards.length, user.username]);
+  }, [ownedCards.length, user.username, cardStatusChanged]);
 
   const handleRemoveFromTradeList = (cardId) => {
     axios
-      .post(`http://localhost:5000/api/cards/removeFromTrade`, cardId)
+      .post(`http://localhost:5000/api/cards/removeFromTrade`, {
+        cardId: cardId,
+      })
       .then((res) => res.data)
-      .then((res) => console.log(res))
+      .then(() => navigate("/trades"))
       .catch((err) => console.log(err));
   };
 
@@ -355,7 +358,7 @@ export default function TradeCard() {
               </Typography>
               {user._id !== cardData.owner ? (
                 <>
-                  {ownedCards.length > 0 ? (
+                  {ownedCards.length >= 0 ? (
                     <Button
                       color="warning"
                       mt={2}

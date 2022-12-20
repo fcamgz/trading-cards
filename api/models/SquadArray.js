@@ -15,6 +15,22 @@ const SquadArraySchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
+  strikerRating: {
+    type: Number,
+    default: 0,
+  },
+  midfieldRating: {
+    type: Number,
+    default: 0,
+  },
+  defenceRating: {
+    type: Number,
+    default: 0,
+  },
+  goalkeeperRating: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model("SquadArray", SquadArraySchema);

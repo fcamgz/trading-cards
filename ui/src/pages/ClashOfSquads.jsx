@@ -117,7 +117,7 @@ export default function ClashOfSquads() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Navbar user={user} isLoggedIn={isLoggedIn} />
+      <Navbar user={user} isLoggedIn={isLoggedIn} isLoading={isLoading} />
       <Box
         container
         sx={{ position: "relative", margin: 0, height: "100%", width: "100%" }}

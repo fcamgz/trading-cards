@@ -10,11 +10,14 @@ import TCCLogo5 from "../images/Platinium-Card.png";
 import TCCLogo3 from "../images/pack-background2.png";
 
 import Footer from "../components/Footer";
+import { useNavigate } from "react-router";
 
 export default function Homepage() {
   const [cardData, setCardData] = useState([{}]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     // get cards
@@ -103,7 +106,7 @@ export default function Homepage() {
                 </Button>
               ) : (
                 <Button
-                  href="/dashboard"
+                  onClick={() => navigate("/dashboard")}
                   color="inherit"
                   variant="contained"
                   sx={{ fontWeight: "600" }}

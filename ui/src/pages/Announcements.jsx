@@ -141,15 +141,17 @@ export default function Announcement() {
                   <Typography>
                     Created At: {d.createdAt?.split("T")[0]}
                   </Typography>
-                  <Box mt={2}>
-                    <Button
-                      onClick={() => handleDelete(d._id)}
-                      variant="contained"
-                      color="error"
-                    >
-                      Delete
-                    </Button>
-                  </Box>
+                  {user?.isAdmin && (
+                    <Box mt={2}>
+                      <Button
+                        onClick={() => handleDelete(d._id)}
+                        variant="contained"
+                        color="error"
+                      >
+                        Delete
+                      </Button>
+                    </Box>
+                  )}
                 </Box>
               </Box>
             ))}

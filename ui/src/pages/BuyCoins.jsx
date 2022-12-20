@@ -115,7 +115,7 @@ export default function BuyCoins() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Navbar user={user} isLoggedIn={isLoggedIn} />
+      <Navbar user={user} isLoggedIn={isLoggedIn} isLoading={isPageLoading} />
       <Box
         mb={6}
         sx={{

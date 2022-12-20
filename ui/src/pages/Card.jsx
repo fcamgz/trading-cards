@@ -171,7 +171,7 @@ export default function Card() {
     axios
       .post("http://localhost:5000/api/cards/putCardForTrade", {
         cardId: cardData._id,
-        price: listPrice,
+        price: cardData.price,
       })
       .then((res) => res.data)
       .then((res) => {
@@ -192,7 +192,7 @@ export default function Card() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Navbar user={user} isLoggedIn={isLoggedIn} />
+      <Navbar user={user} isLoggedIn={isLoggedIn} isLoading={isLoading} />
       <Box
         mb={6}
         sx={{

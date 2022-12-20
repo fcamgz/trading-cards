@@ -134,8 +134,6 @@ export default function CreateSquad() {
       .then((res) => {
         setSquad(res[0]);
         setSquadExist(true);
-        console.log(squad);
-        console.log("yarrak " + JSON.stringify(res[0]));
         setStrikersInput({
           striker1: res[0]?.strikers[0],
           striker2: res[0]?.strikers[1],
@@ -282,6 +280,10 @@ export default function CreateSquad() {
                 goalkeeperRating) /
                 4
             ),
+            strikerRating: Math.floor(strikersRating / 2),
+            midfieldRating: Math.floor(midfieldersRating / 4),
+            defenceRating: Math.floor(defendersRating / 4),
+            goalkeeperRating: goalkeeperRating,
           }
         )
         .then((res) => res.data)
@@ -317,6 +319,10 @@ export default function CreateSquad() {
               goalkeeperRating) /
               4
           ),
+          strikerRating: Math.floor(strikersRating / 2),
+          midfieldRating: Math.floor(midfieldersRating / 4),
+          defenceRating: Math.floor(defendersRating / 4),
+          goalkeeperRating: goalkeeperRating,
         })
         .then((res) => res.data)
         .then((res) => {
@@ -368,7 +374,7 @@ export default function CreateSquad() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Navbar user={user} isLoggedIn={isLoggedIn} />
+      <Navbar user={user} isLoggedIn={isLoggedIn} isLoading={isLoading} />
       <Box
         container
         sx={{ position: "relative", margin: 0, height: "100%", width: "100%" }}

@@ -109,7 +109,7 @@ function UserDashboard(props) {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Navbar user={user} isLoggedIn={isLoggedIn} />
+      <Navbar user={user} isLoggedIn={isLoggedIn} isLoading={isLoading} />
       <Box
         container
         sx={{ position: "relative", margin: 0, height: "auto", width: "100vw" }}

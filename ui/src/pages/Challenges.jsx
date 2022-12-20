@@ -34,10 +34,7 @@ export default function Challenges() {
   const [user, setUser] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [updated, setUpdated] = useState(false);
-  const [goalkeeperRating, setGoalkeeperRating] = useState("");
-  const [defendersRating, setDefendersRating] = useState(0);
-  const [midfieldersRating, setMidfieldersRating] = useState(0);
-  const [strikersRating, setStrikersRating] = useState(0);
+  const [userSquad, setUserSquad] = useState([]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -51,8 +48,6 @@ export default function Challenges() {
         })
         .then((res) => res.data)
         .then((data) => {
-          console.log(data);
-          console.log(data.isLoggedIn);
           if (data.isLoggedIn) {
             setUser(data.user);
             setIsLoggedIn(true);
@@ -66,7 +61,6 @@ export default function Challenges() {
         .then((res) => res.data)
         .then((res) => {
           setChallengeData(res);
-          console.log(res);
         })
         .catch((err) => console.log(err))
         .finally(() =>
@@ -75,44 +69,13 @@ export default function Challenges() {
           }, 500)
         );
 
-      // get goalkeeper rating
       await axios
-        .get(`http://localhost:5000/api/squad/getGoalkeeperRating/${user?._id}`)
+        .get(`http://localhost:5000/api/squad/getSquad/${user?._id}`)
         .then((res) => res.data)
         .then((res) => {
-          setGoalkeeperRating(res[0].goalkeeper?.rating);
-        })
-        .catch((err) => console.log(err));
-
-      // get defenders rating
-      await axios
-        .get(`http://localhost:5000/api/squad/getDefendersRating/${user?._id}`)
-        .then((res) => res.data)
-        .then((res) => {
-          setDefendersRating(res.total);
-          console.log(`Defenders rating ${res}`);
-        })
-        .catch((err) => console.log(err));
-
-      // get midfielders rating
-      await axios
-        .get(
-          `http://localhost:5000/api/squad/getMidfieldersRating/${user?._id}`
-        )
-        .then((res) => res.data)
-        .then((res) => {
-          setMidfieldersRating(res.total);
-        })
-        .catch((err) => console.log(err));
-
-      // get strikers rating
-      await axios
-        .get(`http://localhost:5000/api/squad/getStrikersRating/${user?._id}`)
-        .then((res) => res.data)
-        .then((res) => {
-          setStrikersRating(res.total);
-        })
-        .catch((err) => console.log(err));
+          console.log(res);
+          setUserSquad(res[0]);
+        });
     };
     fetchData();
   }, [updated]);
@@ -143,7 +106,7 @@ export default function Challenges() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Navbar user={user} isLoggedIn={isLoggedIn} />
+      <Navbar user={user} isLoggedIn={isLoggedIn} isLoading={isLoading} />
       <Box
         container
         sx={{ position: "relative", margin: 0, height: "100%", width: "100%" }}
@@ -199,13 +162,7 @@ export default function Challenges() {
                         <Card>
                           <CardHeader
                             title={`Your Squad - W0-L0`}
-                            subheader={`Squad Rating ${Math.floor(
-                              (strikersRating / 2 +
-                                midfieldersRating / 4 +
-                                defendersRating / 4 +
-                                goalkeeperRating) /
-                                4
-                            )} -  Squad Owner: ${user?.username}`}
+                            subheader={`Squad Owner: ${user?.username}`}
                           ></CardHeader>
                           <CardContent>
                             <Stack>

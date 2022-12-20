@@ -252,7 +252,7 @@ export default function Navbar(props) {
                 sx={{
                   display: "flex",
                   justifyContent: "space-around",
-                  width: "200px",
+                  width: "260px",
                 }}
               >
                 <Button
@@ -350,16 +350,18 @@ export default function Navbar(props) {
               </Box>
             </Box>
           ) : (
-            <Box>
-              <Button
-                color="inherit"
-                size="small"
-                variant="contained"
-                href="/login"
-              >
-                Login
-              </Button>
-            </Box>
+            !props.isLoading && (
+              <Box>
+                <Button
+                  color="inherit"
+                  size="small"
+                  variant="contained"
+                  href="/login"
+                >
+                  Login
+                </Button>
+              </Box>
+            )
           )}
         </Toolbar>
       </Container>

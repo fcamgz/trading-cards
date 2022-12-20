@@ -87,7 +87,11 @@ export default function Profile() {
         }
       })
       .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false));
+      .finally(() =>
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000)
+      );
   }, []);
   return (
     <Box
@@ -103,7 +107,7 @@ export default function Profile() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Navbar user={user} isLoggedIn={isLoggedIn} />
+      <Navbar user={user} isLoggedIn={isLoggedIn} isLoading={isLoading} />
       <Box
         sx={{
           position: "relative",
@@ -139,76 +143,78 @@ export default function Profile() {
             Profile
           </Typography>
           <Divider sx={{ color: "white", margin: "40px" }} />
-          <Box mt={4} className={classes.mainContainer}>
-            <Box className={classes.pictureBlock}>
-              <Box>
-                <Box
-                  mt={2}
-                  sx={{ display: "flex", justifyContent: "flex-start" }}
-                >
-                  <Box mb={2}>
-                    <Button
-                      onClick={() => navigate("/editProfile")}
-                      size="small"
-                      variant="contained"
-                      color="inherit"
-                      sx={{ fontWeight: "600" }}
-                    >
-                      Edit Profile
-                    </Button>
-                  </Box>
-                </Box>
-                <img
-                  src={
-                    user?.img === "1"
-                      ? ProfilePicture1
-                      : user?.img === "2"
-                      ? ProfilePicture2
-                      : user?.img === "3"
-                      ? ProfilePicture3
-                      : ""
-                  }
-                  width="200px"
-                />
-              </Box>
-              <Box mt={2}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    flexDirection: "column",
-                    width: "100%",
-                  }}
-                >
+          {!isLoading && (
+            <Box mt={4} className={classes.mainContainer}>
+              <Box className={classes.pictureBlock}>
+                <Box>
                   <Box
                     mt={2}
-                    sx={{ display: "flex", justifyContent: "space-around" }}
+                    sx={{ display: "flex", justifyContent: "flex-start" }}
                   >
-                    <Box>
-                      <Typography color="white">
-                        Status - {user?.isAdmin ? "Admin" : "User"}
-                      </Typography>
-                      <Typography mt={1} color="white">
-                        <PersonIcon />
-                        {user?.username}
-                      </Typography>
-                      <Typography variant="subtitle2" mt={1} color="white">
-                        <AlternateEmailIcon />
-                        {user?.email}
-                      </Typography>
-                      <Typography variant="subtitle1" mt={1} color="white">
-                        <MonetizationOnIcon />
-                        {user?.coinBalance} TCC
-                      </Typography>
-                      <Typography variant="subtitle1" mt={1} color="white">
-                        <LocalAtmIcon />${user?.moneyBalance}
-                      </Typography>
+                    <Box mb={2}>
+                      <Button
+                        onClick={() => navigate("/editProfile")}
+                        size="small"
+                        variant="contained"
+                        color="inherit"
+                        sx={{ fontWeight: "600" }}
+                      >
+                        Edit Profile
+                      </Button>
+                    </Box>
+                  </Box>
+                  <img
+                    src={
+                      user?.img === "1"
+                        ? ProfilePicture1
+                        : user?.img === "2"
+                        ? ProfilePicture2
+                        : user?.img === "3"
+                        ? ProfilePicture3
+                        : ""
+                    }
+                    width="200px"
+                  />
+                </Box>
+                <Box mt={2}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      flexDirection: "column",
+                      width: "100%",
+                    }}
+                  >
+                    <Box
+                      mt={2}
+                      sx={{ display: "flex", justifyContent: "space-around" }}
+                    >
+                      <Box>
+                        <Typography color="white">
+                          Status - {user?.isAdmin ? "Admin" : "User"}
+                        </Typography>
+                        <Typography mt={1} color="white">
+                          <PersonIcon />
+                          {user?.username}
+                        </Typography>
+                        <Typography variant="subtitle2" mt={1} color="white">
+                          <AlternateEmailIcon />
+                          {user?.email}
+                        </Typography>
+                        <Typography variant="subtitle1" mt={1} color="white">
+                          <MonetizationOnIcon />
+                          {user?.coinBalance} TCC
+                        </Typography>
+                        <Typography variant="subtitle1" mt={1} color="white">
+                          <LocalAtmIcon />${user?.moneyBalance}
+                        </Typography>
+                      </Box>
                     </Box>
                   </Box>
                 </Box>
               </Box>
             </Box>
-          </Box>
+          )}
         </Box>
         <Footer />
       </Box>

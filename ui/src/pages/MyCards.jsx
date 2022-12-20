@@ -135,6 +135,7 @@ export default function MyCards() {
     axios
       .post("http://localhost:5000/api/cards/putCardForTrade", {
         cardId: selectedCard._id,
+        price: selectedCard.price,
       })
       .then((res) => res.data)
       .then((res) => {
@@ -184,9 +185,6 @@ export default function MyCards() {
         .then((res) => res.data)
         .then((res) => {
           setCardData(res);
-          console.log(res);
-          console.log("fetch card stuff");
-          setIsLoading(false);
         })
         .catch((err) => console.log(err));
     } catch (err) {
@@ -194,7 +192,7 @@ export default function MyCards() {
     } finally {
       setTimeout(() => {
         setIsLoading(false);
-      }, 500);
+      }, 1500);
     }
   }, [user?.username, postRequest, resetIsClicked]);
   return (
@@ -212,7 +210,7 @@ export default function MyCards() {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Navbar user={user} isLoggedIn={isLoggedIn} />
+      <Navbar user={user} isLoggedIn={isLoggedIn} isLoading={isLoading} />
       <Box
         container
         sx={{ position: "relative", margin: 0, height: "100%", width: "100%" }}
