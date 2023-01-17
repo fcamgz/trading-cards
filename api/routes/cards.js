@@ -50,12 +50,44 @@ router.get("/getBaseCards", async (req, res) => {
 // get all the cards on the homepage
 router.get("/", async (req, res) => {
   try {
-    const cards = await Card.find({ owner: { $eq: "TCC" } }).sort({
-      createdAt: -1,
-    });
+    const cards = await Card.find({ owner: { $eq: "TCC" } });
     res.status(200).send(cards);
   } catch (err) {
     res.status(500).send(err);
+  }
+});
+
+// get all the cards on the homepage
+router.get("/getCards/:orderBy", async (req, res) => {
+  switch (req.params.orderBy) {
+    case "getByPrice":
+      try {
+        const cards = await Card.find({ owner: { $eq: "TCC" } }).sort({
+          price: -1,
+        });
+        res.status(200).send(cards);
+      } catch (err) {
+        res.send(err);
+      }
+      break;
+    case "getByRating":
+      try {
+        const cards = await Card.find({ owner: { $eq: "TCC" } }).sort({
+          rating: -1,
+        });
+        res.status(200).send(cards);
+      } catch (err) {
+        res.send(err);
+      }
+      break;
+    default:
+      try {
+        const cards = await Card.find({ owner: { $eq: "TCC" } });
+        res.status(200).send(cards);
+      } catch (err) {
+        res.status(500).send(err);
+      }
+      break;
   }
 });
 
@@ -195,11 +227,46 @@ router.post("/removeFromTrade", async (req, res) => {
 router.get(`/userCollection/:userId`, async (req, res) => {
   try {
     const cards = await Card.find({ owner: req.params.userId }).sort({
-      rating: -1,
+      rating: "desc",
     });
     res.status(200).send(cards);
   } catch (err) {
     res.send(err);
+  }
+});
+
+router.get(`/userCollection/:userId/:orderBy`, async (req, res) => {
+  switch (req.params.orderBy) {
+    case "getByPrice":
+      try {
+        const cards = await Card.find({ owner: req.params.userId }).sort({
+          price: -1,
+        });
+        res.status(200).send(cards);
+      } catch (err) {
+        res.send(err);
+      }
+      break;
+    case "getByRating":
+      try {
+        const cards = await Card.find({ owner: req.params.userId }).sort({
+          rating: -1,
+        });
+        res.status(200).send(cards);
+      } catch (err) {
+        res.send(err);
+      }
+      break;
+    default:
+      try {
+        const cards = await Card.find({ owner: req.params.userId }).sort({
+          rating: -1,
+        });
+        res.status(200).send(cards);
+      } catch (err) {
+        res.send(err);
+      }
+      break;
   }
 });
 

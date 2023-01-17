@@ -29,6 +29,7 @@ import ClashOfSquads from "./pages/ClashOfSquads";
 import CreateSquad from "./pages/CreateSquad";
 import Challenges from "./pages/Challenges";
 import Stats from "./pages/Stats";
+import Match from "./pages/Match";
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
         <Route path="/challenges" element={<Challenges />} />
         <Route path="/challenges/:challengeId" element={<ClashOfSquads />} />
         <Route path="/stats" element={<Stats />} />
+        <Route path="/match/:challangeId" element={<Match />} />
       </Routes>
     </BrowserRouter>
   );

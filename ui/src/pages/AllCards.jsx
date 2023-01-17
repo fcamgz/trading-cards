@@ -52,7 +52,7 @@ export default function AllCards() {
   const [buttonClicked, setButtonClicked] = useState(false);
   const [searchKey, setSearchKey] = useState("");
   const [resetIsClicked, setResetIsClicked] = useState(false);
-  const [orderBy, setOrderBy] = useState("");
+  const [orderBy, setOrderBy] = useState("getByPrice");
   const [isLoading, setIsLoading] = useState(true);
 
   const handleReset = () => {
@@ -86,7 +86,7 @@ export default function AllCards() {
     setIsLoading(true);
     // get cards
     axios
-      .get("http://localhost:5000/api/cards/")
+      .get(`http://localhost:5000/api/cards/getCards/${orderBy}`)
       .then((res) => res.data)
       .then((res) => {
         setCardData(res);
@@ -115,7 +115,7 @@ export default function AllCards() {
           setIsLoading(false);
         }, 500)
       );
-  }, [buttonClicked, resetIsClicked]);
+  }, [buttonClicked, resetIsClicked, orderBy]);
   return (
     <Box
       sx={{
@@ -234,7 +234,13 @@ export default function AllCards() {
                             <FormControl
                               sx={{ width: "140px", backgroundColor: "white" }}
                             >
-                              <InputLabel id="demo-simple-select-label">
+                              <InputLabel
+                                sx={{
+                                  fontWeight: "600",
+                                  fontSize: "24px",
+                                }}
+                                id="demo-simple-select-label"
+                              >
                                 Order By
                               </InputLabel>
                               <Select
@@ -242,12 +248,8 @@ export default function AllCards() {
                                 label="Order By"
                                 onChange={(e) => setOrderBy(e.target.value)}
                               >
-                                <MenuItem value="firstName">
-                                  First Name
-                                </MenuItem>
-                                <MenuItem value="lastName">Last Name</MenuItem>
-                                <MenuItem value="price">Price</MenuItem>
-                                <MenuItem value="rating">Rating</MenuItem>
+                                <MenuItem value="getByPrice">Price</MenuItem>
+                                <MenuItem value="getByRating">Rating</MenuItem>
                               </Select>
                             </FormControl>
                           </Box>

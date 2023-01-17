@@ -61,7 +61,7 @@ export default function ClashOfSquads() {
     axios
       .get(
         `http://localhost:5000/api/squad/getSquadArray/${
-          location.pathname.split("/")[[2]]
+          location.pathname.split("/")[2]
         }`
       )
       .then((res) => res.data)
@@ -489,7 +489,13 @@ export default function ClashOfSquads() {
                   >
                     Edit Squad
                   </Button>
-                  <Button color="success" variant="contained">
+                  <Button
+                    onClick={() =>
+                      navigate(`/match/${location.pathname.split("/")[2]}`)
+                    }
+                    color="success"
+                    variant="contained"
+                  >
                     Challenge the Opponent
                   </Button>
                 </Box>

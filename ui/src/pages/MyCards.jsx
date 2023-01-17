@@ -56,7 +56,7 @@ export default function MyCards() {
   const [openSellNow, setOpenSellNow] = useState(false);
   const [searchKey, setSearchKey] = useState("");
   const [resetIsClicked, setResetIsClicked] = useState(false);
-  const [orderBy, setOrderBy] = useState("");
+  const [orderBy, setOrderBy] = useState("getByPrice");
   const [isLoading, setIsLoading] = useState(false);
 
   const useStyles = makeStyles({
@@ -181,7 +181,9 @@ export default function MyCards() {
         })
         .catch((err) => console.log(err));
       axios
-        .get(`http://localhost:5000/api/cards/userCollection/${user?._id}`)
+        .get(
+          `http://localhost:5000/api/cards/userCollection/${user?._id}/${orderBy}`
+        )
         .then((res) => res.data)
         .then((res) => {
           setCardData(res);
@@ -194,7 +196,7 @@ export default function MyCards() {
         setIsLoading(false);
       }, 1500);
     }
-  }, [user?.username, postRequest, resetIsClicked]);
+  }, [user?.username, postRequest, resetIsClicked, orderBy]);
   return (
     <Box
       sx={{
@@ -311,9 +313,18 @@ export default function MyCards() {
                         }}
                       >
                         <FormControl
-                          sx={{ width: "140px", backgroundColor: "white" }}
+                          sx={{
+                            width: "140px",
+                            backgroundColor: "white",
+                          }}
                         >
-                          <InputLabel id="demo-simple-select-label">
+                          <InputLabel
+                            sx={{
+                              fontWeight: "600",
+                              fontSize: "24px",
+                            }}
+                            id="demo-simple-select-label"
+                          >
                             Order By
                           </InputLabel>
                           <Select
@@ -321,10 +332,8 @@ export default function MyCards() {
                             label="Order By"
                             onChange={(e) => setOrderBy(e.target.value)}
                           >
-                            <MenuItem value="firstName">First Name</MenuItem>
-                            <MenuItem value="lastName">Last Name</MenuItem>
-                            <MenuItem value="price">Price</MenuItem>
-                            <MenuItem value="rating">Rating</MenuItem>
+                            <MenuItem value="getByPrice">Price</MenuItem>
+                            <MenuItem value="getByRating">Rating</MenuItem>
                           </Select>
                         </FormControl>
                       </Box>
