@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const UserStats = require("../models/UserStats");
 
 const router = require("express").Router();
@@ -18,21 +19,27 @@ router.post("/createStat", async (req, res) => {
 
 // modify user stats
 router.put("/:userId/modifyStat", async (req, res) => {
+  console.log(req.body);
+  console.log(mongoose.Types.ObjectId(req.params.userId));
   try {
     if (req.body.wins) {
-      await UserStats.findByIdAndUpdate(req.params.userId, {
-        $inc: { wins: 1 },
-      });
+      await UserStats.findOneAndUpdate(
+        { userId: mongoose.Types.ObjectId(req.params.userId) },
+        { $inc: { "wins": 1 } }
+      ).exec();
     } else if (req.body.draws) {
-      await UserStats.findByIdAndUpdate(req.params.userId, {
-        $inc: { draws: 1 },
-      });
+      await UserStats.findOneAndUpdate(
+        { userId: mongoose.Types.ObjectId(req.params.userId) },
+        { $inc: { "draws": 1 } }
+      ).exec();
     } else {
-      await UserStats.findByIdAndUpdate(req.params.userId, {
-        $inc: { defeats: 1 },
-      });
+      await UserStats.findOneAndUpdate(
+        { userId: mongoose.Types.ObjectId(req.params.userId) },
+        { $inc: { "defeats": 1 } }
+      ).exec();
     }
   } catch (err) {
+    console.log(err);
     res.send(err);
   }
 });

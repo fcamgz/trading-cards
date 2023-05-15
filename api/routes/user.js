@@ -3,6 +3,69 @@ const { findByIdAndUpdate } = require("../models/User");
 const User = require("../models/User");
 const Card = require("../models/Card").Card;
 const PackOpened = require("../models/PackOpened");
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+
+// var storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     var dirName = "../userImages/";
+//     console.log("dirName: " + dirName);
+//     if (!fs.existSync(dirName)) {
+//       fs.mkdirSync(dirName);
+//     }
+//     cb(null, dirName);
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + "-" + file.originalname);
+//   },
+// });
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    var dirName = "../userImages/";
+    cb(null, dirName);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+var upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/jpeg"
+    ) {
+      cb(null, true);
+    } else {
+      cb(null, false);
+      return cb(new Error("Only .png, .jpg and .jpeg format allowed!"));
+    }
+  },
+});
+
+router.post(
+  "/profileTest/:userId",
+  upload.single("imageFile"),
+  async (req, res) => {
+    console.log(req.files.imageFile);
+    try {
+      const user = await User.findByIdAndUpdate(req.params.userId, {
+        email: req.body.email,
+        img: {
+          data: req.files.imageFile.data,
+          contentType: "image/png",
+        },
+      });
+      res.status(200).send(`User: ${user._id} updated`);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  }
+);
 
 // schema test
 // User.schema.static.adjustUserBalance = function (
@@ -23,8 +86,12 @@ const PackOpened = require("../models/PackOpened");
 // get user information
 router.get("/profile/:userId", async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId);
-    res.status(200).send(user);
+    // convert buffer to base64 before sending it to UI
+    await User.findById(req.params.userId).exec(function (err, user) {
+      if (err) res.status(500).send(err);
+      user.img = new Buffer(user.img.data).toString("base64");
+      res.status(200).send(user);
+    });
   } catch (err) {
     res.status(500).send(err);
   }

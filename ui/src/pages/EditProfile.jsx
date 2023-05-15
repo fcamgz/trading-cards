@@ -61,7 +61,7 @@ export default function EditProfile() {
   const [user, setUser] = useState();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState();
   const [isError, setIsError] = useState(false);
 
   const navigate = useNavigate();
@@ -86,9 +86,12 @@ export default function EditProfile() {
           setIsLoggedIn(true);
         }
       })
-      .then(() => setEmail(user?.email))
+      .then(() => {
+        setEmail(user?.email);
+        setImage(user?.img);
+      })
       .catch((err) => console.log(err));
-  }, [user?.username, image]);
+  }, [user?.username]);
 
   const clickImageButton = (id) => {
     setImage(id);
@@ -102,6 +105,21 @@ export default function EditProfile() {
         img: image,
         email: email,
       })
+      .then((res) => res.data)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => setIsError(err))
+      .finally(() => navigate("/profile"));
+  };
+
+  const handleSubmitTest = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("imageFile", image);
+    formData.append("email", email);
+    axios
+      .post(`http://localhost:5000/api/user/profileTest/${user?._id}`, formData)
       .then((res) => res.data)
       .then((res) => {
         console.log(res);
@@ -166,21 +184,11 @@ export default function EditProfile() {
                       alignItems: "center",
                     }}
                     component="form"
-                    onSubmit={handleSubmit}
+                    encType="multipart/form-data"
+                    onSubmit={handleSubmitTest}
                   >
                     <Grid item lg={11}>
-                      <img
-                        src={
-                          image === "1"
-                            ? ProfilePicture1
-                            : image === "2"
-                            ? ProfilePicture2
-                            : image === "3"
-                            ? ProfilePicture3
-                            : ""
-                        }
-                        width="200px"
-                      />
+                      <img src={image} width="200px" alt="user-pic" />
                       <Stack sx={{ width: "100%" }}>
                         <InputLabel sx={{ color: "white" }}>
                           Choose an Avatar
@@ -243,6 +251,16 @@ export default function EditProfile() {
                               sx={{ backgroundColor: "white" }}
                             />
                           </FormControl>
+                          <Button variant="contained" component="label">
+                            Upload File
+                            <input
+                              onChange={(e) => {
+                                setImage(e.target.files[0]);
+                              }}
+                              type="file"
+                              hidden
+                            />
+                          </Button>
                           <Box
                             mt={4}
                             sx={{
