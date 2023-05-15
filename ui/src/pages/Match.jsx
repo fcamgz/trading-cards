@@ -423,12 +423,17 @@ export default function Match() {
       opponentOutcome = { wins: true };
     }
 
+    var aResult = false;
+    var bResult = false;
+
     axios
       .put(
         `http://localhost:5000/api/stats/${user?._id}/modifyStat`,
         userOutcome
       )
-      .then((data) => console.log(data));
+      .then((data) => {
+        aResult = true;
+      });
 
     axios
       .put(
@@ -437,7 +442,7 @@ export default function Match() {
         }/modifyStat`,
         opponentOutcome
       )
-      .then((data) => console.log(data));
+      .then((data) => (bResult = true));
 
     navigate("/stats");
   };
@@ -511,7 +516,14 @@ export default function Match() {
               </Box>
             </Box>
             <Box textAlign="center" mt={6}>
-              <Button onClick={handleAdvance}>Advance</Button>
+              <Button
+                color="success"
+                variant="contained"
+                sx={{ fontWeight: "600" }}
+                onClick={handleAdvance}
+              >
+                Advance
+              </Button>
             </Box>
           </Box>
         </Box>
